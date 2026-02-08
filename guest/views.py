@@ -25,7 +25,7 @@ def login(request):
 
         elif admin_count > 0:
             admin_data = Admin.objects.get(email=cemail, password=cpassword)
-            request.session['aid'] = admin_data.id
+            request.session['admin_id'] = admin_data.id
             return redirect('WAdmin:admin_dashboard')
 
         else:

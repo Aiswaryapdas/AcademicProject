@@ -57,8 +57,8 @@ def admin_dashboard(request):
     if 'admin_id' not in request.session:
         return redirect('guest:guest_login')
 
-    faculty_count = tbl_faculty.objects.count()
-    student_count = tbl_student.objects.count()
+    faculty_count = Faculty.objects.count()
+    student_count = Student.objects.count()
 
     context = {
         'faculty_count': faculty_count,
