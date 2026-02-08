@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Student Registration</title>
+    <style>
+      body {
+        font-family: Arial;
+        background: #f4f6f8;
+      }
+      .box {
+        width: 420px;
+        margin: 60px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 8px;
+        margin: 8px 0;
+      }
+      button {
+        background: #28a745;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h2 align="center">Student Registration</h2>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <input
+          type="text"
+          name="admission_number"
+          placeholder="Admission Number"
+          required
+        />
+
+        <input type="text" name="name" placeholder="Full Name" required />
+
+        <input type="email" name="email" placeholder="Email" required />
+
+        <input type="text" name="phone" placeholder="Phone Number" required />
+
+        <select name="department" required>
+          <option value="">Select Department</option>
+          <option>Computer Science</option>
+          <option>Electronics</option>
+          <option>Mechanical</option>
+          <option>Civil</option>
+        </select>
+
+        <input
+          type="text"
+          name="course"
+          placeholder="Course (MCA / BCA / BTech)"
+          required
+        />
+
+        <input
+          type="text"
+          name="course_batch"
+          placeholder="Course Batch (e.g. 2024-2026)"
+          required
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+
+        <input
+          type="password"
+          name="confirm_password"
+          placeholder="Confirm Password"
+          required
+        />
+
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  </body>
+</html>
