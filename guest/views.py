@@ -16,7 +16,7 @@ def login(request):
         if student_count > 0:
             student_data = Student.objects.get(email=cemail, password=cpassword)
             request.session['student_id'] = student_data.id
-            return redirect('student:homepage')
+            return redirect('student:dashboard')
 
         elif faculty_count > 0:
             faculty_data = Faculty.objects.get(email=cemail, password=cpassword)

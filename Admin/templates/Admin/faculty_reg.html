@@ -1,72 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Faculty Registration</title>
     <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f8;
-        }
-        .box {
-            width: 420px;
-            margin: 60px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 8px;
-            margin: 8px 0;
-        }
-        button {
-            background: #2b7cff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+      body {
+        font-family: Arial;
+        background: #f4f6f8;
+      }
+      .box {
+        width: 420px;
+        margin: 60px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 8px;
+        margin: 8px 0;
+      }
+      button {
+        background: #2b7cff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="box">
+      <h2 align="center">Faculty Registration</h2>
 
-<div class="box">
-    <h2 align="center">Faculty Registration</h2>
-
-    <form method="POST">
+      <form method="POST">
         {% csrf_token %}
 
-        <input type="text" name="faculty_id" placeholder="Faculty ID" required>
+        <input
+          type="text"
+          name="faculty_id"
+          placeholder="Faculty ID"
+          required
+        />
 
-        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="text" name="name" placeholder="Full Name" required />
 
-        <input type="email" name="email" placeholder="Email" required>
+        <input type="email" name="email" placeholder="Email" required />
 
-        <input type="text" name="phone" placeholder="Phone Number" required>
+        <input type="text" name="phone" placeholder="Phone Number" required />
 
         <select name="department" required>
-            <option value="">Select Department</option>
-            <option>Computer Science</option>
-            <option>Electronics</option>
-            <option>Mechanical</option>
-            <option>Civil</option>
+          <option value="">Select Department</option>
+          <option>Computer Science</option>
+          <option>Electronics</option>
+          <option>Mechanical</option>
+          <option>Civil</option>
         </select>
 
         <select name="designation" required>
-            <option value="">Select Designation</option>
-            <option>Assistant Professor</option>
-            <option>Associate Professor</option>
-            <option>Professor</option>
-            <option>HOD</option>
-            <option>Lecturer</option>
+          <option value="">Select Designation</option>
+          <option>Assistant Professor</option>
+          <option>Associate Professor</option>
+          <option>Professor</option>
+          <option>HOD</option>
+          <option>Lecturer</option>
         </select>
 
-        <input type="password" name="password" placeholder="Password" required>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
 
-        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+        <input
+          type="password"
+          name="confirm_password"
+          placeholder="Confirm Password"
+          required
+        />
 
         <button type="submit">Register</button>
-    </form>
-</div>
-
-</body>
+      </form>
+    </div>
+  </body>
 </html>

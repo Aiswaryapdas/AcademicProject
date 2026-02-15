@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Faculty Dashboard | EduTrack</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #f4f6f8;
+      }
+
+      .top-bar {
+        height: 60px;
+        background-color: #2f4357;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+      }
+
+      .left-top {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .app-name {
+        font-size: 22px;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+
+      .page-title {
+        font-size: 18px;
+        opacity: 0.9;
+      }
+
+      .right-top {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        position: relative;
+      }
+
+      .profile-circle {
+        width: 40px;
+        height: 40px;
+        background-color: #1abc9c;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .logout-btn {
+        background-color: #ff5a3c;
+        border: none;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .profile-card {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 260px;
+        background-color: white;
+        color: black;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 15px;
+        display: none;
+      }
+
+      .profile-card h3 {
+        margin: 0;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 8px;
+      }
+
+      .profile-card p {
+        margin: 8px 0;
+        font-size: 14px;
+      }
+
+      .container {
+        display: flex;
+      }
+
+      .sidebar {
+        width: 220px;
+        background-color: #324a5e;
+        min-height: calc(100vh - 60px);
+        padding-top: 20px;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 12px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 15px;
+      }
+
+      .sidebar a:hover {
+        background-color: #3f5f78;
+      }
+
+      .content {
+        flex: 1;
+        padding: 30px;
+      }
+
+      .card {
+        background-color: #ffffff;
+        border-radius: 6px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #2f4357;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="left-top">
+        <div class="app-name">EduTrack</div>
+        <div class="page-title">Faculty Dashboard</div>
+      </div>
+
+      <div class="right-top">
+        <div class="profile-circle" onclick="toggleProfile()">
+          {{ faculty.name|slice:":1" }}
+        </div>
+
+        <a href="{% url 'faculty:logout' %}">
+          <button class="logout-btn">Logout</button>
+        </a>
+
+        <div class="profile-card" id="profileCard">
+          <h3>{{ faculty.name }}</h3>
+          <p><strong>Email:</strong> {{ faculty.email }}</p>
+          <p><strong>Department:</strong> {{ faculty.department }}</p>
+          <p><strong>Designation:</strong> {{ faculty.designation }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="container">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <a href="#">Dashboard</a>
+        <a href="#">My Profile</a>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="content">
+        <div class="card">
+          <h2>Welcome, {{ faculty.name }}</h2>
+
+          {% if group %}
+          <h3>Project Group: {{ group.group_name }}</h3>
+
+          <table>
+            <tr>
+              <th>Student Name</th>
+              <th>Email</th>
+            </tr>
+
+            {% for student in students %}
+            <tr>
+              <td>{{ student.name }}</td>
+              <td>{{ student.email }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="2">No students assigned</td>
+            </tr>
+            {% endfor %}
+          </table>
+
+          {% else %}
+          <p>No project group assigned yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleProfile() {
+        const card = document.getElementById("profileCard");
+        card.style.display = card.style.display === "block" ? "none" : "block";
+      }
+    </script>
+  </body>
+</html>

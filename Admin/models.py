@@ -18,12 +18,15 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
     department = models.CharField(max_length=50)
-    course = models.CharField(max_length=50)
-    course_batch = models.CharField(max_length=20)  # e.g. 2024-2026
+    course = models.CharField(max_length=10)  # BCA / MCA
+    academic_batch = models.CharField(max_length=20)  # previously course_batch
+    file_batch = models.CharField(max_length=5)  # A/B/C/D
     password = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.admission_number} - {self.name}"
+        return f"{self.name} - {self.email}"
+
+
     
     
 
@@ -32,7 +35,7 @@ class Admin(models.Model):
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=255)
     email = models.EmailField()
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(null=True)
 
     class Meta:
         db_table = "admin"   # VERY IMPORTANT
@@ -40,3 +43,10 @@ class Admin(models.Model):
     def __str__(self):
         return self.username
 
+class ProjectGroup(models.Model):
+    group_name = models.CharField(max_length=100)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+    students = models.ManyToManyField(Student)
+
+    def __str__(self):
+        return self.group_name
