@@ -70,11 +70,6 @@
         z-index: 100;
       }
 
-      .profile-box p {
-        margin: 6px 0;
-        font-size: 14px;
-      }
-
       /* ===== LAYOUT ===== */
       .container {
         display: flex;
@@ -93,7 +88,6 @@
         padding: 15px;
         color: white;
         text-decoration: none;
-        font-size: 15px;
       }
 
       .sidebar a:hover {
@@ -110,22 +104,38 @@
         background: white;
         padding: 25px;
         border-radius: 10px;
-        max-width: 700px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         margin-bottom: 25px;
       }
 
-      .card h3 {
-        margin-top: 0;
-      }
-
-      .member-list {
+      table {
+        width: 100%;
+        border-collapse: collapse;
         margin-top: 10px;
-        padding-left: 15px;
       }
 
-      .member-list li {
-        margin-bottom: 6px;
+      th {
+        background: #2c3e50;
+        color: white;
+        padding: 10px;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .upload-btn {
+        background: #1abc9c;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+      }
+
+      .deadline {
+        color: red;
+        font-weight: bold;
       }
     </style>
   </head>
@@ -145,58 +155,119 @@
           <p><b>Email:</b> {{ student.email }}</p>
           <p><b>Department:</b> {{ student.department }}</p>
           <p><b>Course:</b> {{ student.course }}</p>
-          <p><b>Batch:</b> {{ student.course_batch }}</p>
+          <p><b>Batch:</b> {{ student.academic_batch }}</p>
         </div>
 
         <a href="{% url 'student:logout' %}" class="logout">Logout</a>
       </div>
     </div>
 
-    <!-- ===== MAIN LAYOUT ===== -->
     <div class="container">
       <!-- SIDEBAR -->
       <div class="sidebar">
         <a href="#">Dashboard</a>
         <a href="#">My Profile</a>
         <a href="#">My Group</a>
-        <a href="#">Attendance</a>
-        <a href="#">Results</a>
       </div>
 
-      <!-- CONTENT -->
       <div class="content">
-        <!-- Welcome Card -->
+        <!-- Welcome -->
         <div class="card">
           <h2>Welcome, {{ student.name }}</h2>
-          <p>Welcome to <b>EduTrack</b> Student Portal.</p>
         </div>
 
-        <!-- Group Details -->
+        <!-- Group Section -->
         {% if group %}
         <div class="card">
           <h3>My Project Group</h3>
-
           <p><strong>Group Name:</strong> {{ group.group_name }}</p>
-          <p><strong>Faculty Name:</strong> {{ group.faculty.name }}</p>
-          <p><strong>Faculty Email:</strong> {{ group.faculty.email }}</p>
+          <p><strong>Faculty:</strong> {{ group.faculty.name }}</p>
 
-          <h4>Group Members:</h4>
-          <ul class="member-list">
+          <ul>
             {% for member in group.students.all %}
-            <li>{{ member.name }} ({{ member.email }})</li>
+            <li>{{ member.name }}</li>
             {% endfor %}
           </ul>
         </div>
-        {% else %}
-        <div class="card">
-          <h3>Group Information</h3>
-          <p>You are not assigned to any project group yet.</p>
-        </div>
         {% endif %}
+
+        <!-- Review Section -->
+        <div class="card">
+          <h3>Review Schedule</h3>
+
+          {% if reviews %}
+          <table>
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Topic</th>
+              <th>Status</th>
+              <th>Remarks</th>
+            </tr>
+
+            {% for review in reviews %}
+            <tr>
+              <td>{{ review.review_date }}</td>
+              <td>{{ review.review_time }}</td>
+              <td>{{ review.review_topic }}</td>
+              <td>{{ review.review_status }}</td>
+              <td>{{ review.remarks|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% else %}
+          <p>No review schedule available.</p>
+          {% endif %}
+        </div>
+
+        <!-- DOCUMENT SUBMISSION SECTION -->
+        <div class="card">
+          <h3>Document Submission</h3>
+
+          {% if schedules %}
+          <table>
+            <tr>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Deadline</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+
+            {% for schedule in schedules %}
+            <tr>
+              <td>{{ schedule.title }}</td>
+              <td>{{ schedule.document_type }}</td>
+              <td>{{ schedule.end_datetime }}</td>
+
+              <td>{{ schedule.status }}</td>
+
+              <td>
+                {% if schedule.submission %} Submitted on {{
+                schedule.submission.submitted_at }} <br />
+                Mark: {% if schedule.submission.mark %} {{
+                schedule.submission.mark }} {% else %} Not graded {% endif %} {%
+                elif schedule.status == "Active" %}
+                <a
+                  href="{% url 'student:upload_document' schedule.id %}"
+                  class="upload-btn"
+                >
+                  Upload
+                </a>
+                {% elif schedule.status == "Expired" %}
+                <span class="deadline">Deadline Passed</span>
+                {% else %} Not Open Yet {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% else %}
+          <p>No document schedules available.</p>
+          {% endif %}
+        </div>
       </div>
     </div>
 
-    <!-- ===== SCRIPT ===== -->
     <script>
       function toggleProfile() {
         const box = document.getElementById("profileBox");

@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Document Submission</title>
+  </head>
+  <body>
+    <h2>Document Submission</h2>
+
+    {% if message %}
+    <p style="color: red">{{ message }}</p>
+    {% endif %} {% for schedule in schedules %}
+    <hr />
+    <h3>{{ schedule.title }}</h3>
+    <p>{{ schedule.description }}</p>
+    <p><strong>Deadline:</strong> {{ schedule.end_datetime }}</p>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="schedule_id" value="{{ schedule.id }}" />
+      <input type="file" name="file" required />
+      <button type="submit">Upload</button>
+    </form>
+    {% endfor %}
+  </body>
+</html>

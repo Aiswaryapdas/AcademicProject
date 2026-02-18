@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Project Groups - EduTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar {
+        background-color: #1f2d3d;
+        color: white;
+        padding: 15px 30px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .container {
+        width: 90%;
+        margin: 30px auto;
+      }
+
+      h2 {
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #1f2d3d;
+        color: white;
+      }
+
+      th,
+      td {
+        padding: 12px 10px;
+        text-align: left;
+      }
+
+      th {
+        font-size: 14px;
+        letter-spacing: 0.5px;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #eee;
+      }
+
+      tbody tr:hover {
+        background-color: #f9f9f9;
+      }
+
+      .students-list span {
+        display: inline-block;
+        background: #e3f2fd;
+        color: #0d47a1;
+        padding: 5px 8px;
+        border-radius: 5px;
+        margin: 3px 3px 3px 0;
+        font-size: 13px;
+      }
+
+      .empty-message {
+        text-align: center;
+        padding: 30px;
+        color: #777;
+      }
+
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        padding: 10px 15px;
+        background-color: #1f2d3d;
+        color: white;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      .back-btn:hover {
+        background-color: #324a63;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">EduTrack - Project Groups</div>
+
+    <div class="container">
+      <h2>Project Group Details</h2>
+
+      <div class="card">
+        {% if groups %}
+        <table>
+          <thead>
+            <tr>
+              <th>Group Name</th>
+              <th>Faculty</th>
+              <th>Students</th>
+              <th>Total Students</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for group in groups %}
+            <tr>
+              <td>{{ group.group_name }}</td>
+              <td>{{ group.faculty.name }}</td>
+              <td>
+                <div class="students-list">
+                  {% for student in group.students.all %}
+                  <span>
+                    {{ student.name }} ({{ student.admission_number }})
+                  </span>
+                  {% empty %} No Students Assigned {% endfor %}
+                </div>
+              </td>
+              <td>{{ group.students.count }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty-message">No Project Groups Created Yet.</div>
+        {% endif %}
+      </div>
+
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn">
+        ← Back to Dashboard
+      </a>
+    </div>
+  </body>
+</html>

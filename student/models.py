@@ -1,3 +1,3 @@
 from django.db import models
+from Admin.models import SubmissionSchedule
 
-# Create your models here.

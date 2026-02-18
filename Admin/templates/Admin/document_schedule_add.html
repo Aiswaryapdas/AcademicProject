@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add Document Schedule</title>
+    <style>
+      /* Basic Reset */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f4f7f8;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 50px 20px;
+      }
+
+      .form-container {
+        background-color: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        color: #555;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="datetime-local"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #4a90e2;
+        box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        background-color: #4a90e2;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #357abd;
+      }
+
+      @media (max-width: 500px) {
+        .form-container {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Add Document Schedule</h2>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <label for="title">Title</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          placeholder="Enter document title"
+          value="{{ schedule.title|default:'' }}"
+          required
+        />
+
+        <label for="document_type">Document Type</label>
+        <select id="document_type" name="document_type">
+          <option
+            value="abstract"
+            {%
+            if
+            schedule.document_type=""
+            ="abstract"
+            %}selected{%
+            endif
+            %}
+          >
+            Abstract
+          </option>
+          <option
+            value="DFD"
+            {%
+            if
+            schedule.document_type=""
+            ="DFD"
+            %}selected{%
+            endif
+            %}
+          >
+            DFD
+          </option>
+          <option
+            value="report"
+            {%
+            if
+            schedule.document_type=""
+            ="report"
+            %}selected{%
+            endif
+            %}
+          >
+            Final Report
+          </option>
+          <option
+            value="presentation"
+            {%
+            if
+            schedule.document_type=""
+            ="presentation"
+            %}selected{%
+            endif
+            %}
+          >
+            Presentation
+          </option>
+        </select>
+
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          placeholder="Enter a brief description"
+        >
+{{ schedule.description|default:'' }}</textarea
+        >
+
+        <label for="start_datetime">Start Date & Time</label>
+        <input
+          type="datetime-local"
+          id="start_datetime"
+          name="start_datetime"
+          value="{{ schedule.start_datetime|date:'Y-m-d\\TH:i' }}"
+          required
+        />
+
+        <label for="end_datetime">End Date & Time</label>
+        <input
+          type="datetime-local"
+          id="end_datetime"
+          name="end_datetime"
+          value="{{ schedule.end_datetime|date:'Y-m-d\\TH:i' }}"
+          required
+        />
+
+        <label for="allowed_file_type">Allowed File Type</label>
+        <input
+          type="text"
+          id="allowed_file_type"
+          name="allowed_file_type"
+          placeholder="e.g., pdf, docx"
+          value="{{ schedule.allowed_file_type|default:'pdf' }}"
+        />
+
+        <label for="max_file_size">Max File Size (MB)</label>
+        <input
+          type="number"
+          id="max_file_size"
+          name="max_file_size"
+          min="1"
+          value="{{ schedule.max_file_size|default:'10' }}"
+        />
+
+        <button type="submit">Save Schedule</button>
+      </form>
+    </div>
+  </body>
+</html>

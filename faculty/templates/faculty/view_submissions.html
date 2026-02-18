@@ -1,0 +1,22 @@
+<h2>Submissions for {{ schedule.title }}</h2>
+
+{% for submission in submissions %}
+
+<p><strong>Student:</strong> {{ submission.student.name }}</p>
+<p><strong>Submitted on:</strong> {{ submission.submitted_at }}</p>
+
+<p>
+  <a href="{{ submission.file.url }}" target="_blank"> View Document </a>
+</p>
+
+<form method="POST" action="{% url 'faculty:add_mark' submission.id %}">
+  {% csrf_token %}
+  <input type="number" name="mark" value="{{ submission.mark }}" />
+  <button type="submit">Save Mark</button>
+</form>
+
+<hr />
+
+{% empty %}
+<p>No submissions yet.</p>
+{% endfor %}

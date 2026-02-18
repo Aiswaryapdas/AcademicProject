@@ -1,6 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from Admin.models import *
 from .forms import ProjectGroupForm
+from .models import ReviewSchedule
+from .forms import ReviewScheduleForm
+from .models import SubmissionSchedule
+from django.utils import timezone
+from Admin.models import DocumentSubmission
+
 
 
 
@@ -74,16 +80,18 @@ def student_register(request):
 
 
 def admin_dashboard(request):
-    # Optional: check admin session
-    if 'admin_id' not in request.session:
-        return redirect('guest:guest_login')
 
     faculty_count = Faculty.objects.count()
     student_count = Student.objects.count()
+    project_group_count = ProjectGroup.objects.count()
+
+   
 
     context = {
         'faculty_count': faculty_count,
-        'student_count': student_count
+        'student_count': student_count,
+        'project_group_count': project_group_count,
+        
     }
 
     return render(request, 'Admin/admin_dashboard.html', context)
@@ -123,3 +131,143 @@ def create_project_group(request):
         form = ProjectGroupForm()
 
     return render(request, 'Admin/assign_group.html', {'form': form})
+
+def review_schedule(request):
+    reviews = ReviewSchedule.objects.all().order_by('review_date', 'review_time')
+    context = {'reviews': reviews}
+    return render(request, 'Admin/review_schedule.html', context)
+
+def review_schedule_add(request):
+    if request.method == 'POST':
+        form = ReviewScheduleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('WAdmin:review_schedule')
+    else:
+        form = ReviewScheduleForm()
+    return render(request, 'Admin/review_schedule_add.html', {'form': form})
+
+def review_schedule_edit(request, id):
+    schedule = get_object_or_404(ReviewSchedule, id=id)
+
+    if request.method == 'POST':
+        form = ReviewScheduleForm(request.POST, instance=schedule)
+        if form.is_valid():
+            form.save()
+            return redirect('WAdmin:review_schedule')
+    else:
+        form = ReviewScheduleForm(instance=schedule)
+
+    return render(request, 'Admin/review_schedule_add.html', {'form': form})
+
+def review_schedule_delete(request, id):
+    schedule = get_object_or_404(ReviewSchedule, id=id)
+    schedule.delete()
+    return redirect('WAdmin:review_schedule')
+
+def view_project_groups(request):
+    groups = ProjectGroup.objects.all()
+    return render(request, 'Admin/view_project_group.html', {'groups': groups})
+
+def faculty_review_schedule(request):
+    if 'faculty_id' not in request.session:
+        return redirect('guest:guest_login')
+
+    reviews = ReviewSchedule.objects.all().order_by('review_date', 'review_time')
+    context = {'reviews': reviews}
+    return render(request, 'Admin/faculty_review_schedule.html', context)
+
+
+# Student view
+def student_review_schedule(request):
+    if 'student_id' not in request.session:
+        return redirect('guest:guest_login')
+
+    reviews = ReviewSchedule.objects.all().order_by('review_date', 'review_time')
+    context = {'reviews': reviews}
+    return render(request, 'Admin/student_review_schedule.html', context)
+
+def admin_view_submissions(request):
+    submissions = DocumentSubmission.objects.all()
+    return render(request, 'Admin/view_all_submissions.html', {
+        'submissions': submissions
+    })
+
+from django.shortcuts import get_object_or_404
+
+# ===============================
+# DOCUMENT SCHEDULE (ADMIN)
+# ===============================
+
+# LIST PAGE
+def document_schedule(request):
+    schedules = SubmissionSchedule.objects.all().order_by('-created_at')
+    now = timezone.now()
+
+    for schedule in schedules:
+        if schedule.start_datetime > now:
+            schedule.status = "Upcoming"
+        elif schedule.end_datetime < now:
+            schedule.status = "Expired"
+        else:
+            schedule.status = "Active"
+
+    return render(request, 'Admin/document_submission.html', {
+        'schedules': schedules
+    })
+
+
+# ADD PAGE
+def document_schedule_add(request):
+    if request.method == 'POST':
+        SubmissionSchedule.objects.create(
+            title=request.POST.get('title'),
+            document_type=request.POST.get('document_type'),
+            description=request.POST.get('description'),
+            start_datetime=request.POST.get('start_datetime'),
+            end_datetime=request.POST.get('end_datetime'),
+            allowed_file_type=request.POST.get('allowed_file_type'),
+            max_file_size=request.POST.get('max_file_size'),
+           
+        )
+        return redirect('WAdmin:document_schedule')
+
+    return render(request, 'Admin/document_schedule_add.html')
+
+
+# EDIT
+def document_schedule_edit(request, id):
+    schedule = get_object_or_404(SubmissionSchedule, id=id)
+
+    if request.method == 'POST':
+        schedule.title = request.POST.get('title')
+        schedule.document_type = request.POST.get('document_type')
+        schedule.description = request.POST.get('description')
+        schedule.start_datetime = request.POST.get('start_datetime')
+        schedule.end_datetime = request.POST.get('end_datetime')
+        schedule.allowed_file_type = request.POST.get('allowed_file_type')
+        schedule.max_file_size = request.POST.get('max_file_size')
+        schedule.max_attempts = request.POST.get('max_attempts')
+        schedule.save()
+        return redirect('WAdmin:document_schedule')
+
+    return render(request, 'Admin/document_schedule_add.html', {
+        'schedule': schedule
+    })
+
+
+# DELETE
+def document_schedule_delete(request, id):
+    schedule = get_object_or_404(SubmissionSchedule, id=id)
+    schedule.delete()
+    return redirect('WAdmin:document_schedule')
+
+
+def all_submissions(request):
+    submissions = DocumentSubmission.objects.select_related(
+        'student', 'schedule'
+    )
+
+    return render(request, 'Admin/all_submissions.html', {
+        'submissions': submissions
+    })

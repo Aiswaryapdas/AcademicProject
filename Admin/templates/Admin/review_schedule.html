@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Project Review Schedule</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        margin-top: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      table th,
+      table td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+      }
+      table th {
+        background-color: #007bff;
+        color: #fff;
+      }
+      .status-Pending {
+        background-color: #ffeeba;
+        color: #856404;
+        font-weight: bold;
+      }
+      .status-Completed {
+        background-color: #c3e6cb;
+        color: #155724;
+        font-weight: bold;
+      }
+      .status-Cancelled {
+        background-color: #f5c6cb;
+        color: #721c24;
+        font-weight: bold;
+      }
+      .action-buttons a {
+        margin: 0 5px;
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: #fff;
+      }
+      .edit-btn {
+        background-color: #28a745;
+      }
+      .delete-btn {
+        background-color: #dc3545;
+      }
+      .add-btn {
+        display: inline-block;
+        margin-bottom: 10px;
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .no-data {
+        text-align: center;
+        font-size: 18px;
+        color: #666;
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Project Review Schedule</h2>
+
+    <a href="{% url 'WAdmin:review_schedule_add' %}" class="add-btn"
+      >+ Add New Review</a
+    >
+
+    {% if reviews %}
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Topic</th>
+        <th>Status</th>
+        <th>Remarks</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Actions</th>
+      </tr>
+      {% for review in reviews %}
+      <tr>
+        <td>{{ review.review_date }}</td>
+        <td>{{ review.review_time }}</td>
+        <td>{{ review.review_topic }}</td>
+        <td class="status-{{ review.review_status }}">
+          {{ review.review_status }}
+        </td>
+        <td>{{ review.remarks|default:"-" }}</td>
+        <td>{{ review.created_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ review.updated_at|date:"Y-m-d H:i" }}</td>
+        <td class="action-buttons">
+          <a
+            href="{% url 'WAdmin:review_schedule_edit' review.id %}"
+            class="edit-btn"
+            >Edit</a
+          >
+          <a
+            href="{% url 'WAdmin:review_schedule_delete' review.id %}"
+            class="delete-btn"
+            onclick="return confirm('Are you sure?');"
+            >Delete</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <p class="no-data">No review scheduled yet.</p>
+    {% endif %}
+  </body>
+</html>

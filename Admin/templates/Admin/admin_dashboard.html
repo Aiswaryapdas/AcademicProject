@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>EduTrack | Admin Dashboard</title>
 
-    <!-- Font Awesome Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -17,7 +16,6 @@
         background-color: #f4f6f9;
       }
 
-      /* TOP NAVBAR */
       .topbar {
         background: #1e293b;
         color: white;
@@ -27,19 +25,12 @@
         align-items: center;
       }
 
-      .topbar h2 {
-        margin: 0;
-        font-weight: 600;
-        letter-spacing: 1px;
-      }
-
       .logout-btn {
         background: #ef4444;
         border: none;
         padding: 8px 16px;
         border-radius: 6px;
         color: white;
-        font-size: 14px;
         cursor: pointer;
       }
 
@@ -47,14 +38,12 @@
         background: #dc2626;
       }
 
-      /* MAIN CONTAINER */
       .container {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: auto;
         padding: 40px 20px;
       }
 
-      /* COUNT CARDS */
       .cards {
         display: flex;
         gap: 30px;
@@ -64,45 +53,39 @@
 
       .card {
         background: white;
-        width: 280px;
+        width: 260px;
         padding: 25px;
         border-radius: 14px;
         text-align: center;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
       }
 
-      .card i {
-        font-size: 40px;
-        color: #2563eb;
-        margin-bottom: 10px;
-      }
-
-      .card h2 {
-        margin: 10px 0;
+      .card h3 {
+        margin: 0;
         color: #1f2937;
       }
-
-      .card h1 {
-        margin: 0;
-        font-size: 36px;
+      .card p {
+        font-size: 28px;
         color: #2563eb;
       }
 
-      /* ACTION ICONS */
       .actions {
         display: flex;
-        gap: 30px;
+        gap: 25px;
+        flex-wrap: wrap;
         margin-top: 20px;
+        margin-bottom: 60px;
       }
 
       .action-card {
         background: white;
         width: 200px;
-        padding: 25px;
+        padding: 20px;
         text-align: center;
         border-radius: 14px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-        cursor: pointer;
+        text-decoration: none;
+        color: black;
         transition: 0.3s;
       }
 
@@ -111,58 +94,134 @@
       }
 
       .action-card i {
-        font-size: 36px;
+        font-size: 32px;
         color: #16a34a;
         margin-bottom: 10px;
       }
 
-      .action-card p {
-        margin: 0;
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      }
+
+      thead {
+        background: #2563eb;
+        color: white;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .btn-edit {
+        background: #16a34a;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .btn-delete {
+        background: #ef4444;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .status-upcoming {
+        color: #f59e0b;
         font-weight: 600;
-        color: #1f2937;
+      }
+      .status-active {
+        color: #16a34a;
+        font-weight: 600;
+      }
+      .status-expired {
+        color: #ef4444;
+        font-weight: 600;
+      }
+
+      .message-box {
+        background: #16a34a;
+        color: white;
+        padding: 12px;
+        border-radius: 8px;
+        margin: 20px;
       }
     </style>
   </head>
 
   <body>
-    <!-- TOP BAR -->
     <div class="topbar">
-      <h2>EduTrack</h2>
+      <h2>EduTrack Admin</h2>
       <button class="logout-btn">Logout</button>
     </div>
 
-    <!-- CONTENT -->
+    {% if messages %} {% for message in messages %}
+    <div class="message-box">{{ message }}</div>
+    {% endfor %} {% endif %}
+
     <div class="container">
-      <a href="{% url 'WAdmin:faculty_list' %}">
+      <!-- COUNT CARDS -->
+      <div class="cards">
         <div class="card">
           <h3>Total Faculties</h3>
           <p>{{ faculty_count }}</p>
         </div>
-      </a>
 
-      <a href="{% url 'WAdmin:student_list' %}">
         <div class="card">
           <h3>Total Students</h3>
           <p>{{ student_count }}</p>
         </div>
-      </a>
 
-      <!-- ACTION ICONS -->
+        <div class="card">
+          <h3>Total Project Groups</h3>
+          <p>{{ project_group_count }}</p>
+        </div>
+      </div>
+
+      <!-- ACTION CARDS -->
       <div class="actions">
         <a href="{% url 'WAdmin:faculty_register' %}" class="action-card">
           <i class="fa-solid fa-user-tie"></i>
-          <span>Add Faculty</span>
+          <p>Add Faculty</p>
         </a>
 
         <a href="{% url 'WAdmin:student_register' %}" class="action-card">
           <i class="fa-solid fa-user-graduate"></i>
-          <span>Add Student</span>
+          <p>Add Student</p>
         </a>
-        <div class="card">
-          <a href="{% url 'WAdmin:create_project_group' %}">
-            Create Project Group
-          </a>
-        </div>
+
+        <a href="{% url 'WAdmin:create_project_group' %}" class="action-card">
+          <i class="fa-solid fa-users"></i>
+          <p>Create Project Group</p>
+        </a>
+
+        <a href="{% url 'WAdmin:review_schedule' %}" class="action-card">
+          <i class="fa-solid fa-calendar-check"></i>
+          <p>Review Schedule</p>
+        </a>
+
+        <!-- FIXED HERE -->
+        <a href="{% url 'WAdmin:document_schedule' %}" class="action-card">
+          <i class="fa-solid fa-file-arrow-up"></i>
+          <p>Document Submission</p>
+        </a>
+
+        <a href="{% url 'WAdmin:admin_view_submissions' %}" class="action-card">
+          <i class="fa-solid fa-folder-open"></i>
+          <p>View Submissions</p>
+        </a>
       </div>
     </div>
   </body>

@@ -1,0 +1,31 @@
+{% for schedule in schedules %}
+
+<h4>{{ schedule.title }}</h4>
+<p>Start: {{ schedule.start_datetime }}</p>
+<p>End: {{ schedule.end_datetime }}</p>
+
+{% if schedule.status == "Upcoming" %}
+<p style="color: orange">Submission not started yet.</p>
+
+{% elif schedule.status == "Active" %}
+<p style="color: green">Submission is open. Meet the deadline.</p>
+
+{% elif schedule.status == "Expired" %}
+<p style="color: red">Deadline has passed.</p>
+{% endif %} {% if schedule.submission %}
+<p>Submitted on: {{ schedule.submission.submitted_at }}</p>
+
+{% if schedule.submission.mark %}
+<p>Mark: {{ schedule.submission.mark }}</p>
+{% else %}
+<p>Not graded yet</p>
+{% endif %} {% endif %} {% if schedule.status == "Active" and not
+schedule.submission %}
+<a href="{% url 'student:upload_document' schedule.id %}">
+  <button>Upload</button>
+</a>
+{% endif %}
+
+<hr />
+
+{% endfor %}

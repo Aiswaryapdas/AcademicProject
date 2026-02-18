@@ -1,6 +1,5 @@
 from django import forms
-from .models import ProjectGroup, Faculty, Student
-
+from .models import ProjectGroup, Faculty, Student, ReviewSchedule
 
 class ProjectGroupForm(forms.ModelForm):
     class Meta:
@@ -24,3 +23,15 @@ class ProjectGroupForm(forms.ModelForm):
         # Filter directly (no if condition)
         self.fields['faculty'].queryset = Faculty.objects.exclude(id__in=assigned_faculty)
         self.fields['students'].queryset = Student.objects.exclude(id__in=assigned_students)
+
+class ReviewScheduleForm(forms.ModelForm):
+    class Meta:
+        model = ReviewSchedule
+        fields = '__all__'
+        widgets = {
+            'review_topic': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter review topic'}),
+            'review_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'review_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'review_status': forms.Select(attrs={'class': 'form-control'}),
+            'remarks': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Optional remarks'}),
+        }

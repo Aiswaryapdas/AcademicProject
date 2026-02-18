@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% if form.instance.pk %}Edit{% else %}Add{% endif %} Review Schedule
+    </title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        padding: 20px;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      form {
+        background-color: #fff;
+        max-width: 500px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      div {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      a {
+        margin-left: 10px;
+        text-decoration: none;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>
+      {% if form.instance.pk %}Edit{% else %}Add{% endif %} Review Schedule
+    </h2>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div>{{ form.review_topic.label_tag }} {{ form.review_topic }}</div>
+
+      <div>{{ form.review_date.label_tag }} {{ form.review_date }}</div>
+
+      <div>{{ form.review_time.label_tag }} {{ form.review_time }}</div>
+
+      <div>{{ form.review_status.label_tag }} {{ form.review_status }}</div>
+
+      <div>{{ form.remarks.label_tag }} {{ form.remarks }}</div>
+
+      <button type="submit">
+        {% if form.instance.pk %}Update{% else %}Save{% endif %}
+      </button>
+      <a href="{% url 'WAdmin:review_schedule' %}">Back</a>
+    </form>
+  </body>
+</html>

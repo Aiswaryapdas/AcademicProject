@@ -30,12 +30,10 @@
       .app-name {
         font-size: 22px;
         font-weight: bold;
-        letter-spacing: 1px;
       }
 
       .page-title {
         font-size: 18px;
-        opacity: 0.9;
       }
 
       .right-top {
@@ -79,17 +77,6 @@
         display: none;
       }
 
-      .profile-card h3 {
-        margin: 0;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 8px;
-      }
-
-      .profile-card p {
-        margin: 8px 0;
-        font-size: 14px;
-      }
-
       .container {
         display: flex;
       }
@@ -106,7 +93,6 @@
         padding: 12px 20px;
         color: white;
         text-decoration: none;
-        font-size: 15px;
       }
 
       .sidebar a:hover {
@@ -123,6 +109,7 @@
         border-radius: 6px;
         padding: 20px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
       }
 
       table {
@@ -134,13 +121,21 @@
       th,
       td {
         padding: 10px;
-        text-align: left;
         border-bottom: 1px solid #ddd;
       }
 
       th {
         background-color: #2f4357;
         color: white;
+      }
+
+      .give-mark-btn {
+        background-color: #1abc9c;
+        border: none;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -171,7 +166,6 @@
       </div>
     </div>
 
-    <!-- BODY -->
     <div class="container">
       <!-- SIDEBAR -->
       <div class="sidebar">
@@ -179,13 +173,13 @@
         <a href="#">My Profile</a>
       </div>
 
-      <!-- MAIN CONTENT -->
       <div class="content">
+        <!-- GROUP SECTION -->
         <div class="card">
-          <h2>Welcome, {{ faculty.name }}</h2>
+          <h2>Project Group</h2>
 
           {% if group %}
-          <h3>Project Group: {{ group.group_name }}</h3>
+          <h3>{{ group.group_name }}</h3>
 
           <table>
             <tr>
@@ -207,6 +201,78 @@
 
           {% else %}
           <p>No project group assigned yet.</p>
+          {% endif %}
+        </div>
+
+        <!-- REVIEW SECTION -->
+        <div class="card">
+          <h2>Review Schedule</h2>
+
+          {% if reviews %}
+          <table>
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Topic</th>
+              <th>Status</th>
+              <th>Remarks</th>
+            </tr>
+
+            {% for review in reviews %}
+            <tr>
+              <td>{{ review.review_date }}</td>
+              <td>{{ review.review_time }}</td>
+              <td>{{ review.review_topic }}</td>
+              <td>{{ review.review_status }}</td>
+              <td>{{ review.remarks|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% else %}
+          <p>No review schedule available.</p>
+          {% endif %}
+        </div>
+
+        <!-- DOCUMENT SUBMISSIONS SECTION -->
+        <div class="card">
+          <h2>Document Submissions</h2>
+
+          {% if submissions %}
+          <table>
+            <tr>
+              <th>Student</th>
+              <th>Schedule</th>
+              <th>Submitted At</th>
+              <th>File</th>
+              <th>Mark</th>
+              <th>Action</th>
+            </tr>
+
+            {% for submission in submissions %}
+            <tr>
+              <td>{{ submission.student.name }}</td>
+              <td>{{ submission.schedule.title }}</td>
+              <td>{{ submission.submitted_at }}</td>
+              <td>
+                <a href="{{ submission.file.url }}" target="_blank">
+                  View File
+                </a>
+              </td>
+              <td>
+                {% if submission.mark %} {{ submission.mark }} {% else %} Not
+                graded {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'faculty:give_mark' submission.id %}">
+                  <button class="give-mark-btn">Give Mark</button>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+
+          {% else %}
+          <p>No document submissions yet.</p>
           {% endif %}
         </div>
       </div>

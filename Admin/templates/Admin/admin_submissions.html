@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <title>All Submissions</title>
+  </head>
+  <body>
+    <h2>All Student Submissions</h2>
+
+    <table border="1">
+      <tr>
+        <th>Student</th>
+        <th>Schedule</th>
+        <th>File</th>
+        <th>Uploaded At</th>
+      </tr>
+
+      {% for submission in submissions %}
+      <tr>
+        <td>{{ submission.student.name }}</td>
+        <td>{{ submission.schedule.title }}</td>
+        <td>
+          <a href="{{ submission.file.url }}" target="_blank">Download</a>
+        </td>
+        <td>{{ submission.uploaded_at }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

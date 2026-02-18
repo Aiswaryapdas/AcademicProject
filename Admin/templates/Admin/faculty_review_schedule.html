@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Review Schedule - Faculty</title>
+<style>
+body { font-family: Arial; background-color: #f0f0f0; padding: 20px; }
+h2 { text-align:center; color:#333; }
+table { width:80%; margin:20px auto; border-collapse: collapse; background:#fff; }
+th, td { padding:10px; border:1px solid #ccc; text-align:center; }
+th { background:#007bff; color:#fff; }
+.status-Pending { color: orange; font-weight: bold; }
+.status-Completed { color: green; font-weight: bold; }
+.status-Cancelled { color: red; font-weight: bold; }
+</style>
+</head>
+<body>
+<h2>Review Schedule</h2>
+{% if reviews %}
+<table>
+<tr>
+<th>Date</th>
+<th>Time</th>
+<th>Topic</th>
+<th>Status</th>
+<th>Remarks</th>
+</tr>
+{% for review in reviews %}
+<tr>
+<td>{{ review.review_date }}</td>
+<td>{{ review.review_time }}</td>
+<td>{{ review.review_topic }}</td>
+<td class="status-{{ review.review_status }}">{{ review.review_status }}</td>
+<td>{{ review.remarks|default:"-" }}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<p style="text-align:center;">No review scheduled yet.</p>
+{% endif %}
+</body>
+</html>
