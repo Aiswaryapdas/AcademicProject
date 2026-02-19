@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <title>My Attendance</title>
+    <style>
+      body {
+        font-family: Arial;
+        background: #f4f6f8;
+        padding: 20px;
+      }
+
+      h2 {
+        text-align: center;
+      }
+
+      .percentage-box {
+        text-align: center;
+        font-size: 20px;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+      }
+
+      th {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .present {
+        background: #1abc9c;
+        color: white;
+      }
+
+      .absent {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .empty {
+        background: #ecf0f1;
+      }
+
+      .back {
+        margin-top: 20px;
+        display: inline-block;
+        padding: 8px 15px;
+        background: #34495e;
+        color: white;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>{{ month }} {{ year }} Attendance</h2>
+
+    <div class="percentage-box">Total Attendance: {{ percentage }}%</div>
+
+    <table>
+      <tr>
+        <th>Period</th>
+        {% for day in days_range %}
+        <th>{{ day }}</th>
+        {% endfor %}
+      </tr>
+
+      {% for period, row in attendance_display.items %}
+      <tr>
+        <td><b>Period {{ period }}</b></td>
+
+        {% for value, css in row %}
+        <td class="{{ css }}">{{ value }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+
+    <br />
+    <a href="/student/dashboard/" class="back">Back to Dashboard</a>
+  </body>
+</html>

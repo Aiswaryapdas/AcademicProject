@@ -277,6 +277,16 @@
         </div>
       </div>
     </div>
+    <!-- ATTENDANCE ACTION CARD -->
+    <div
+      class="card"
+      style="text-align: center; cursor: pointer"
+      onclick="window.location.href='{% url 'faculty:attendance_mark' %}'"
+    >
+      <div style="font-size: 40px; color: #1abc9c; margin-bottom: 10px">📋</div>
+      <h2>Attendance</h2>
+      <p>Mark or view your students' attendance</p>
+    </div>
 
     <script>
       function toggleProfile() {

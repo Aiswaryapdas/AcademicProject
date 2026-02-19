@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <title>All Students Attendance</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+        background: #f4f6f8;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 5px;
+        text-align: center;
+      }
+
+      th {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .present {
+        background: #2ecc71;
+        color: white;
+      }
+      .absent {
+        background: #e74c3c;
+        color: white;
+      }
+      .empty {
+        background: #ecf0f1;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>{{ month }} {{ year }} - All Students Attendance</h2>
+
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Present</th>
+        <th>Absent</th>
+
+        {% for day in days_range %}
+        <th>{{ day }}</th>
+        {% endfor %}
+      </tr>
+
+      {% for student in attendance_data %}
+      <tr>
+        <td>{{ student.student_id }}</td>
+        <td>{{ student.name }}</td>
+        <td>{{ student.present }}</td>
+        <td>{{ student.absent }}</td>
+
+        {% for value, css in student.attendance_display %}
+        <td class="{{ css }}">{{ value }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

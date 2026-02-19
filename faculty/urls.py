@@ -12,6 +12,7 @@ urlpatterns = [
 path('add-mark/<int:submission_id>/',
      views.add_mark,
      name='add_mark'),
+     path('attendance/', views.attendance_mark, name='attendance_mark'),
 
     path('logout/', views.logout_view, name='logout'),
 ]

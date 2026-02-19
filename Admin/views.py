@@ -271,3 +271,62 @@ def all_submissions(request):
     return render(request, 'Admin/all_submissions.html', {
         'submissions': submissions
     })
+
+from datetime import datetime
+from calendar import monthrange
+from django.shortcuts import render
+from Admin.models import Student
+from faculty.models import Attendance
+
+def admin_attendance(request):
+    if 'admin_id' not in request.session:
+        return redirect('guest:guest_login')
+
+    today = datetime.today()
+    year = today.year
+    month = today.month
+
+    days_in_month = monthrange(year, month)[1]
+    days_range = range(1, days_in_month + 1)
+
+    students = Student.objects.all()
+
+    attendance_data = []
+
+    for student in students:
+        records = Attendance.objects.filter(
+            student=student,
+            date__year=year,
+            date__month=month
+        )
+
+        attendance_display = []
+
+        present_count = records.filter(status="Present").count()
+        absent_count = records.filter(status="Absent").count()
+
+        for day in days_range:
+            record = records.filter(date__day=day).first()
+
+            if record:
+                if record.status == "Present":
+                    attendance_display.append(("P", "present"))
+                else:
+                    attendance_display.append(("A", "absent"))
+            else:
+                attendance_display.append(("-", "empty"))
+
+        attendance_data.append({
+            "student_id": student.id,
+            "name": student.name,
+            "present": present_count,
+            "absent": absent_count,
+            "attendance_display": attendance_display
+        })
+
+    return render(request, "Admin/admin_attendance.html", {
+        "attendance_data": attendance_data,
+        "days_range": days_range,
+        "month": today.strftime("%B"),
+        "year": year,
+    })

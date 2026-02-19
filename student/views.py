@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.contrib import messages
 from Admin.models import Student, ProjectGroup, ReviewSchedule, SubmissionSchedule,DocumentSubmission
+from faculty.models import Attendance
+from datetime import datetime
+from calendar import monthrange
+
 def student_dashboard(request):
     student = Student.objects.get(id=request.session['student_id'])
 
@@ -118,3 +122,62 @@ def upload_document(request, id):
         'schedule': schedule
     })
 
+
+
+def student_attendance(request):
+    if 'student_id' not in request.session:
+        return redirect('guest:guest_login')
+
+    student = Student.objects.get(id=request.session['student_id'])
+
+    today = datetime.today()
+    year = today.year
+    month = today.month
+
+    records = Attendance.objects.filter(
+        student=student,
+        date__year=year,
+        date__month=month
+    ).order_by('date')
+
+    # Count attendance
+    total_days = records.count()
+    present_days = records.filter(status="Present").count()
+
+    total_periods = total_days * 5
+    present_periods = present_days * 5
+
+    percentage = 0
+    if total_periods > 0:
+        percentage = round((present_periods / total_periods) * 100, 2)
+
+    # Days in current month
+    days_in_month = monthrange(year, month)[1]
+    days_range = range(1, days_in_month + 1)
+    periods = range(1, 6)  # 5 periods
+
+    # Create clean display structure (NO template logic needed)
+    attendance_display = {}
+
+    for period in periods:
+        attendance_display[period] = []
+
+        for day in days_range:
+            record = records.filter(date__day=day).first()
+
+            if record:
+                if record.status == "Present":
+                    attendance_display[period].append(("P", "present"))
+                else:
+                    attendance_display[period].append(("A", "absent"))
+            else:
+                attendance_display[period].append(("-", "empty"))
+
+    return render(request, 'student/attendance.html', {
+        'student': student,
+        'days_range': days_range,
+        'attendance_display': attendance_display,
+        'percentage': percentage,
+        'month': today.strftime("%B"),
+        'year': year,
+    })

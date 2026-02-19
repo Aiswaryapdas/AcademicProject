@@ -22,7 +22,8 @@ path('document-schedule/', views.document_schedule, name='document_schedule'),
 path('document-schedule/add/', views.document_schedule_add, name='document_schedule_add'),
 path('document-schedule/edit/<int:id>/', views.document_schedule_edit, name='document_schedule_edit'),
 path('document-schedule/delete/<int:id>/', views.document_schedule_delete, name='document_schedule_delete'),
-
+ path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('attendance/', views.admin_attendance, name='admin_attendance'),
 
 
 

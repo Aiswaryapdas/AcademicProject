@@ -158,6 +158,33 @@
         border-radius: 8px;
         margin: 20px;
       }
+      .card {
+        display: inline-block;
+        width: 150px;
+        padding: 20px;
+        margin: 10px;
+        background: #2c3e50;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        background: #34495e;
+        transform: scale(1.05);
+      }
+
+      .icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+      }
+
+      .title {
+        font-size: 16px;
+        font-weight: bold;
+      }
     </style>
   </head>
 
@@ -221,6 +248,10 @@
         <a href="{% url 'WAdmin:admin_view_submissions' %}" class="action-card">
           <i class="fa-solid fa-folder-open"></i>
           <p>View Submissions</p>
+        </a>
+        <a href="{% url 'WAdmin:admin_attendance' %}" class="card">
+          <div class="icon">📊</div>
+          <div class="title">Attendance</div>
         </a>
       </div>
     </div>
