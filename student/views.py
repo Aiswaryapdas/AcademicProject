@@ -7,34 +7,25 @@ from datetime import datetime
 from calendar import monthrange
 
 def student_dashboard(request):
+    if 'student_id' not in request.session:
+        return redirect('guest:guest_login')
+
     student = Student.objects.get(id=request.session['student_id'])
 
     # Project group
     group = ProjectGroup.objects.filter(students=student).first()
 
-    # Reviews (simple for now)
+    # Reviews
     reviews = ReviewSchedule.objects.all()
 
-    now = timezone.now()
-
+    # Submission schedules
     schedules = SubmissionSchedule.objects.all()
 
     for schedule in schedules:
-        # ---- STATUS CALCULATION ----
-        if now < schedule.start_datetime:
-            schedule.status = "Upcoming"
-        elif schedule.start_datetime <= now <= schedule.end_datetime:
-            schedule.status = "Active"
-        else:
-            schedule.status = "Expired"
-
-        # ---- CHECK SUBMISSION ----
-        submission = DocumentSubmission.objects.filter(
+        schedule.submission = DocumentSubmission.objects.filter(
             student=student,
             schedule=schedule
         ).first()
-
-        schedule.submission = submission
 
     context = {
         'student': student,
@@ -50,23 +41,15 @@ def student_logout(request):
     return redirect('guest:guest_login')
 
 
-
 def student_document_schedules(request):
+    if 'student_id' not in request.session:
+        return redirect('guest:guest_login')
+
+    student = Student.objects.get(id=request.session['student_id'])
+
     schedules = SubmissionSchedule.objects.all()
-    now = timezone.now()
-    student = request.user.student
 
     for schedule in schedules:
-
-        # Check status
-        if schedule.start_datetime > now:
-            schedule.status = "Upcoming"
-        elif schedule.end_datetime < now:
-            schedule.status = "Expired"
-        else:
-            schedule.status = "Active"
-
-        # Get student's submission
         schedule.submission = DocumentSubmission.objects.filter(
             student=student,
             schedule=schedule
@@ -75,11 +58,12 @@ def student_document_schedules(request):
     return render(request, 'Student/student_document_schedules.html', {
         'schedules': schedules
     })
-
 def upload_document(request, id):
     schedule = get_object_or_404(SubmissionSchedule, id=id)
-    student = request.user.student
-    now = timezone.now()
+    student = Student.objects.get(id=request.session['student_id'])
+
+    now = timezone.localtime()
+
 
     # 🔒 1. Check if submission not started yet
     if now < schedule.start_datetime:

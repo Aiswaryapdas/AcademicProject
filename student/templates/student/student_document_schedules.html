@@ -1,31 +1,68 @@
 {% for schedule in schedules %}
 
-<h4>{{ schedule.title }}</h4>
-<p>Start: {{ schedule.start_datetime }}</p>
-<p>End: {{ schedule.end_datetime }}</p>
+<div
+  style="
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  "
+>
+  <h4>{{ schedule.title }}</h4>
 
-{% if schedule.status == "Upcoming" %}
-<p style="color: orange">Submission not started yet.</p>
+  <p>
+    <strong>Start:</strong> {{ schedule.start_datetime|date:"d M Y h:i A" }}
+  </p>
+  <p><strong>End:</strong> {{ schedule.end_datetime|date:"d M Y h:i A" }}</p>
 
-{% elif schedule.status == "Active" %}
-<p style="color: green">Submission is open. Meet the deadline.</p>
+  <!-- STATUS SECTION -->
+  {% if schedule.status == "Upcoming" %}
+  <p style="color: orange; font-weight: bold">
+    Submission has not started yet.
+  </p>
 
-{% elif schedule.status == "Expired" %}
-<p style="color: red">Deadline has passed.</p>
-{% endif %} {% if schedule.submission %}
-<p>Submitted on: {{ schedule.submission.submitted_at }}</p>
+  {% elif schedule.status == "Active" %}
+  <p style="color: green; font-weight: bold">
+    Submission is open. Please upload before deadline.
+  </p>
 
-{% if schedule.submission.mark %}
-<p>Mark: {{ schedule.submission.mark }}</p>
-{% else %}
-<p>Not graded yet</p>
-{% endif %} {% endif %} {% if schedule.status == "Active" and not
-schedule.submission %}
-<a href="{% url 'student:upload_document' schedule.id %}">
-  <button>Upload</button>
-</a>
-{% endif %}
+  {% elif schedule.status == "Expired" %}
+  <p style="color: red; font-weight: bold">Deadline has passed.</p>
+  {% endif %}
 
-<hr />
+  <!-- SUBMISSION DETAILS -->
+  {% if schedule.submission %}
+  <hr />
+  <p>
+    <strong>Submitted on:</strong>
+    {{ schedule.submission.submitted_at|date:"d M Y h:i A" }}
+  </p>
 
+  {% if schedule.submission.mark %}
+  <p><strong>Mark:</strong> {{ schedule.submission.mark }}</p>
+  {% else %}
+  <p><strong>Status:</strong> Not graded yet</p>
+  {% endif %} {% endif %}
+
+  <!-- UPLOAD BUTTON -->
+  {% if schedule.status == "Active" and not schedule.submission %}
+  <hr />
+  <a href="{% url 'student:upload_document' schedule.id %}">
+    <button
+      style="
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      "
+    >
+      Upload Document
+    </button>
+  </a>
+  {% endif %}
+</div>
+
+{% empty %}
+<p>No submission schedules available.</p>
 {% endfor %}

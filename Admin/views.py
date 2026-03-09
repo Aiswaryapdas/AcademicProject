@@ -6,7 +6,7 @@ from .forms import ReviewScheduleForm
 from .models import SubmissionSchedule
 from django.utils import timezone
 from Admin.models import DocumentSubmission
-
+from django.utils.dateparse import parse_datetime
 
 
 
@@ -202,15 +202,6 @@ from django.shortcuts import get_object_or_404
 # LIST PAGE
 def document_schedule(request):
     schedules = SubmissionSchedule.objects.all().order_by('-created_at')
-    now = timezone.now()
-
-    for schedule in schedules:
-        if schedule.start_datetime > now:
-            schedule.status = "Upcoming"
-        elif schedule.end_datetime < now:
-            schedule.status = "Expired"
-        else:
-            schedule.status = "Active"
 
     return render(request, 'Admin/document_submission.html', {
         'schedules': schedules
@@ -218,24 +209,38 @@ def document_schedule(request):
 
 
 # ADD PAGE
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
+
 def document_schedule_add(request):
+
     if request.method == 'POST':
+
+        start_dt = parse_datetime(request.POST.get('start_datetime'))
+        end_dt = parse_datetime(request.POST.get('end_datetime'))
+
+        # Convert to timezone aware
+        start_dt = timezone.make_aware(start_dt)
+        end_dt = timezone.make_aware(end_dt)
+
         SubmissionSchedule.objects.create(
             title=request.POST.get('title'),
             document_type=request.POST.get('document_type'),
             description=request.POST.get('description'),
-            start_datetime=request.POST.get('start_datetime'),
-            end_datetime=request.POST.get('end_datetime'),
+            start_datetime=start_dt,
+            end_datetime=end_dt,
             allowed_file_type=request.POST.get('allowed_file_type'),
             max_file_size=request.POST.get('max_file_size'),
-           
         )
+
         return redirect('WAdmin:document_schedule')
 
+    # GET request comes here safely
     return render(request, 'Admin/document_schedule_add.html')
 
 
 # EDIT
+from django.utils.dateparse import parse_datetime
 def document_schedule_edit(request, id):
     schedule = get_object_or_404(SubmissionSchedule, id=id)
 
@@ -243,11 +248,10 @@ def document_schedule_edit(request, id):
         schedule.title = request.POST.get('title')
         schedule.document_type = request.POST.get('document_type')
         schedule.description = request.POST.get('description')
-        schedule.start_datetime = request.POST.get('start_datetime')
-        schedule.end_datetime = request.POST.get('end_datetime')
+        schedule.start_datetime = parse_datetime(request.POST.get('start_datetime'))
+        schedule.end_datetime = parse_datetime(request.POST.get('end_datetime'))
         schedule.allowed_file_type = request.POST.get('allowed_file_type')
         schedule.max_file_size = request.POST.get('max_file_size')
-        schedule.max_attempts = request.POST.get('max_attempts')
         schedule.save()
         return redirect('WAdmin:document_schedule')
 

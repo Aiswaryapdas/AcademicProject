@@ -86,14 +86,23 @@ class SubmissionSchedule(models.Model):
     end_datetime = models.DateTimeField()
 
     allowed_file_type = models.CharField(max_length=20, default='pdf')
-    max_file_size = models.IntegerField(default=10)  # in MB
-    max_attempts = models.IntegerField(default=1)
+    max_file_size = models.IntegerField(default=10)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
+    # ✅ ADD THIS BELOW
+    @property
+    def status(self):
+        now = timezone.localtime()
+
+        if now < self.start_datetime:
+            return "Upcoming"
+        elif self.start_datetime <= now <= self.end_datetime:
+            return "Active"
+        return "Expired"
 class DocumentSubmission(models.Model):
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
     schedule = models.ForeignKey(SubmissionSchedule, on_delete=models.CASCADE)
