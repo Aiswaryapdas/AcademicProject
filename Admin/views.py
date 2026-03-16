@@ -3,9 +3,9 @@ from Admin.models import *
 from .forms import ProjectGroupForm
 from .models import ReviewSchedule
 from .forms import ReviewScheduleForm
-from .models import SubmissionSchedule
+
 from django.utils import timezone
-from Admin.models import DocumentSubmission
+
 from django.utils.dateparse import parse_datetime
 
 
@@ -97,29 +97,44 @@ def admin_dashboard(request):
     return render(request, 'Admin/admin_dashboard.html', context)
 
 
-
 def faculty_list(request):
-    # Optional: Check if admin is logged in
-    if 'admin_id' not in request.session:
-        return redirect('guest:guest_login')
+    faculties = Faculty.objects.all()
+    return render(request, 'Admin/faculty_list.html', {'faculties': faculties})
 
-    faculties = Faculty.objects.all()  # Get all faculty objects
-    context = {
-        'faculties': faculties
-    }
-    return render(request, 'Admin/faculty_list.html', context)
-from Admin.models import Student
 
 def student_list(request):
-    # Optional: Check if admin is logged in
-    if 'admin_id' not in request.session:
-        return redirect('guest:guest_login')
 
-    students = Student.objects.all()  # Get all student objects
-    context = {
-        'students': students
-    }
-    return render(request, 'Admin/student_list.html', context)
+    query = request.GET.get('q')
+
+    if query:
+        students = Student.objects.filter(
+            name__icontains=query
+        ) | Student.objects.filter(
+            admission_number__icontains=query
+        )
+    else:
+        students = Student.objects.all()
+
+    return render(request, 'Admin/student_list.html', {'students': students})
+
+def project_group_list(request):
+
+    faculty_id = request.GET.get('faculty')
+
+    if faculty_id:
+        groups = ProjectGroup.objects.filter(faculty_id=faculty_id)
+    else:
+        groups = ProjectGroup.objects.all()
+
+    faculties = Faculty.objects.all()
+
+    return render(request, 'Admin/project_group_list.html',
+                  {'groups': groups, 'faculties': faculties})
+
+def delete_student(request, id):
+    student = Student.objects.get(id=id)
+    student.delete()
+    return redirect('WAdmin:student_list')    
 
 def create_project_group(request):
     if request.method == 'POST':
@@ -187,94 +202,43 @@ def student_review_schedule(request):
     context = {'reviews': reviews}
     return render(request, 'Admin/student_review_schedule.html', context)
 
-def admin_view_submissions(request):
-    submissions = DocumentSubmission.objects.all()
-    return render(request, 'Admin/view_all_submissions.html', {
-        'submissions': submissions
-    })
+from django.shortcuts import render
+from Admin.models import Student, ReviewSchedule
+from faculty.models import ReviewMark
 
-from django.shortcuts import get_object_or_404
+def admin_view_review_marks(request):
 
-# ===============================
-# DOCUMENT SCHEDULE (ADMIN)
-# ===============================
+    students = Student.objects.all()
+    reviews = ReviewSchedule.objects.all().order_by('review_date')
 
-# LIST PAGE
-def document_schedule(request):
-    schedules = SubmissionSchedule.objects.all().order_by('-created_at')
+    table_data = []
 
-    return render(request, 'Admin/document_submission.html', {
-        'schedules': schedules
-    })
+    for student in students:
 
+        marks = ReviewMark.objects.filter(student=student)
 
-# ADD PAGE
-from django.utils import timezone
-from django.utils.dateparse import parse_datetime
+        review_marks = {}
+        total = 0
 
-def document_schedule_add(request):
+        for mark in marks:
+            review_marks[mark.review.id] = mark.mark
+            total += mark.mark
 
-    if request.method == 'POST':
+        table_data.append({
+            "student": student,
+            "marks": review_marks,
+            "total": total
+        })
 
-        start_dt = parse_datetime(request.POST.get('start_datetime'))
-        end_dt = parse_datetime(request.POST.get('end_datetime'))
+    context = {
+        "students": table_data,
+        "reviews": reviews
+    }
 
-        # Convert to timezone aware
-        start_dt = timezone.make_aware(start_dt)
-        end_dt = timezone.make_aware(end_dt)
-
-        SubmissionSchedule.objects.create(
-            title=request.POST.get('title'),
-            document_type=request.POST.get('document_type'),
-            description=request.POST.get('description'),
-            start_datetime=start_dt,
-            end_datetime=end_dt,
-            allowed_file_type=request.POST.get('allowed_file_type'),
-            max_file_size=request.POST.get('max_file_size'),
-        )
-
-        return redirect('WAdmin:document_schedule')
-
-    # GET request comes here safely
-    return render(request, 'Admin/document_schedule_add.html')
+    return render(request,"Admin/view_review_marks.html",context)
 
 
-# EDIT
-from django.utils.dateparse import parse_datetime
-def document_schedule_edit(request, id):
-    schedule = get_object_or_404(SubmissionSchedule, id=id)
 
-    if request.method == 'POST':
-        schedule.title = request.POST.get('title')
-        schedule.document_type = request.POST.get('document_type')
-        schedule.description = request.POST.get('description')
-        schedule.start_datetime = parse_datetime(request.POST.get('start_datetime'))
-        schedule.end_datetime = parse_datetime(request.POST.get('end_datetime'))
-        schedule.allowed_file_type = request.POST.get('allowed_file_type')
-        schedule.max_file_size = request.POST.get('max_file_size')
-        schedule.save()
-        return redirect('WAdmin:document_schedule')
-
-    return render(request, 'Admin/document_schedule_add.html', {
-        'schedule': schedule
-    })
-
-
-# DELETE
-def document_schedule_delete(request, id):
-    schedule = get_object_or_404(SubmissionSchedule, id=id)
-    schedule.delete()
-    return redirect('WAdmin:document_schedule')
-
-
-def all_submissions(request):
-    submissions = DocumentSubmission.objects.select_related(
-        'student', 'schedule'
-    )
-
-    return render(request, 'Admin/all_submissions.html', {
-        'submissions': submissions
-    })
 
 from datetime import datetime
 from calendar import monthrange
@@ -333,4 +297,184 @@ def admin_attendance(request):
         "days_range": days_range,
         "month": today.strftime("%B"),
         "year": year,
+    })
+from datetime import date
+from calendar import monthrange
+from faculty.models import Attendance
+from Admin.models import Student
+from django.shortcuts import render
+
+def semester_attendance_view(request):
+    students = Student.objects.all()
+    year = 2026
+    semester_months = [1, 2, 3, 4]  # Jan-Apr
+
+    # Month filter from GET (format YYYY-MM)
+    month_filter = request.GET.get('month')
+    if month_filter:
+        filter_year, filter_month = map(int, month_filter.split('-'))
+        months_to_show = [filter_month] if filter_year == year else []
+    else:
+        months_to_show = semester_months  # show all months
+
+    # Prepare data month by month
+    semester_data = []
+
+    for month in months_to_show:
+        month_last_day = monthrange(year, month)[1]
+        days_range = [date(year, month, day) for day in range(1, month_last_day + 1)]
+
+        month_data = []
+        for student in students:
+            student_record = {
+                'student_id': student.id,
+                'name': student.name,
+                'present': 0,
+                'absent': 0,
+                'attendance_display': []
+            }
+
+            for day in days_range:
+                att = Attendance.objects.filter(student=student, date=day).first()
+                if att:
+                    if att.status == 'Present':
+                        student_record['present'] += 1
+                        student_record['attendance_display'].append(('P', 'present'))
+                    else:
+                        student_record['absent'] += 1
+                        student_record['attendance_display'].append(('A', 'absent'))
+                else:
+                    student_record['attendance_display'].append(('', 'empty'))
+
+            month_data.append(student_record)
+
+        semester_data.append({
+            'month_name': date(year, month, 1).strftime('%B'),
+            'days_range': days_range,
+            'month_data': month_data
+        })
+
+    return render(request, 'Admin/semester_attendance.html', {
+        'semester_data': semester_data,
+        'year': year,
+        'month_filter': month_filter
+    })
+
+from .models import DocumentSchedule
+from django.shortcuts import render, redirect
+
+def add_document_schedule(request):
+
+    if request.method == "POST":
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        start_date = request.POST.get("start_date")
+        end_date = request.POST.get("end_date")
+        file_format = request.POST.get("file_format")
+        max_size = request.POST.get("max_size")
+
+        DocumentSchedule.objects.create(
+            title=title,
+            description=description,
+            start_date=start_date,
+            end_date=end_date,
+            file_format=file_format,
+            max_size=max_size
+        )
+
+        return redirect('WAdmin:document_schedule_list')
+
+    return render(request,'Admin/add_document_schedule.html')
+
+def document_schedule_list(request):
+
+    schedules = DocumentSchedule.objects.all()
+
+    return render(request,'Admin/document_schedule_list.html', {'schedules': schedules})
+
+def edit_document_schedule(request, id):
+
+    schedule = DocumentSchedule.objects.get(id=id)
+
+    if request.method == "POST":
+
+        schedule.title = request.POST.get("title")
+        schedule.description = request.POST.get("description")
+        schedule.start_date = request.POST.get("start_date")
+        schedule.end_date = request.POST.get("end_date")
+        schedule.file_format = request.POST.get("file_format")
+        schedule.max_size = request.POST.get("max_size")
+
+        schedule.save()
+
+        return redirect('WAdmin:document_schedule_list')
+
+    return render(request,'Admin/edit_document_schedule.html',{'schedule':schedule})
+
+def delete_document_schedule(request, id):
+
+    schedule = DocumentSchedule.objects.get(id=id)
+
+    schedule.delete()
+
+    return redirect('WAdmin:document_schedule_list')
+
+from student.models import DocumentSubmission
+
+def admin_view_document_submissions(request):
+
+    schedules = DocumentSchedule.objects.all()
+    students = Student.objects.all()
+
+    data = []
+
+    for schedule in schedules:
+        for student in students:
+
+            submission = DocumentSubmission.objects.filter(
+                student=student,
+                schedule=schedule
+            ).first()
+
+            data.append({
+                'student': student,
+                'schedule': schedule,
+                'submission': submission
+            })
+
+    return render(request,'Admin/view_document_submissions.html',{
+        'data': data
+    })
+
+def admin_document_schedules(request):
+
+    schedules = DocumentSchedule.objects.all()
+
+    return render(request,'Admin/document_schedules.html',{
+        'schedules': schedules
+    })
+
+def admin_schedule_submissions(request, schedule_id):
+
+    schedule = get_object_or_404(DocumentSchedule, id=schedule_id)
+
+    students = Student.objects.all()
+
+    data = []
+
+    for student in students:
+
+        submission = DocumentSubmission.objects.filter(
+            student=student,
+            schedule=schedule
+        ).first()
+
+        data.append({
+            'student': student,
+            'submission': submission
+        })
+
+    return render(request, 'Admin/schedule_submissions.html', {
+        'schedule': schedule,
+        'data': data
     })

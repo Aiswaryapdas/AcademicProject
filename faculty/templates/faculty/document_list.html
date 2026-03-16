@@ -1,0 +1,55 @@
+<h2>Document Submissions</h2>
+<form method="post">
+  {% csrf_token %}
+  <table border="1" cellpadding="10">
+    <tr>
+      <th>Student</th>
+      <th>Document Title</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Format / Max Size</th>
+      <th>Submitted At</th>
+      <th>File</th>
+      <th>Mark</th>
+    </tr>
+
+    {% for submission in submissions %}
+    <tr>
+      <td {% if not submission.submitted %}style="color:red" {% endif %}>
+        {{ submission.student.name }}
+      </td>
+      <td>{{ submission.schedule.title }}</td>
+      <td>{{ submission.schedule.start_date }}</td>
+      <td>{{ submission.schedule.end_date }}</td>
+      <td>
+        {{ submission.schedule.doc_type }} / {{ submission.schedule.max_size }}
+        MB
+      </td>
+      <td>
+        {% if submission.submitted %} {{ submission.submitted_at }} {% else %}
+        <span style="color: red">Not Submitted</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if submission.submitted %}
+        <a href="{{ submission.file.url }}" target="_blank" download
+          >View / Download</a
+        >
+        {% else %}
+        <span style="color: red">Not Uploaded</span>
+        {% endif %}
+      </td>
+      <td>
+        <input
+          type="number"
+          name="mark_{{ submission.student.id }}_{{ forloop.counter0 }}"
+          max="10"
+          value="{{ submission.mark }}"
+        />
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br />
+  <button type="submit">Save All Marks</button>
+</form>

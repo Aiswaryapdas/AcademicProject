@@ -64,7 +64,11 @@
   </head>
   <body>
     <h1>Mark Attendance</h1>
-
+    {% if messages %}
+    <div style="color: red; text-align: center; margin-bottom: 10px">
+      {% for message in messages %} {{ message }} {% endfor %}
+    </div>
+    {% endif %}
     <form method="POST">
       {% csrf_token %}
       <div class="date-container">
@@ -73,6 +77,8 @@
           type="date"
           id="attendance-date"
           name="attendance_date"
+          min="{{ today_date }}"
+          value="{{ today_date }}"
           required
         />
       </div>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from Admin.models import Faculty, ProjectGroup
 from Admin.models import ReviewSchedule
-
+from .models import ReviewMark
 from django.apps import apps
 from .models import Attendance
 
@@ -67,6 +67,11 @@ def add_mark(request, submission_id):
 
     return redirect('faculty:view_submissions', submission.schedule.id)
 
+from datetime import date
+from django.shortcuts import redirect, render
+from django.contrib import messages  # if you want to show error messages
+from django.apps import apps
+from faculty.models import Attendance
 
 def attendance_mark(request):
     # Check custom faculty login session
@@ -85,9 +90,15 @@ def attendance_mark(request):
     students = Student.objects.filter(projectgroup=group) if group else []
 
     if request.method == 'POST':
-        date = request.POST.get('attendance_date')
-        if not date:
-            # if no date selected, redirect back
+        selected_date_str = request.POST.get('attendance_date')
+        if not selected_date_str:
+            return redirect('/faculty/attendance/')
+
+        today_date = date.today().isoformat()
+
+        # Prevent past dates
+        if selected_date < date.today():
+            messages.error(request, "You cannot mark attendance for past dates.")
             return redirect('/faculty/attendance/')
 
         # Save attendance for each student
@@ -96,14 +107,183 @@ def attendance_mark(request):
             if status:
                 Attendance.objects.update_or_create(
                     student=student,
-                    date=date,
+                    today_date=today_date,  # use the selected_date
                     defaults={'faculty_id': faculty_id, 'status': status}
                 )
         return redirect('/faculty/dashboard/')  # back to dashboard after saving
 
-    return render(request, 'faculty/attendance_mark.html', {'students': students})
+    # Pass today's date to template for min date restriction in HTML
+    today_date = date.today()
+    return render(request, 'faculty/attendance_mark.html', {
+        'students': students,
+        'today_date': today_date
+    })
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Sum
+from Admin.models import ReviewSchedule, ProjectGroup, Student
+from .models import ReviewMark
 
 
+def add_review_marks(request, review_id):
+
+    review = get_object_or_404(ReviewSchedule, id=review_id)
+
+    faculty_id = request.session.get('faculty_id')
+
+    # get faculty group
+    group = ProjectGroup.objects.get(faculty_id=faculty_id)
+
+    # students in that group
+    students = Student.objects.filter(projectgroup=group)
+
+    # existing marks
+    marks = ReviewMark.objects.filter(review=review)
+
+    mark_dict = {m.student_id: m.mark for m in marks}
+
+    # calculate total marks of each student
+    totals = ReviewMark.objects.values('student').annotate(total=Sum('mark'))
+
+    total_dict = {t['student']: t['total'] for t in totals}
+
+    if request.method == "POST":
+
+        for student in students:
+
+            mark = request.POST.get(f"mark_{student.id}")
+
+            if mark:
+                ReviewMark.objects.update_or_create(
+                    review=review,
+                    student=student,
+                    defaults={'mark': mark}
+                )
+
+        return redirect('faculty:homepage')
+
+    context = {
+        'review': review,
+        'students': students,
+        'mark_dict': mark_dict,
+        'total_dict': total_dict
+    }
+
+    return render(request, 'Faculty/add_review_marks.html', context)
 def logout_view(request):
     request.session.flush()
     return redirect('guest:guest_login')
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from Admin.models import Student
+from Admin.models import DocumentSchedule
+from student.models import DocumentSubmission
+
+def faculty_document_view(request):
+    students = Student.objects.all()  # all students (or filter by assigned faculty if needed)
+    schedules = DocumentSchedule.objects.all()
+
+    # Handle marks submission
+    if request.method == 'POST':
+        for student in students:
+            for i, schedule in enumerate(schedules):
+                mark_key = f'mark_{student.id}_{i}'
+                mark_value = request.POST.get(mark_key)
+                if mark_value:
+                    submission, created = DocumentSubmission.objects.get_or_create(
+                        student=student,
+                        document_schedule=schedule
+                    )
+                    submission.faculty_mark = float(mark_value)
+                    submission.save()
+        return redirect('faculty:faculty_document_view')
+
+    # Prepare submissions data
+    submissions_list = []
+    for student in students:
+        for schedule in schedules:
+            
+            submission_qs = DocumentSubmission.objects.filter(
+            student=student,
+            schedule=schedule
+        ).order_by('-submitted_at')  # latest submission first
+        if submission_qs.exists():
+                submission = submission_qs.first() 
+                submissions_list.append({
+                    'student': student,
+                    'schedule': schedule,
+                    'submitted': True,
+                    'file': submission.uploaded_file,
+                    'submitted_at': submission.uploaded_at,
+                    'mark': submission.faculty_mark
+                })
+        else:
+             submissions_list.append({
+                    'student': student,
+                    'schedule': schedule,
+                    'submitted': False,
+                    'file': None,
+                    'submitted_at': None,
+                    'mark': None
+                })
+
+    return render(request, 'faculty/document_list.html', {'submissions': submissions_list})
+
+
+def document_schedule_list(request):
+
+    schedules = DocumentSchedule.objects.all()
+
+    return render(request,'faculty/document_schedules.html',{
+        'schedules': schedules
+    })
+
+def schedule_submissions(request, schedule_id):
+
+    schedule = DocumentSchedule.objects.get(id=schedule_id)
+
+    faculty_id = 1   # temporary for testing
+
+    groups = ProjectGroup.objects.filter(faculty_id=faculty_id)
+
+    students = Student.objects.filter(projectgroup__in=groups)
+
+    data = []
+
+
+
+    for student in students:
+
+        submission = DocumentSubmission.objects.filter(
+            student=student,
+            schedule=schedule
+        ).first()
+
+        data.append({
+            'student': student,
+            'submission': submission
+        })
+
+
+    if request.method == "POST":
+
+        for row in data:
+
+            submission = row['submission']
+
+            if submission:
+
+                mark = request.POST.get(f"mark_{submission.id}")
+
+                if mark:
+                    submission.faculty_mark = mark
+                    submission.save()
+
+        return redirect('faculty:schedule_submissions', schedule_id=schedule_id)
+
+
+    return render(request,'faculty/schedule_submissions.html',{
+        'schedule': schedule,
+        'data': data
+    })

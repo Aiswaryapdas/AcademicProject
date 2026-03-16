@@ -1,0 +1,62 @@
+<h2>{{ schedule.title }} Submissions</h2>
+
+<form method="post">
+  {% csrf_token %}
+
+  <table border="1" cellpadding="10">
+    <tr>
+      <th>Admission No</th>
+      <th>Name</th>
+      <th>Upload Time</th>
+      <th>File</th>
+      <th>Mark</th>
+    </tr>
+
+    {% for row in data %}
+
+    <tr>
+      <td>{{ row.student.admission_number }}</td>
+
+      <td>{{ row.student.name }}</td>
+
+      <td>
+        {% if row.submission %} {{ row.submission.submitted_at }} {% else %}
+        <span style="color: red">Not Submitted</span>
+        {% endif %}
+      </td>
+
+      <td>
+        {% if row.submission %}
+
+        <a href="{{ row.submission.file.url }}" target="_blank">View</a> |
+        <a href="{{ row.submission.file.url }}" download>Download</a>
+
+        {% else %}
+
+        <span style="color: red">Not Uploaded</span>
+
+        {% endif %}
+      </td>
+
+      <td>
+        {% if row.submission %}
+
+        <input
+          type="number"
+          name="mark_{{ row.submission.id }}"
+          value="{{ row.submission.faculty_mark }}"
+          min="0"
+          max="10"
+        />
+
+        {% else %} - {% endif %}
+      </td>
+    </tr>
+
+    {% endfor %}
+  </table>
+
+  <br />
+
+  <button type="submit">Save Marks</button>
+</form>

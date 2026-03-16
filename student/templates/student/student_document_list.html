@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Document Submissions</title>
+  </head>
+
+  <body>
+    <h2>Document Submissions</h2>
+
+    <table border="1" cellpadding="10">
+      <tr>
+        <th>Title</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Upload Status</th>
+        <th>Submission Window</th>
+        <th>Action</th>
+      </tr>
+
+      {% for item in data %}
+
+      <tr>
+        <td>{{ item.schedule.title }}</td>
+
+        <td>{{ item.schedule.start_date }}</td>
+
+        <td>{{ item.schedule.end_date }}</td>
+
+        <td>
+          {% if item.submission %}
+          <span style="color: green">Uploaded</span>
+          {% else %}
+          <span style="color: red">Not Uploaded</span>
+          {% endif %}
+        </td>
+
+        <td>
+          {% if item.status == "Open" %}
+          <span style="color: green">Open</span>
+
+          {% elif item.status == "Closed" %}
+          <span style="color: red">Closed</span>
+
+          {% else %}
+          <span style="color: orange">Not Started</span>
+          {% endif %}
+        </td>
+
+        <td>
+          {% if item.allow_upload %}
+
+          <a href="{% url 'student:upload_document' item.schedule.id %}">
+            Open
+          </a>
+
+          {% else %}
+
+          <span style="color: gray">Closed</span>
+
+          {% endif %}
+        </td>
+      </tr>
+
+      {% empty %}
+
+      <tr>
+        <td colspan="6">No submissions available</td>
+      </tr>
+
+      {% endfor %}
+    </table>
+  </body>
+</html>

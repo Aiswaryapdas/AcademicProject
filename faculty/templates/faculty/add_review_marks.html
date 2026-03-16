@@ -1,0 +1,49 @@
+{% load custom_tags %}
+
+<!doctype html>
+<html>
+  <head>
+    <title>Add Review Marks</title>
+  </head>
+
+  <body>
+    <h2>Review: {{review.review_topic}}</h2>
+    <h3>Date: {{review.review_date}} | Time: {{review.review_time}}</h3>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <table border="1" cellpadding="10">
+        <tr>
+          <th>Student Name</th>
+          <th>Mark (Out of 10)</th>
+          <th>Total Marks</th>
+        </tr>
+
+        {% for student in students %}
+
+        <tr>
+          <td>{{student.name}}</td>
+
+          <td>
+            <input
+              type="number"
+              name="mark_{{student.id}}"
+              min="0"
+              max="10"
+              value="{{ mark_dict|get_item:student.id }}"
+            />
+          </td>
+
+          <td>{{ total_dict|get_item:student.id }}</td>
+        </tr>
+
+        {% endfor %}
+      </table>
+
+      <br />
+
+      <button type="submit">Save Marks</button>
+    </form>
+  </body>
+</html>

@@ -6,8 +6,10 @@ urlpatterns = [
     path('faculty_reg/',views.faculty_register,name='faculty_register'),
     path('student_reg/',views.student_register,name='student_register'),
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
-    path('faculty_list/', views.faculty_list, name='faculty_list'), 
-    path('student_list/', views.student_list, name='student_list'), 
+    path('faculty-list/', views.faculty_list, name='faculty_list'),
+path('student-list/', views.student_list, name='student_list'),
+path('project-group-list/', views.project_group_list, name='project_group_list'), 
+path('delete-student/<int:id>/', views.delete_student, name='delete_student'),
     path('create-group/', views.create_project_group, name='create_project_group'),
     path('review-schedule/', views.review_schedule, name='review_schedule'),
     path('review-schedule/add/', views.review_schedule_add, name='review_schedule_add'),
@@ -16,16 +18,20 @@ urlpatterns = [
     path('project-groups/', views.view_project_groups, name='view_project_groups'),
     path('faculty/review-schedule/', views.faculty_review_schedule, name='faculty_review_schedule'),
     path('student/review-schedule/', views.student_review_schedule, name='student_review_schedule'),
-    path('view-submissions/', views.admin_view_submissions, name='admin_view_submissions'),
-    # DOCUMENT SCHEDULE
-path('document-schedule/', views.document_schedule, name='document_schedule'),
-path('document-schedule/add/', views.document_schedule_add, name='document_schedule_add'),
-path('document-schedule/edit/<int:id>/', views.document_schedule_edit, name='document_schedule_edit'),
-path('document-schedule/delete/<int:id>/', views.document_schedule_delete, name='document_schedule_delete'),
+   
  path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('attendance/', views.admin_attendance, name='admin_attendance'),
+      path('semester-attendance/', views.semester_attendance_view, name='semester_attendance'),
+      path('view_review_marks/', views.admin_view_review_marks, name='view_review_marks'),
+      path('add_document_schedule/', views.add_document_schedule, name='add_document_schedule'),
+      path('document_schedule_list/', views.document_schedule_list, name='document_schedule_list'),
+      path('edit_document_schedule/<int:id>/', views.edit_document_schedule, name='edit_document_schedule'),
+path('delete_document_schedule/<int:id>/', views.delete_document_schedule, name='delete_document_schedule'),
 
+    path('document-submissions/', views.admin_view_document_submissions, name='admin_document_submissions'),
 
+path('documents/', views.admin_document_schedules, name='admin_document_schedules'),
+path('documents/<int:schedule_id>/', views.admin_schedule_submissions, name='admin_schedule_submissions'),
 
 
 ]

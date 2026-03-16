@@ -69,47 +69,18 @@ class ReviewSchedule(models.Model):
     
     def __str__(self):
         return f"{self.review_topic} on {self.review_date} at {self.review_time}"
-       
-class SubmissionSchedule(models.Model):
-    DOCUMENT_TYPES = [
-        ('proposal', 'Proposal'),
-        ('progress', 'Progress Report'),
-        ('final', 'Final Report'),
-        ('presentation', 'Presentation Slides'),
-    ]
-
+    
+  
+class DocumentSchedule(models.Model):
     title = models.CharField(max_length=200)
-    document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
     description = models.TextField()
-
-    start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
-
-    allowed_file_type = models.CharField(max_length=20, default='pdf')
-    max_file_size = models.IntegerField(default=10)
-
+    start_date = models.DateField()
+    end_date = models.DateField()
+    file_format = models.CharField(max_length=50)
+    max_size = models.IntegerField()  # size in MB
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.title
+        return self.title       
 
-    # ✅ ADD THIS BELOW
-    @property
-    def status(self):
-        now = timezone.localtime()
-
-        if now < self.start_datetime:
-            return "Upcoming"
-        elif self.start_datetime <= now <= self.end_datetime:
-            return "Active"
-        return "Expired"
-class DocumentSubmission(models.Model):
-    student = models.ForeignKey('Student', on_delete=models.CASCADE)
-    schedule = models.ForeignKey(SubmissionSchedule, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='submissions/')
-    submitted_at = models.DateTimeField(auto_now_add=True)
-    mark = models.IntegerField(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.student.name} - {self.schedule.title}"
 

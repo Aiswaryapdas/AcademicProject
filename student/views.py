@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.contrib import messages
-from Admin.models import Student, ProjectGroup, ReviewSchedule, SubmissionSchedule,DocumentSubmission
+from Admin.models import Student, ProjectGroup, ReviewSchedule
 from faculty.models import Attendance
 from datetime import datetime
 from calendar import monthrange
@@ -19,7 +19,7 @@ def student_dashboard(request):
     reviews = ReviewSchedule.objects.all()
 
     # Submission schedules
-    schedules = SubmissionSchedule.objects.all()
+    schedules = DocumentSchedule.objects.all()
 
     for schedule in schedules:
         schedule.submission = DocumentSubmission.objects.filter(
@@ -39,73 +39,6 @@ def student_dashboard(request):
 def student_logout(request):
     request.session.flush()
     return redirect('guest:guest_login')
-
-
-def student_document_schedules(request):
-    if 'student_id' not in request.session:
-        return redirect('guest:guest_login')
-
-    student = Student.objects.get(id=request.session['student_id'])
-
-    schedules = SubmissionSchedule.objects.all()
-
-    for schedule in schedules:
-        schedule.submission = DocumentSubmission.objects.filter(
-            student=student,
-            schedule=schedule
-        ).first()
-
-    return render(request, 'Student/student_document_schedules.html', {
-        'schedules': schedules
-    })
-def upload_document(request, id):
-    schedule = get_object_or_404(SubmissionSchedule, id=id)
-    student = Student.objects.get(id=request.session['student_id'])
-
-    now = timezone.localtime()
-
-
-    # 🔒 1. Check if submission not started yet
-    if now < schedule.start_datetime:
-        messages.warning(request, "Submission has not started yet.")
-        return redirect('student:student_document_schedules')
-
-    # 🔒 2. Check if deadline passed
-    if now > schedule.end_datetime:
-        messages.error(request, "Deadline has passed. You cannot upload.")
-        return redirect('student:student_document_schedules')
-
-    # 🔒 3. Prevent multiple submissions (if only 1 allowed)
-    already_submitted = DocumentSubmission.objects.filter(
-        student=student,
-        schedule=schedule
-    ).exists()
-
-    if already_submitted:
-        messages.warning(request, "You have already submitted this document.")
-        return redirect('student:student_document_schedules')
-
-    # ✅ 4. Handle file upload
-    if request.method == "POST":
-        file = request.FILES.get('file')
-
-        if not file:
-            messages.error(request, "Please select a file.")
-            return redirect('student:upload_document', id=id)
-
-        DocumentSubmission.objects.create(
-            student=student,
-            schedule=schedule,
-            file=file
-        )
-
-        messages.success(request, "Document uploaded successfully!")
-        return redirect('student:student_document_schedules')
-
-    return render(request, 'Student/upload_document.html', {
-        'schedule': schedule
-    })
-
 
 
 def student_attendance(request):
@@ -164,4 +97,120 @@ def student_attendance(request):
         'percentage': percentage,
         'month': today.strftime("%B"),
         'year': year,
+    })
+
+from django.shortcuts import render, redirect
+from django.db.models import Sum
+from faculty.models import ReviewMark
+
+
+def view_my_marks(request):
+
+    if 'student_id' not in request.session:
+        return redirect('guest:guest_login')
+
+    student_id = request.session.get('student_id')
+
+    # get all marks of that student
+    marks = ReviewMark.objects.filter(student_id=student_id).select_related('review')
+
+    # calculate total
+    total = ReviewMark.objects.filter(student_id=student_id).aggregate(total=Sum('mark'))
+
+    context = {
+        'marks': marks,
+        'total': total['total']
+    }
+
+    return render(request, 'Student/view_marks.html', context)
+
+def student_document_list(request):
+
+    schedules = DocumentSchedule.objects.all()
+
+    return render(request,'Student/student_document_list.html',{'schedules':schedules})
+
+from django.shortcuts import render,redirect
+from Admin.models import DocumentSchedule
+from .models import DocumentSubmission
+from django.utils import timezone
+
+
+def student_document_list(request):
+
+    student_id = request.session['student_id']
+
+    schedules = DocumentSchedule.objects.all()
+
+    today = timezone.now().date()
+
+    data = []
+
+    for s in schedules:
+
+        submission = DocumentSubmission.objects.filter(
+            schedule=s,
+            student_id=student_id
+        ).first()
+
+        if today < s.start_date:
+            status = "Not Started"
+            allow_upload = False
+
+        elif s.start_date <= today <= s.end_date:
+            status = "Open"
+            allow_upload = True
+
+        else:
+            status = "Closed"
+            allow_upload = False
+
+        data.append({
+            "schedule": s,
+            "submission": submission,
+            "status": status,
+            "allow_upload": allow_upload
+        })
+
+    return render(request,'student/student_document_list.html',{"data":data})
+
+def upload_document(request, id):
+
+    schedule = DocumentSchedule.objects.get(id=id)
+    student_id = request.session['student_id']
+
+    submission = DocumentSubmission.objects.filter(
+        schedule=schedule,
+        student_id=student_id
+    ).first()
+
+    if request.method == "POST":
+
+        file = request.FILES.get('file')
+
+        if submission:
+            submission.file = file
+            submission.save()
+        else:
+            DocumentSubmission.objects.create(
+                schedule=schedule,
+                student_id=student_id,
+                file=file
+            )
+
+        return redirect('student:student_document_list')
+
+    return render(request, 'student/upload_document.html', {
+        'schedule': schedule,
+        'submission': submission
+    })
+
+def student_document_marks(request):
+
+    student_id = request.session.get('student_id')   # your login session
+
+    submissions = DocumentSubmission.objects.filter(student_id=student_id)
+
+    return render(request,'Student/document_marks.html',{
+        'submissions': submissions
     })

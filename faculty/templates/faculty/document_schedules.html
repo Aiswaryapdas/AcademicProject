@@ -1,0 +1,30 @@
+<h2>Document Schedules</h2>
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Title</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Format</th>
+    <th>Max Size</th>
+    <th>Action</th>
+  </tr>
+
+  {% for s in schedules %}
+
+  <tr>
+    <td>{{ s.title }}</td>
+    <td>{{ s.start_date }}</td>
+    <td>{{ s.end_date }}</td>
+    <td>{{ s.format }}</td>
+    <td>{{ s.max_size }} MB</td>
+
+    <td>
+      <a href="{% url 'faculty:schedule_submissions' s.id %}">
+        <button>View Submissions</button>
+      </a>
+    </td>
+  </tr>
+
+  {% endfor %}
+</table>

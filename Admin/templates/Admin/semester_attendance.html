@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Full Semester Attendance</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+        background: #f4f6f8;
+      }
+      table {
+        width: 80%;
+        border-collapse: collapse;
+        margin: auto;
+        background: white;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+      }
+      th {
+        background: #2c3e50;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <body>
+      <h2>Semester Attendance {{ year }}</h2>
+
+      <!-- Month search filter -->
+      <form method="get" style="margin-bottom: 20px">
+        <label for="month">Filter by month:</label>
+        <input
+          type="month"
+          id="month"
+          name="month"
+          value="{{ month_filter }}"
+        />
+        <button type="submit">Search</button>
+        {% if month_filter %}
+        <a href="{% url 'WAdmin:semester_attendance' %}">Show All Months</a>
+        {% endif %}
+      </form>
+
+      {% for month in semester_data %}
+      <h3>{{ month.month_name }} {{ year }}</h3>
+
+      <table
+        border="1"
+        style="width: 100%; margin-bottom: 30px; text-align: center"
+      >
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Present</th>
+          <th>Absent</th>
+          {% for day in month.days_range %}
+          <th>{{ day.day }}</th>
+          {% endfor %}
+        </tr>
+
+        {% for student in month.month_data %}
+        <tr>
+          <td>{{ student.student_id }}</td>
+          <td>{{ student.name }}</td>
+          <td>{{ student.present }}</td>
+          <td>{{ student.absent }}</td>
+
+          {% for value, css in student.attendance_display %}
+          <td class="{{ css }}">{{ value }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+      {% endfor %}
+    </body>
+  </body>
+</html>

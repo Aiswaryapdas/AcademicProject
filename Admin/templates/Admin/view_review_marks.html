@@ -1,0 +1,40 @@
+{% load custome_filters %}<!doctype html>
+<html>
+  <head>
+    <title>All Students Review Marks</title>
+  </head>
+
+  <body>
+    <h2>Students Review Marks</h2>
+
+    <table border="1" cellpadding="10">
+      <tr>
+        <th>Admission Number</th>
+        <th>Student Name</th>
+
+        {% for review in reviews %}
+        <th>{{ review.review_topic }}</th>
+        {% endfor %}
+
+        <th>Total</th>
+      </tr>
+
+      {% for row in students %}
+
+      <tr>
+        <td>{{ row.student.admission_number }}</td>
+        <td>{{ row.student.name }}</td>
+
+        {% for review in reviews %}
+
+        <td>{{ row.marks|get_item:review.id }}</td>
+
+        {% endfor %}
+
+        <td><b>{{ row.total }}</b></td>
+      </tr>
+
+      {% endfor %}
+    </table>
+  </body>
+</html>

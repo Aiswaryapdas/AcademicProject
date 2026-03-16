@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>My Review Marks</title>
+  </head>
+
+  <body>
+    <h2>My Review Marks</h2>
+
+    <table border="1" cellpadding="10">
+      <tr>
+        <th>Review Topic</th>
+        <th>Date</th>
+        <th>Mark</th>
+      </tr>
+
+      {% for mark in marks %}
+
+      <tr>
+        <td>{{ mark.review.review_topic }}</td>
+
+        <td>{{ mark.review.review_date }}</td>
+
+        <td>{{ mark.mark }}</td>
+      </tr>
+
+      {% endfor %}
+
+      <tr>
+        <td colspan="2"><strong>Total Marks</strong></td>
+        <td><strong>{{ total }}</strong></td>
+      </tr>
+    </table>
+  </body>
+</html>

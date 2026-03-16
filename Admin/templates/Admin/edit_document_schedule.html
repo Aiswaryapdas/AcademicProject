@@ -1,0 +1,97 @@
+<h2 style="text-align: center">Edit Document Submission Schedule</h2>
+
+<div
+  style="
+    width: 500px;
+    margin: auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  "
+>
+  <form method="POST">
+    {% csrf_token %}
+
+    <div style="margin-bottom: 15px">
+      <label><strong>Document Title</strong></label
+      ><br />
+      <input
+        type="text"
+        name="title"
+        value="{{schedule.title}}"
+        required
+        style="width: 100%; padding: 8px"
+      />
+    </div>
+
+    <div style="margin-bottom: 15px">
+      <label><strong>Description</strong></label
+      ><br />
+      <textarea name="description" rows="3" style="width: 100%; padding: 8px">
+{{schedule.description}}</textarea
+      >
+    </div>
+
+    <div style="margin-bottom: 15px">
+      <label><strong>Start Date</strong></label
+      ><br />
+      <input
+        type="date"
+        name="start_date"
+        value="{{schedule.start_date|date:'Y-m-d'}}"
+        required
+        style="width: 100%; padding: 8px"
+      />
+    </div>
+
+    <div style="margin-bottom: 15px">
+      <label><strong>End Date</strong></label
+      ><br />
+      <input
+        type="date"
+        name="end_date"
+        value="{{schedule.end_date|date:'Y-m-d'}}"
+        required
+        style="width: 100%; padding: 8px"
+      />
+    </div>
+
+    <div style="margin-bottom: 15px">
+      <label><strong>Allowed File Format</strong></label
+      ><br />
+      <input
+        type="text"
+        name="file_format"
+        value="{{schedule.file_format}}"
+        style="width: 100%; padding: 8px"
+      />
+    </div>
+
+    <div style="margin-bottom: 20px">
+      <label><strong>Maximum File Size (MB)</strong></label
+      ><br />
+      <input
+        type="number"
+        name="max_size"
+        value="{{schedule.max_size}}"
+        style="width: 100%; padding: 8px"
+      />
+    </div>
+
+    <div style="text-align: center">
+      <button
+        type="submit"
+        style="
+          background: #2f6fed;
+          color: white;
+          padding: 10px 25px;
+          border: none;
+          border-radius: 5px;
+        "
+      >
+        Update Schedule
+      </button>
+    </div>
+  </form>
+</div>

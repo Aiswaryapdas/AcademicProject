@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Upload Document</title>
+  </head>
+
+  <body>
+    <h2>{{ schedule.title }}</h2>
+
+    <p>{{ schedule.description }}</p>
+
+    {% if submission %}
+
+    <p>
+      <b>Current File:</b>
+      <a href="{{ submission.file.url }}" target="_blank">
+        {{ submission.file.name }}
+      </a>
+    </p>
+
+    {% else %}
+
+    <p><b>No file uploaded yet</b></p>
+
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label>Select File</label><br /><br />
+
+      <input type="file" name="file" required />
+
+      <br /><br />
+
+      <button type="submit">
+        {% if submission %} Replace File {% else %} Upload File {% endif %}
+      </button>
+    </form>
+
+    <br />
+
+    <a href="{% url 'student:student_document_list' %}">Back</a>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<h2>Document Schedules</h2>
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Title</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Action</th>
+  </tr>
+
+  {% for schedule in schedules %}
+
+  <tr>
+    <td>{{ schedule.title }}</td>
+    <td>{{ schedule.start_date }}</td>
+    <td>{{ schedule.end_date }}</td>
+
+    <td>
+      <a href="{% url 'WAdmin:admin_schedule_submissions' schedule.id %}">
+        <button>View Submissions</button>
+      </a>
+    </td>
+  </tr>
+
+  {% endfor %}
+</table>

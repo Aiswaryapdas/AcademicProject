@@ -1,0 +1,38 @@
+<h2>{{ schedule.title }} Submissions</h2>
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Admission No</th>
+    <th>Name</th>
+    <th>Upload Date</th>
+    <th>File</th>
+    <th>Mark</th>
+  </tr>
+
+  {% for row in data %}
+
+  <tr>
+    <td>{{ row.student.admission_number }}</td>
+    <td>{{ row.student.name }}</td>
+
+    {% if row.submission %}
+
+    <td>{{ row.submission.submitted_at }}</td>
+
+    <td>
+      <a href="{{ row.submission.file.url }}" target="_blank">View</a>
+    </td>
+
+    <td>{{ row.submission.faculty_mark }} / 10</td>
+
+    {% else %}
+
+    <td style="color: red">Not Uploaded</td>
+    <td>-</td>
+    <td>-</td>
+
+    {% endif %}
+  </tr>
+
+  {% endfor %}
+</table>

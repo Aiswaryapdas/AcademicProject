@@ -14,3 +14,25 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.student.name} - {self.date} - {self.status}"
+
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+from Admin.models import ReviewSchedule
+from Admin.models import Student
+
+
+class ReviewMark(models.Model):
+    review = models.ForeignKey(ReviewSchedule, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+
+    mark = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(10)]
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('review', 'student')
+
+    def __str__(self):
+        return f"{self.student} - {self.review} - {self.mark}"        

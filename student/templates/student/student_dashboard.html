@@ -172,8 +172,12 @@
 
         <!-- NEW ATTENDANCE BUTTON -->
         <a href="{% url 'student:attendance' %}">Attendance</a>
+        <a href="{% url 'student:view_marks' %}">View My Review Marks</a>
       </div>
-
+      <a href="{% url 'student:student_document_list' %}" class="action-card">
+        <i class="fa-solid fa-file-arrow-up"></i>
+        <p>Document Submission</p>
+      </a>
       <div class="content">
         <!-- Welcome -->
         <div class="card">
@@ -224,54 +228,14 @@
           {% endif %}
         </div>
 
-        <!-- DOCUMENT SUBMISSION SECTION -->
-        <div class="card">
-          <h3>Document Submission</h3>
-
-          {% if schedules %}
-          <table>
-            <tr>
-              <th>Title</th>
-              <th>Type</th>
-              <th>Deadline</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-
-            {% for schedule in schedules %}
-            <tr>
-              <td>{{ schedule.title }}</td>
-              <td>{{ schedule.document_type }}</td>
-              <td>{{ schedule.end_datetime }}</td>
-
-              <td>{{ schedule.status }}</td>
-
-              <td>
-                {% if schedule.submission %} Submitted on {{
-                schedule.submission.submitted_at }} <br />
-                Mark: {% if schedule.submission.mark %} {{
-                schedule.submission.mark }} {% else %} Not graded {% endif %} {%
-                elif schedule.status == "Active" %}
-                <a
-                  href="{% url 'student:upload_document' schedule.id %}"
-                  class="upload-btn"
-                >
-                  Upload
-                </a>
-                {% elif schedule.status == "Expired" %}
-                <span class="deadline">Deadline Passed</span>
-                {% else %} Not Open Yet {% endif %}
-              </td>
-            </tr>
-            {% endfor %}
-          </table>
-          {% else %}
-          <p>No document schedules available.</p>
-          {% endif %}
-        </div>
-      </div>
+        
+    <div
+      class="card"
+      onclick="window.location.href='{% url 'student:student_document_marks' %}'"
+    >
+      <h3>Document Marks</h3>
+      <p>View marks given by faculty</p>
     </div>
-
     <script>
       function toggleProfile() {
         const box = document.getElementById("profileBox");

@@ -1,0 +1,37 @@
+<h2 style="text-align: center">Document Submission Schedule</h2>
+
+<a href="{% url 'WAdmin:add_document_schedule' %}">
+  <button>+ Add New Document</button>
+</a>
+
+<br /><br />
+
+<table border="1" width="100%">
+  <tr>
+    <th>Title</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Format</th>
+    <th>Max Size</th>
+    <th>Actions</th>
+  </tr>
+
+  {% for doc in schedules %}
+  <tr>
+    <td>{{doc.title}}</td>
+    <td>{{doc.start_date}}</td>
+    <td>{{doc.end_date}}</td>
+    <td>{{doc.file_format}}</td>
+    <td>{{doc.max_size}} MB</td>
+    <td>
+      <a href="{% url 'WAdmin:edit_document_schedule' doc.id %}">
+        <button>Edit</button>
+      </a>
+
+      <a href="{% url 'WAdmin:delete_document_schedule' doc.id %}">
+        <button>Delete</button>
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>

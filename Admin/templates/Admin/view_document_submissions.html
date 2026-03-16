@@ -1,0 +1,34 @@
+<h2>All Student Document Submissions</h2>
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Admission No</th>
+    <th>Student Name</th>
+    <th>Document Title</th>
+    <th>Uploaded Date</th>
+    <th>Faculty Mark</th>
+  </tr>
+
+  {% for row in data %}
+
+  <tr>
+    <td>{{ row.student.admission_number }}</td>
+
+    <td>{{ row.student.name }}</td>
+
+    <td>{{ row.schedule.title }}</td>
+
+    <td>
+      {% if row.submission %} {{ row.submission.submitted_at }} {% else %}
+      <span style="color: red">Not Uploaded</span>
+      {% endif %}
+    </td>
+
+    <td>
+      {% if row.submission.faculty_mark %} {{ row.submission.faculty_mark }} /
+      10 {% else %} - {% endif %}
+    </td>
+  </tr>
+
+  {% endfor %}
+</table>

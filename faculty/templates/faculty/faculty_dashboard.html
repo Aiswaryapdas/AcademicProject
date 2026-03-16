@@ -216,6 +216,7 @@
               <th>Topic</th>
               <th>Status</th>
               <th>Remarks</th>
+              <th>Action</th>
             </tr>
 
             {% for review in reviews %}
@@ -225,6 +226,11 @@
               <td>{{ review.review_topic }}</td>
               <td>{{ review.review_status }}</td>
               <td>{{ review.remarks|default:"-" }}</td>
+              <td>
+                <a href="{% url 'faculty:add_review_marks' review.id %}"
+                  >Add Marks</a
+                >
+              </td>
             </tr>
             {% endfor %}
           </table>
@@ -287,6 +293,17 @@
       <h2>Attendance</h2>
       <p>Mark or view your students' attendance</p>
     </div>
+<div class="card"
+     style="text-align:center; cursor:pointer"
+     onclick="window.location.href='{% url 'faculty:document_schedules' %}'">
+
+  <div style="font-size:40px; margin-bottom:10px">📄</div>
+
+  <h2>Document Submissions</h2>
+  <p>View student uploads and give marks</p>
+
+</div>
+  </div>
 
     <script>
       function toggleProfile() {
