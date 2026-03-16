@@ -13,3 +13,4 @@ class DocumentSubmission(models.Model):
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     faculty_mark = models.IntegerField(null=True, blank=True)
+    faculty_remark = models.TextField(null=True, blank=True)   

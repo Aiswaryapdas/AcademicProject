@@ -1,10 +1,12 @@
-<h2>Document Marks</h2>
+<h2>My Document Marks & Remarks</h2>
 
 <table border="1" cellpadding="10">
   <tr>
     <th>Document Title</th>
-    <th>Submitted At</th>
-    <th>Mark</th>
+    <th>Uploaded Date</th>
+    <th>File</th>
+    <th>Faculty Mark</th>
+    <th>Faculty Remarks</th>
   </tr>
 
   {% for sub in submissions %}
@@ -15,8 +17,16 @@
     <td>{{ sub.submitted_at }}</td>
 
     <td>
-      {% if sub.faculty_mark %} {{ sub.faculty_mark }} / 10 {% else %}
-      <span style="color: orange">Not Evaluated Yet</span>
+      <a href="{{ sub.file.url }}" target="_blank">View</a>
+    </td>
+
+    <td>
+      {% if sub.faculty_mark %} {{ sub.faculty_mark }} / 10 {% else %} Not
+      Marked {% endif %}
+    </td>
+
+    <td>
+      {% if sub.faculty_remark %} {{ sub.faculty_remark }} {% else %} No Remarks
       {% endif %}
     </td>
   </tr>

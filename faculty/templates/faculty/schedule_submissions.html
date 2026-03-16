@@ -10,6 +10,7 @@
       <th>Upload Time</th>
       <th>File</th>
       <th>Mark</th>
+      <th>Remarks</th>
     </tr>
 
     {% for row in data %}
@@ -43,11 +44,22 @@
 
         <input
           type="number"
-          name="mark_{{ row.submission.id }}"
+          name="mark_{{ row.student.id }}"
           value="{{ row.submission.faculty_mark }}"
           min="0"
           max="10"
         />
+
+        {% else %} - {% endif %}
+      </td>
+
+      <td>
+        {% if row.submission %}
+
+        <textarea name="remark_{{ row.student.id }}" rows="2" cols="25">
+{{ row.submission.faculty_remark }}
+</textarea
+        >
 
         {% else %} - {% endif %}
       </td>

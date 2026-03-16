@@ -90,8 +90,8 @@ def attendance_mark(request):
     students = Student.objects.filter(projectgroup=group) if group else []
 
     if request.method == 'POST':
-        selected_date_str = request.POST.get('attendance_date')
-        if not selected_date_str:
+        selected_date = request.POST.get("selected_date")
+        if not selected_date:
             return redirect('/faculty/attendance/')
 
         today_date = date.today().isoformat()
@@ -241,17 +241,39 @@ def document_schedule_list(request):
 
 def schedule_submissions(request, schedule_id):
 
-    schedule = DocumentSchedule.objects.get(id=schedule_id)
+    schedule = get_object_or_404(DocumentSchedule, id=schedule_id)
 
-    faculty_id = 1   # temporary for testing
+    # get faculty id from session
+    faculty_id = request.session.get('faculty_id')
 
-    groups = ProjectGroup.objects.filter(faculty_id=faculty_id)
+    # get faculty group
+    group = ProjectGroup.objects.filter(faculty_id=faculty_id).first()
 
-    students = Student.objects.filter(projectgroup__in=groups)
+    # get only students in that group
+    students = Student.objects.filter(projectgroup=group)
+
+    # SAVE MARK + REMARK
+    if request.method == "POST":
+
+        for student in students:
+
+            submission = DocumentSubmission.objects.filter(
+                student=student,
+                schedule=schedule
+            ).first()
+
+            if submission:
+
+                mark = request.POST.get(f"mark_{student.id}")
+                remark = request.POST.get(f"remark_{student.id}")
+
+                if mark:
+                    submission.faculty_mark = mark
+
+                submission.faculty_remark = remark
+                submission.save()
 
     data = []
-
-
 
     for student in students:
 
@@ -265,25 +287,7 @@ def schedule_submissions(request, schedule_id):
             'submission': submission
         })
 
-
-    if request.method == "POST":
-
-        for row in data:
-
-            submission = row['submission']
-
-            if submission:
-
-                mark = request.POST.get(f"mark_{submission.id}")
-
-                if mark:
-                    submission.faculty_mark = mark
-                    submission.save()
-
-        return redirect('faculty:schedule_submissions', schedule_id=schedule_id)
-
-
-    return render(request,'faculty/schedule_submissions.html',{
+    return render(request, 'Faculty/schedule_submissions.html', {
         'schedule': schedule,
         'data': data
     })
