@@ -124,5 +124,8 @@
     {% else %}
     <p class="no-data">No review scheduled yet.</p>
     {% endif %}
+    <a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i>Back
+    </a>
   </body>
 </html>

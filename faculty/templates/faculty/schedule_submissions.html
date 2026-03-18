@@ -1,74 +1,224 @@
-<h2>{{ schedule.title }} Submissions</h2>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Submissions</title>
 
-<form method="post">
-  {% csrf_token %}
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: #f4f6f8;
+        padding: 30px;
+      }
 
-  <table border="1" cellpadding="10">
-    <tr>
-      <th>Admission No</th>
-      <th>Name</th>
-      <th>Upload Time</th>
-      <th>File</th>
-      <th>Mark</th>
-      <th>Remarks</th>
-    </tr>
+      /* CONTAINER */
+      .container {
+        max-width: 1100px;
+        margin: auto;
+      }
 
-    {% for row in data %}
+      /* HEADER */
+      .header {
+        background: #1e3a5f;
+        color: white;
+        padding: 20px 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
 
-    <tr>
-      <td>{{ row.student.admission_number }}</td>
+      .header h2 {
+        margin: 0;
+      }
 
-      <td>{{ row.student.name }}</td>
+      /* CARD */
+      .card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px 25px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
 
-      <td>
-        {% if row.submission %} {{ row.submission.submitted_at }} {% else %}
-        <span style="color: red">Not Submitted</span>
-        {% endif %}
-      </td>
+      /* TABLE */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
 
-      <td>
-        {% if row.submission %}
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        vertical-align: middle;
+      }
 
-        <a href="{{ row.submission.file.url }}" target="_blank">View</a> |
-        <a href="{{ row.submission.file.url }}" download>Download</a>
+      th {
+        background: #1e3a5f;
+        color: white;
+      }
 
-        {% else %}
+      td {
+        border-bottom: 1px solid #e5e7eb;
+      }
 
-        <span style="color: red">Not Uploaded</span>
+      /* STATUS */
+      .not-submitted {
+        color: red;
+        font-weight: 500;
+      }
 
-        {% endif %}
-      </td>
+      .not-uploaded {
+        color: red;
+      }
 
-      <td>
-        {% if row.submission %}
+      /* INPUT */
+      input[type="number"] {
+        width: 70px;
+        padding: 6px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        text-align: center;
+      }
 
-        <input
-          type="number"
-          name="mark_{{ row.student.id }}"
-          value="{{ row.submission.faculty_mark }}"
-          min="0"
-          max="10"
-        />
+      input[type="number"]:focus {
+        border-color: #3b82f6;
+        outline: none;
+      }
 
-        {% else %} - {% endif %}
-      </td>
+      /* TEXTAREA */
+      textarea {
+        width: 100%;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        padding: 6px;
+        resize: vertical;
+        font-family: inherit;
+      }
 
-      <td>
-        {% if row.submission %}
+      textarea:focus {
+        border-color: #3b82f6;
+        outline: none;
+      }
 
-        <textarea name="remark_{{ row.student.id }}" rows="2" cols="25">
-{{ row.submission.faculty_remark }}
-</textarea
-        >
+      /* LINKS */
+      a {
+        color: #2563eb;
+        text-decoration: none;
+      }
 
-        {% else %} - {% endif %}
-      </td>
-    </tr>
+      a:hover {
+        text-decoration: underline;
+      }
 
-    {% endfor %}
-  </table>
+      /* BUTTON */
+      .button-container {
+        text-align: right;
+        margin-top: 20px;
+      }
 
-  <br />
+      button {
+        padding: 12px 25px;
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        cursor: pointer;
+      }
 
-  <button type="submit">Save Marks</button>
-</form>
+      button:hover {
+        background: #059669;
+      }
+      .back-btn {
+        background: #6b7280;
+        margin-right: 10px;
+      }
+
+      .back-btn:hover {
+        background: #4b5563;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- HEADER -->
+      <div class="header">
+        <h2>{{ schedule.title }} - Submissions</h2>
+      </div>
+
+      <!-- CARD -->
+      <div class="card">
+        <form method="post">
+          {% csrf_token %}
+
+          <table>
+            <tr>
+              <th>Admission No</th>
+              <th>Name</th>
+              <th>Upload Time</th>
+              <th>File</th>
+              <th>Mark</th>
+              <th>Remarks</th>
+            </tr>
+
+            {% for row in data %}
+            <tr>
+              <td>{{ row.student.admission_number }}</td>
+
+              <td>{{ row.student.name }}</td>
+
+              <td>
+                {% if row.submission %} {{ row.submission.submitted_at }}
+                {%else%}
+                <span class="not-submitted">Not Submitted</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if row.submission %}
+                <a href="{{ row.submission.file.url }}" target="_blank">View</a>
+                |
+                <a href="{{ row.submission.file.url }}" download>Download</a>
+                {% else %}
+                <span class="not-uploaded">Not Uploaded</span>
+                {% endif %}
+              </td>
+
+              <td>
+                {% if row.submission %}
+                <input
+                  type="number"
+                  name="mark_{{ row.student.id }}"
+                  value="{{ row.submission.faculty_mark }}"
+                  min="0"
+                  max="10"
+                />
+                {% else %} - {% endif %}
+              </td>
+
+              <td>
+                {% if row.submission %}
+                <textarea name="remark_{{ row.student.id }}" rows="2">
+{{ row.submission.faculty_remark }}</textarea
+                >
+                {% else %} - {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+
+          <div class="button-container">
+            <a href="{% url 'faculty:homepage' %}">
+              <button type="button" class="back-btn">
+                ← Back to Dashboard
+              </button>
+            </a>
+
+            <button type="submit">Save Marks</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

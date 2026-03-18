@@ -1,37 +1,134 @@
-<h2 style="text-align: center">Document Submission Schedule</h2>
+<h2 style="text-align: center; color: #0d6efd; margin-bottom: 20px">
+  Document Submission Schedule
+</h2>
 
-<a href="{% url 'WAdmin:add_document_schedule' %}">
-  <button>+ Add New Document</button>
-</a>
+<!-- Back Button -->
+<a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn"
+  ><i class="fa fa-arrow-left"></i> Back</a
+>
+
+<a href="{% url 'WAdmin:add_document_schedule' %}" class="add-btn"
+  >+ Add New Document</a
+>
 
 <br /><br />
 
-<table border="1" width="100%">
-  <tr>
-    <th>Title</th>
-    <th>Start Date</th>
-    <th>End Date</th>
-    <th>Format</th>
-    <th>Max Size</th>
-    <th>Actions</th>
-  </tr>
-
-  {% for doc in schedules %}
-  <tr>
-    <td>{{doc.title}}</td>
-    <td>{{doc.start_date}}</td>
-    <td>{{doc.end_date}}</td>
-    <td>{{doc.file_format}}</td>
-    <td>{{doc.max_size}} MB</td>
-    <td>
-      <a href="{% url 'WAdmin:edit_document_schedule' doc.id %}">
-        <button>Edit</button>
-      </a>
-
-      <a href="{% url 'WAdmin:delete_document_schedule' doc.id %}">
-        <button>Delete</button>
-      </a>
-    </td>
-  </tr>
-  {% endfor %}
+<table class="schedule-table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Format</th>
+      <th>Max Size</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for doc in schedules %}
+    <tr>
+      <td>{{ doc.title }}</td>
+      <td>{{ doc.start_date }}</td>
+      <td>{{ doc.end_date }}</td>
+      <td>{{ doc.file_format }}</td>
+      <td>{{ doc.max_size }} MB</td>
+      <td>
+        <a
+          href="{% url 'WAdmin:edit_document_schedule' doc.id %}"
+          class="action-btn edit"
+          ><i class="fa fa-pen"></i> Edit</a
+        >
+        <a
+          href="{% url 'WAdmin:delete_document_schedule' doc.id %}"
+          class="action-btn delete"
+          ><i class="fa fa-trash"></i> Delete</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
+
+<style>
+  .back-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 10px;
+    transition: 0.3s;
+  }
+  .back-btn i {
+    margin-right: 6px;
+  }
+  .back-btn:hover {
+    background-color: #0b5ed7;
+  }
+
+  .add-btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+    margin-left: 10px;
+  }
+  .add-btn:hover {
+    background-color: #0b5ed7;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-family: "Roboto", Arial, sans-serif;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .schedule-table th {
+    background-color: #0d6efd;
+    color: white;
+    font-weight: 500;
+  }
+
+  .schedule-table tr:hover {
+    background-color: #f1f7ff;
+  }
+
+  .action-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    margin-right: 5px;
+    transition: 0.3s;
+  }
+
+  .action-btn.edit {
+    background-color: #198754;
+  }
+  .action-btn.edit:hover {
+    background-color: #157347;
+  }
+
+  .action-btn.delete {
+    background-color: #dc3545;
+  }
+  .action-btn.delete:hover {
+    background-color: #b02a37;
+  }
+</style>

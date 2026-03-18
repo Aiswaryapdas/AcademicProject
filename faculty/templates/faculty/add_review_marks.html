@@ -1,49 +1,154 @@
 {% load custom_tags %}
 
 <!doctype html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <title>Add Review Marks</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: #f4f6f8;
+        padding: 30px;
+      }
+
+      /* CONTAINER */
+      .container {
+        max-width: 900px;
+        margin: auto;
+      }
+
+      /* HEADER CARD */
+      .header-card {
+        background: #1e3a5f;
+        color: white;
+        padding: 20px 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .header-card h2 {
+        margin: 0;
+      }
+
+      .header-card p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+      }
+
+      /* MAIN CARD */
+      .card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px 25px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
+
+      /* TABLE */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+      }
+
+      th {
+        background: #1e3a5f;
+        color: white;
+      }
+
+      td {
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      /* INPUT FIELD */
+      input[type="number"] {
+        width: 80px;
+        padding: 6px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        text-align: center;
+      }
+
+      input[type="number"]:focus {
+        border-color: #3b82f6;
+        outline: none;
+      }
+
+      /* BUTTON */
+      button {
+        margin-top: 20px;
+        padding: 12px 25px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #2563eb;
+      }
+
+      /* ALIGN BUTTON */
+      .button-container {
+        text-align: right;
+      }
+    </style>
   </head>
 
   <body>
-    <h2>Review: {{review.review_topic}}</h2>
-    <h3>Date: {{review.review_date}} | Time: {{review.review_time}}</h3>
+    <div class="container">
+      <!-- HEADER -->
+      <div class="header-card">
+        <h2>Review: {{review.review_topic}}</h2>
+        <p>Date: {{review.review_date}} | Time: {{review.review_time}}</p>
+      </div>
 
-    <form method="POST">
-      {% csrf_token %}
+      <!-- FORM CARD -->
+      <div class="card">
+        <form method="POST">
+          {% csrf_token %}
 
-      <table border="1" cellpadding="10">
-        <tr>
-          <th>Student Name</th>
-          <th>Mark (Out of 10)</th>
-          <th>Total Marks</th>
-        </tr>
+          <table>
+            <tr>
+              <th>Student Name</th>
+              <th>Mark (Out of 10)</th>
+              <th>Total Marks</th>
+            </tr>
 
-        {% for student in students %}
+            {% for student in students %}
+            <tr>
+              <td>{{student.name}}</td>
 
-        <tr>
-          <td>{{student.name}}</td>
+              <td>
+                <input
+                  type="number"
+                  name="mark_{{student.id}}"
+                  min="0"
+                  max="10"
+                  value="{{ mark_dict|get_item:student.id }}"
+                />
+              </td>
 
-          <td>
-            <input
-              type="number"
-              name="mark_{{student.id}}"
-              min="0"
-              max="10"
-              value="{{ mark_dict|get_item:student.id }}"
-            />
-          </td>
+              <td>{{ total_dict|get_item:student.id }}</td>
+            </tr>
+            {% endfor %}
+          </table>
 
-          <td>{{ total_dict|get_item:student.id }}</td>
-        </tr>
-
-        {% endfor %}
-      </table>
-
-      <br />
-
-      <button type="submit">Save Marks</button>
-    </form>
+          <div class="button-container">
+            <button type="submit">Save Marks</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </body>
 </html>

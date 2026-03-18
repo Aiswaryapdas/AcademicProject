@@ -33,5 +33,5 @@ path('delete_document_schedule/<int:id>/', views.delete_document_schedule, name=
 path('documents/', views.admin_document_schedules, name='admin_document_schedules'),
 path('documents/<int:schedule_id>/', views.admin_schedule_submissions, name='admin_schedule_submissions'),
 
-
+ path('logout/', views.admin_logout, name='admin_logout'),
 ]

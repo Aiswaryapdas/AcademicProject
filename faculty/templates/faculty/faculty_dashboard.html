@@ -7,35 +7,39 @@
     <style>
       body {
         margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: "Segoe UI", Arial, sans-serif;
         background-color: #f4f6f8;
       }
 
+      /* TOP BAR */
       .top-bar {
         height: 60px;
-        background-color: #2f4357;
+        background: #1e3a5f;
         color: white;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 20px;
+        padding: 0 25px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       }
 
       .left-top {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 25px;
       }
 
       .app-name {
-        font-size: 22px;
-        font-weight: bold;
+        font-size: 20px;
+        font-weight: 600;
       }
 
       .page-title {
-        font-size: 18px;
+        font-size: 16px;
+        opacity: 0.9;
       }
 
+      /* RIGHT SIDE */
       .right-top {
         display: flex;
         align-items: center;
@@ -44,9 +48,9 @@
       }
 
       .profile-circle {
-        width: 40px;
-        height: 40px;
-        background-color: #1abc9c;
+        width: 38px;
+        height: 38px;
+        background: #3b82f6;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -56,34 +60,36 @@
       }
 
       .logout-btn {
-        background-color: #ff5a3c;
+        background: #ef4444;
         border: none;
         color: white;
-        padding: 8px 14px;
-        border-radius: 4px;
+        padding: 7px 14px;
+        border-radius: 6px;
         cursor: pointer;
       }
 
+      /* PROFILE CARD */
       .profile-card {
         position: absolute;
-        top: 60px;
+        top: 65px;
         right: 0;
-        width: 260px;
-        background-color: white;
-        color: black;
-        border-radius: 6px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        width: 250px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         padding: 15px;
         display: none;
       }
 
+      /* LAYOUT */
       .container {
         display: flex;
       }
 
+      /* SIDEBAR */
       .sidebar {
-        width: 220px;
-        background-color: #324a5e;
+        width: 230px;
+        background: #243447;
         min-height: calc(100vh - 60px);
         padding-top: 20px;
       }
@@ -91,51 +97,83 @@
       .sidebar a {
         display: block;
         padding: 12px 20px;
-        color: white;
+        color: #cbd5e1;
         text-decoration: none;
+        font-size: 14px;
+        transition: 0.3s;
       }
 
       .sidebar a:hover {
-        background-color: #3f5f78;
+        background: #334155;
+        color: white;
       }
 
+      /* CONTENT */
       .content {
         flex: 1;
         padding: 30px;
       }
 
+      /* CARDS */
       .card {
-        background-color: #ffffff;
-        border-radius: 6px;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        margin-bottom: 30px;
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 20px 25px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
       }
 
+      .card h2 {
+        margin-bottom: 15px;
+        color: #1e293b;
+      }
+
+      /* TABLE */
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 15px;
+        margin-top: 10px;
+        font-size: 14px;
       }
 
       th,
       td {
         padding: 10px;
-        border-bottom: 1px solid #ddd;
+        text-align: left;
       }
 
       th {
-        background-color: #2f4357;
+        background: #1e3a5f;
         color: white;
       }
 
+      td {
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      /* BUTTON */
       .give-mark-btn {
-        background-color: #1abc9c;
+        background: #10b981;
         border: none;
         color: white;
-        padding: 6px 10px;
-        border-radius: 4px;
+        padding: 6px 12px;
+        border-radius: 6px;
         cursor: pointer;
+      }
+
+      .give-mark-btn:hover {
+        background: #059669;
+      }
+
+      /* ACTION CARDS */
+      .action-card {
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .action-card:hover {
+        transform: translateY(-5px);
       }
     </style>
   </head>
@@ -173,8 +211,9 @@
         <a href="#">My Profile</a>
       </div>
 
+      <!-- CONTENT -->
       <div class="content">
-        <!-- GROUP SECTION -->
+        <!-- GROUP -->
         <div class="card">
           <h2>Project Group</h2>
 
@@ -204,7 +243,7 @@
           {% endif %}
         </div>
 
-        <!-- REVIEW SECTION -->
+        <!-- REVIEW -->
         <div class="card">
           <h2>Review Schedule</h2>
 
@@ -227,9 +266,9 @@
               <td>{{ review.review_status }}</td>
               <td>{{ review.remarks|default:"-" }}</td>
               <td>
-                <a href="{% url 'faculty:add_review_marks' review.id %}"
-                  >Add Marks</a
-                >
+                <a href="{% url 'faculty:add_review_marks' review.id %}">
+                  Add Marks
+                </a>
               </td>
             </tr>
             {% endfor %}
@@ -239,71 +278,26 @@
           {% endif %}
         </div>
 
-        <!-- DOCUMENT SUBMISSIONS SECTION -->
-        <div class="card">
+        <!-- ACTION CARDS -->
+        <div
+          class="card action-card"
+          onclick="window.location.href='{% url 'faculty:attendance_mark' %}'"
+        >
+          <div style="font-size: 40px; margin-bottom: 10px">📋</div>
+          <h2>Attendance</h2>
+          <p>Mark or view student attendance</p>
+        </div>
+
+        <div
+          class="card action-card"
+          onclick="window.location.href='{% url 'faculty:document_schedules' %}'"
+        >
+          <div style="font-size: 40px; margin-bottom: 10px">📄</div>
           <h2>Document Submissions</h2>
-
-          {% if submissions %}
-          <table>
-            <tr>
-              <th>Student</th>
-              <th>Schedule</th>
-              <th>Submitted At</th>
-              <th>File</th>
-              <th>Mark</th>
-              <th>Action</th>
-            </tr>
-
-            {% for submission in submissions %}
-            <tr>
-              <td>{{ submission.student.name }}</td>
-              <td>{{ submission.schedule.title }}</td>
-              <td>{{ submission.submitted_at }}</td>
-              <td>
-                <a href="{{ submission.file.url }}" target="_blank">
-                  View File
-                </a>
-              </td>
-              <td>
-                {% if submission.mark %} {{ submission.mark }} {% else %} Not
-                graded {% endif %}
-              </td>
-              <td>
-                <a href="{% url 'faculty:give_mark' submission.id %}">
-                  <button class="give-mark-btn">Give Mark</button>
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-          </table>
-
-          {% else %}
-          <p>No document submissions yet.</p>
-          {% endif %}
+          <p>View uploads and give marks</p>
         </div>
       </div>
     </div>
-    <!-- ATTENDANCE ACTION CARD -->
-    <div
-      class="card"
-      style="text-align: center; cursor: pointer"
-      onclick="window.location.href='{% url 'faculty:attendance_mark' %}'"
-    >
-      <div style="font-size: 40px; color: #1abc9c; margin-bottom: 10px">📋</div>
-      <h2>Attendance</h2>
-      <p>Mark or view your students' attendance</p>
-    </div>
-<div class="card"
-     style="text-align:center; cursor:pointer"
-     onclick="window.location.href='{% url 'faculty:document_schedules' %}'">
-
-  <div style="font-size:40px; margin-bottom:10px">📄</div>
-
-  <h2>Document Submissions</h2>
-  <p>View student uploads and give marks</p>
-
-</div>
-  </div>
 
     <script>
       function toggleProfile() {

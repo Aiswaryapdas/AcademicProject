@@ -4,7 +4,7 @@ from Admin.models import ReviewSchedule
 from .models import ReviewMark
 from django.apps import apps
 from .models import Attendance
-
+from datetime import datetime, date
 
 def homepage(request):
 
@@ -74,46 +74,52 @@ from django.apps import apps
 from faculty.models import Attendance
 
 def attendance_mark(request):
-    # Check custom faculty login session
+
     if 'faculty_id' not in request.session:
-        return redirect('/faculty/login/')  # your faculty login page
+        return redirect('/faculty/login/')
 
     faculty_id = request.session['faculty_id']
-    faculty_name = request.session.get('faculty_name')
 
-    # Load ProjectGroup model and Student model
-    Student = apps.get_model('Admin', 'Student')  # replace 'Admin' with your app name
+    Student = apps.get_model('Admin', 'Student')
     ProjectGroup = apps.get_model('Admin', 'ProjectGroup')
 
-    # Get the project group for this faculty
     group = ProjectGroup.objects.filter(faculty_id=faculty_id).first()
     students = Student.objects.filter(projectgroup=group) if group else []
 
     if request.method == 'POST':
-        selected_date = request.POST.get("selected_date")
-        if not selected_date:
+        selected_date_str = request.POST.get("selected_date")
+
+        if not selected_date_str:
+            messages.error(request, "Please select a date.")
             return redirect('/faculty/attendance/')
 
-        today_date = date.today().isoformat()
+        # ✅ Convert string to date object
+        selected_date = datetime.strptime(selected_date_str, "%Y-%m-%d").date()
 
-        # Prevent past dates
+        # ✅ Prevent past dates
         if selected_date < date.today():
             messages.error(request, "You cannot mark attendance for past dates.")
             return redirect('/faculty/attendance/')
 
-        # Save attendance for each student
+        # ✅ Save attendance
         for student in students:
             status = request.POST.get(f'status_{student.id}')
+
             if status:
                 Attendance.objects.update_or_create(
                     student=student,
-                    today_date=today_date,  # use the selected_date
-                    defaults={'faculty_id': faculty_id, 'status': status}
+                    date=selected_date,   # ✅ FIXED (correct field)
+                    defaults={
+                        'faculty_id': faculty_id,
+                        'status': status
+                    }
                 )
-        return redirect('/faculty/dashboard/')  # back to dashboard after saving
 
-    # Pass today's date to template for min date restriction in HTML
+        messages.success(request, "Attendance saved successfully!")
+        return redirect('/faculty/dashboard/')
+
     today_date = date.today()
+
     return render(request, 'faculty/attendance_mark.html', {
         'students': students,
         'today_date': today_date

@@ -1,45 +1,145 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <title>Upload Document</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f4f6f8;
+        padding: 40px;
+      }
+
+      /* CONTAINER */
+      .container {
+        max-width: 700px;
+        margin: auto;
+      }
+
+      /* HEADER */
+      .header {
+        background: linear-gradient(90deg, #1e3a5f, #2c3e50);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .header h2 {
+        margin: 0;
+      }
+
+      /* CARD */
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
+
+      /* DESCRIPTION */
+      .description {
+        color: #555;
+        margin-bottom: 20px;
+      }
+
+      /* FILE BOX */
+      .file-box {
+        background: #f9fafb;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      /* INPUT */
+      input[type="file"] {
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+
+      /* BUTTON */
+      button {
+        padding: 10px 20px;
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+      }
+
+      button:hover {
+        background: #059669;
+      }
+
+      /* BACK BUTTON */
+      .back-btn {
+        display: inline-block;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #374151;
+        font-size: 14px;
+      }
+
+      .back-btn:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
 
   <body>
-    <h2>{{ schedule.title }}</h2>
+    <div class="container">
+      <!-- HEADER -->
+      <div class="header">
+        <h2><i class="fa-solid fa-file-upload"></i> {{ schedule.title }}</h2>
+      </div>
 
-    <p>{{ schedule.description }}</p>
+      <!-- CARD -->
+      <div class="card">
+        <p class="description">{{ schedule.description }}</p>
 
-    {% if submission %}
+        <!-- CURRENT FILE -->
+        {% if submission %}
+        <div class="file-box">
+          <b>Current File:</b><br />
+          <a href="{{ submission.file.url }}" target="_blank">
+            <i class="fa-solid fa-file"></i> {{ submission.file.name }}
+          </a>
+        </div>
+        {% else %}
+        <div class="file-box">
+          <b>No file uploaded yet</b>
+        </div>
+        {% endif %}
 
-    <p>
-      <b>Current File:</b>
-      <a href="{{ submission.file.url }}" target="_blank">
-        {{ submission.file.name }}
-      </a>
-    </p>
+        <!-- FORM -->
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
 
-    {% else %}
+          <label><b>Select File</b></label
+          ><br />
 
-    <p><b>No file uploaded yet</b></p>
+          <input type="file" name="file" required />
 
-    {% endif %}
+          <br />
 
-    <form method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
+          <button type="submit">
+            {% if submission %} Replace File {% else %} Upload File {% endif %}
+          </button>
+        </form>
 
-      <label>Select File</label><br /><br />
-
-      <input type="file" name="file" required />
-
-      <br /><br />
-
-      <button type="submit">
-        {% if submission %} Replace File {% else %} Upload File {% endif %}
-      </button>
-    </form>
-
-    <br />
-
-    <a href="{% url 'student:student_document_list' %}">Back</a>
+        <!-- BACK -->
+        <a href="{% url 'student:student_document_list' %}" class="back-btn">
+          ← Back to Submissions
+        </a>
+      </div>
+    </div>
   </body>
 </html>

@@ -33,3 +33,8 @@ def login(request):
             return render(request, 'Guest/Login.html', {'msg': msg})
 
     return render(request, 'Guest/Login.html')
+
+from django.shortcuts import render
+
+def home(request):
+    return render(request,'Guest/home.html')

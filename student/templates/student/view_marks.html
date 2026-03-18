@@ -1,35 +1,149 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <title>My Review Marks</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f4f6f8;
+        padding: 40px;
+      }
+
+      /* CONTAINER */
+      .container {
+        max-width: 900px;
+        margin: auto;
+      }
+
+      /* HEADER */
+      .header {
+        background: linear-gradient(90deg, #1e3a5f, #2c3e50);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .header h2 {
+        margin: 0;
+      }
+
+      /* CARD */
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
+
+      /* TABLE */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      th {
+        background: #1e3a5f;
+        color: white;
+        padding: 12px;
+        text-align: left;
+      }
+
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      tr:hover {
+        background: #f9fafb;
+      }
+
+      /* TOTAL ROW */
+      .total-row {
+        background: #ecfdf5;
+        font-weight: bold;
+      }
+
+      .total-row td {
+        border-top: 2px solid #10b981;
+      }
+
+      /* BADGE */
+      .mark-badge {
+        background: #dbeafe;
+        color: #1e40af;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+
+      /* BACK BUTTON */
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background: #6b7280;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .back-btn:hover {
+        background: #4b5563;
+      }
+    </style>
   </head>
 
   <body>
-    <h2>My Review Marks</h2>
+    <div class="container">
+      <!-- HEADER -->
+      <div class="header">
+        <h2><i class="fa-solid fa-chart-line"></i> My Review Marks</h2>
+      </div>
 
-    <table border="1" cellpadding="10">
-      <tr>
-        <th>Review Topic</th>
-        <th>Date</th>
-        <th>Mark</th>
-      </tr>
+      <!-- CARD -->
+      <div class="card">
+        <table>
+          <tr>
+            <th>Review Topic</th>
+            <th>Date</th>
+            <th>Mark</th>
+          </tr>
 
-      {% for mark in marks %}
+          {% for mark in marks %}
+          <tr>
+            <td>{{ mark.review.review_topic }}</td>
 
-      <tr>
-        <td>{{ mark.review.review_topic }}</td>
+            <td>{{ mark.review.review_date }}</td>
 
-        <td>{{ mark.review.review_date }}</td>
+            <td>
+              <span class="mark-badge">{{ mark.mark }}</span>
+            </td>
+          </tr>
+          {% endfor %}
 
-        <td>{{ mark.mark }}</td>
-      </tr>
+          <!-- TOTAL -->
+          <tr class="total-row">
+            <td colspan="2">Total Marks</td>
+            <td>{{ total }}</td>
+          </tr>
+        </table>
 
-      {% endfor %}
-
-      <tr>
-        <td colspan="2"><strong>Total Marks</strong></td>
-        <td><strong>{{ total }}</strong></td>
-      </tr>
-    </table>
+        <!-- BACK BUTTON -->
+        <a href="{% url 'student:dashboard' %}" class="back-btn">
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
   </body>
 </html>

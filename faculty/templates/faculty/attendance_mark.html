@@ -76,7 +76,7 @@
         <input
           type="date"
           id="attendance-date"
-          name="attendance_date"
+          name="selected_date"
           min="{{ today_date }}"
           value="{{ today_date }}"
           required
@@ -121,7 +121,7 @@
 
       <button type="submit" class="save-btn">Save Attendance</button>
     </form>
-
+    <li></li>
     <script>
       function toggleStatus(btn) {
         const hiddenInput = btn.nextElementSibling;

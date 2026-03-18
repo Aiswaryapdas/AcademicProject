@@ -2,222 +2,227 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>EduTrack | Admin Dashboard</title>
-
+    <title>Admin Dashboard | Academic Portal</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-
     <style>
-      body {
+      * {
         margin: 0;
+        padding: 0;
+        box-sizing: border-box;
         font-family: "Segoe UI", Arial, sans-serif;
-        background-color: #f4f6f9;
+      }
+      body {
+        display: flex;
+        background: #f4f6f9;
+        height: 100vh;
+        overflow: hidden;
       }
 
-      .topbar {
-        background: #1e293b;
+      /* SIDEBAR */
+      .sidebar {
+        width: 250px;
+        background: #1e3a5f;
         color: white;
-        padding: 15px 30px;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        position: fixed;
+        top: 60px; /* leave space for navbar */
+        left: 0;
+        bottom: 0;
+        overflow-y: auto;
+      }
+      .sidebar .logo {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      .count-card {
+        background: #2563eb;
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+        text-decoration: none;
+        color: white;
+      }
+      .count-card:hover {
+        background: #1e40af;
+      }
+      .count-card i {
+        font-size: 28px;
+        color: #ffd700;
+      }
+      .count-card .text {
+        text-align: right;
+      }
+      .count-card .text h4 {
+        margin: 0;
+        font-size: 14px;
+      }
+      .count-card .text p {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      /* TOP NAVBAR */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #1e3a5f;
+        color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 0 40px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        z-index: 100;
       }
-
-      .logout-btn {
-        background: #ef4444;
+      .navbar .logo-top {
+        font-size: 22px;
+        font-weight: bold;
+      }
+      .navbar .nav-links a {
+        color: white;
+        text-decoration: none;
+        margin-left: 25px;
+        font-weight: 500;
+        transition: 0.3s;
+      }
+      .navbar .nav-links a:hover {
+        color: #ffd700;
+      }
+      .navbar .logout-btn {
+        background: #ffd700;
         border: none;
         padding: 8px 16px;
         border-radius: 6px;
-        color: white;
         cursor: pointer;
-      }
-
-      .logout-btn:hover {
-        background: #dc2626;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: auto;
-        padding: 40px 20px;
-      }
-
-      .cards {
-        display: flex;
-        gap: 30px;
-        flex-wrap: wrap;
-        margin-bottom: 40px;
-      }
-
-      .card {
-        background: white;
-        width: 260px;
-        padding: 25px;
-        border-radius: 14px;
-        text-align: center;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      }
-
-      .card h3 {
-        margin: 0;
-        color: #1f2937;
-      }
-      .card p {
-        font-size: 28px;
-        color: #2563eb;
-      }
-
-      .actions {
-        display: flex;
-        gap: 25px;
-        flex-wrap: wrap;
-        margin-top: 20px;
-        margin-bottom: 60px;
-      }
-
-      .action-card {
-        background: white;
-        width: 200px;
-        padding: 20px;
-        text-align: center;
-        border-radius: 14px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-        text-decoration: none;
-        color: black;
+        font-weight: bold;
         transition: 0.3s;
       }
+      .navbar .logout-btn:hover {
+        background: #e6c200;
+      }
 
+      /* MAIN CONTENT */
+      .main-content {
+        margin-left: 250px;
+        padding: 100px 40px 40px 40px; /* leave space for top navbar */
+        overflow-y: auto;
+        height: 100vh;
+      }
+
+      /* ACTION CARDS */
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 25px;
+        justify-content: flex-start;
+      }
+      .action-card {
+        background: white;
+        width: 220px;
+        padding: 25px 15px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        text-decoration: none;
+        color: #1f2937;
+        transition: 0.3s;
+      }
       .action-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
       }
-
       .action-card i {
-        font-size: 32px;
-        color: #16a34a;
-        margin-bottom: 10px;
+        font-size: 36px;
+        color: #2563eb;
+        margin-bottom: 12px;
+      }
+      .action-card p {
+        font-weight: bold;
+        font-size: 16px;
       }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      }
-
-      thead {
-        background: #2563eb;
-        color: white;
-      }
-
-      th,
-      td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #e5e7eb;
-      }
-
-      .btn-edit {
-        background: #16a34a;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-      }
-
-      .btn-delete {
-        background: #ef4444;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-      }
-
-      .status-upcoming {
-        color: #f59e0b;
-        font-weight: 600;
-      }
-      .status-active {
-        color: #16a34a;
-        font-weight: 600;
-      }
-      .status-expired {
-        color: #ef4444;
-        font-weight: 600;
-      }
-
+      /* MESSAGES */
       .message-box {
         background: #16a34a;
         color: white;
         padding: 12px;
         border-radius: 8px;
-        margin: 20px;
-      }
-      .card {
-        display: inline-block;
-        width: 150px;
-        padding: 20px;
-        margin: 10px;
-        background: #2c3e50;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 8px;
-        transition: 0.3s;
-      }
-
-      .card:hover {
-        background: #34495e;
-        transform: scale(1.05);
-      }
-
-      .icon {
-        font-size: 30px;
-        margin-bottom: 10px;
-      }
-
-      .title {
-        font-size: 16px;
+        margin-bottom: 20px;
         font-weight: bold;
       }
     </style>
   </head>
-
   <body>
-    <div class="topbar">
-      <h2>EduTrack Admin</h2>
-      <button class="logout-btn">Logout</button>
+    <!-- TOP NAVBAR -->
+    <div class="navbar">
+      <div class="logo-top">🎓 Academic Admin</div>
+      <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+        <a href="{% url 'WAdmin:admin_logout' %}">Logout</a>
+      </div>
     </div>
 
-    {% if messages %} {% for message in messages %}
-    <div class="message-box">{{ message }}</div>
-    {% endfor %} {% endif %}
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="logo">Dashboard</div>
 
-    <div class="container">
-      <!-- COUNT CARDS -->
-      <div class="cards">
-        <a href="{% url 'WAdmin:faculty_list' %}" class="card">
-          <h3>Total Faculties</h3>
-          <p>{{ faculty_count }}</p>
-        </a>
-
-        <a href="{% url 'WAdmin:student_list' %}" class="card">
-          <h3>Total Students</h3>
+      <a href="{% url 'WAdmin:student_list' %}" class="count-card">
+        <i class="fa-solid fa-user-graduate"></i>
+        <div class="text">
+          <h4>Total Students</h4>
           <p>{{ student_count }}</p>
-        </a>
+        </div>
+      </a>
 
-        <a href="{% url 'WAdmin:project_group_list' %}" class="card">
-          <h3>Total Project Groups</h3>
+      <a href="{% url 'WAdmin:faculty_list' %}" class="count-card">
+        <i class="fa-solid fa-user-tie"></i>
+        <div class="text">
+          <h4>Total Faculties</h4>
+          <p>{{ faculty_count }}</p>
+        </div>
+      </a>
+
+      <a href="{% url 'WAdmin:project_group_list' %}" class="count-card">
+        <i class="fa-solid fa-book"></i>
+        <div class="text">
+          <h4>Project Groups</h4>
           <p>{{ project_group_count }}</p>
-        </a>
-      </div>
+        </div>
+      </a>
 
-      <!-- ACTION CARDS -->
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="count-card">
+        <i class="fa-solid fa-chart-simple"></i>
+        <div class="text">
+          <h4>Attendance</h4>
+          <p>📊</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      {% if messages %} {% for message in messages %}
+      <div class="message-box">{{ message }}</div>
+      {% endfor %} {% endif %}
+
       <div class="actions">
         <a href="{% url 'WAdmin:faculty_register' %}" class="action-card">
           <i class="fa-solid fa-user-tie"></i>
@@ -230,7 +235,7 @@
         </a>
 
         <a href="{% url 'WAdmin:create_project_group' %}" class="action-card">
-          <i class="fa-solid fa-users"></i>
+          <i class="fa-solid fa-book"></i>
           <p>Create Project Group</p>
         </a>
 
@@ -240,27 +245,14 @@
         </a>
 
         <a href="{% url 'WAdmin:document_schedule_list' %}" class="action-card">
-          <i class="fa-solid fa-file-arrow-up"></i>
+          <i class="fa-solid fa-file-circle-plus"></i>
           <p>Document Submission</p>
         </a>
-        <a href="{% url 'WAdmin:admin_attendance' %}" class="card">
-          <div class="icon">📊</div>
-          <div class="title">Attendance</div>
+
+        <a href="{% url 'WAdmin:view_review_marks' %}" class="action-card">
+          <i class="fa-solid fa-star"></i>
+          <p>View Review Marks</p>
         </a>
-        <a href="{% url 'WAdmin:view_review_marks' %}"
-          >View Student Review Marks</a
-        >
-        <div
-          class="card"
-          style="text-align: center; cursor: pointer"
-          onclick="window.location.href='{% url 'WAdmin:admin_document_schedules' %}'"
-        >
-          <div style="font-size: 40px; margin-bottom: 10px">📄</div>
-
-          <h2>Document Submissions</h2>
-
-          <p>View document schedules and submitted students</p>
-        </div>
       </div>
     </div>
   </body>

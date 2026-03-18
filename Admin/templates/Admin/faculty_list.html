@@ -48,6 +48,9 @@
         <td colspan="3" style="text-align: center">No faculties registered</td>
       </tr>
       {% endfor %}
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i>Back
+      </a>
     </table>
   </body>
 </html>

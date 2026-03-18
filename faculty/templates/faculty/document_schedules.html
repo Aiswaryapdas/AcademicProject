@@ -1,30 +1,129 @@
-<h2>Document Schedules</h2>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document Schedules</title>
 
-<table border="1" cellpadding="10">
-  <tr>
-    <th>Title</th>
-    <th>Start Date</th>
-    <th>End Date</th>
-    <th>Format</th>
-    <th>Max Size</th>
-    <th>Action</th>
-  </tr>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: #f4f6f8;
+        padding: 30px;
+      }
 
-  {% for s in schedules %}
+      /* CONTAINER */
+      .container {
+        max-width: 1000px;
+        margin: auto;
+      }
 
-  <tr>
-    <td>{{ s.title }}</td>
-    <td>{{ s.start_date }}</td>
-    <td>{{ s.end_date }}</td>
-    <td>{{ s.format }}</td>
-    <td>{{ s.max_size }} MB</td>
+      /* HEADER */
+      .header {
+        margin-bottom: 20px;
+      }
 
-    <td>
-      <a href="{% url 'faculty:schedule_submissions' s.id %}">
-        <button>View Submissions</button>
-      </a>
-    </td>
-  </tr>
+      .header h2 {
+        color: #1e3a5f;
+        margin: 0;
+      }
 
-  {% endfor %}
-</table>
+      /* CARD */
+      .card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 20px 25px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
+
+      /* TABLE */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+      }
+
+      th {
+        background: #1e3a5f;
+        color: white;
+      }
+
+      td {
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      /* BUTTON */
+      .view-btn {
+        background: #3b82f6;
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+
+      .view-btn:hover {
+        background: #2563eb;
+      }
+
+      /* EMPTY STATE */
+      .empty {
+        text-align: center;
+        padding: 20px;
+        color: #777;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- HEADER -->
+      <div class="header">
+        <h2>Document Schedules</h2>
+      </div>
+
+      <!-- CARD -->
+      <div class="card">
+        {% if schedules %}
+        <table>
+          <tr>
+            <th>Title</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Format</th>
+            <th>Max Size</th>
+            <th>Action</th>
+          </tr>
+
+          {% for s in schedules %}
+          <tr>
+            <td>{{ s.title }}</td>
+            <td>{{ s.start_date }}</td>
+            <td>{{ s.end_date }}</td>
+            <td>{{ s.format }}</td>
+            <td>{{ s.max_size }} MB</td>
+
+            <td>
+              <a href="{% url 'faculty:schedule_submissions' s.id %}">
+                <button class="view-btn">View Submissions</button>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+
+        {% else %}
+        <div class="empty">No document schedules available.</div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

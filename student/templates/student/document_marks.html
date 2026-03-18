@@ -1,35 +1,184 @@
-<h2>My Document Marks & Remarks</h2>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Document Marks</title>
 
-<table border="1" cellpadding="10">
-  <tr>
-    <th>Document Title</th>
-    <th>Uploaded Date</th>
-    <th>File</th>
-    <th>Faculty Mark</th>
-    <th>Faculty Remarks</th>
-  </tr>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-  {% for sub in submissions %}
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f4f6f8;
+        padding: 40px;
+      }
 
-  <tr>
-    <td>{{ sub.schedule.title }}</td>
+      /* CONTAINER */
+      .container {
+        max-width: 1100px;
+        margin: auto;
+      }
 
-    <td>{{ sub.submitted_at }}</td>
+      /* HEADER */
+      .header {
+        background: linear-gradient(90deg, #1e3a5f, #2c3e50);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
 
-    <td>
-      <a href="{{ sub.file.url }}" target="_blank">View</a>
-    </td>
+      .header h2 {
+        margin: 0;
+      }
 
-    <td>
-      {% if sub.faculty_mark %} {{ sub.faculty_mark }} / 10 {% else %} Not
-      Marked {% endif %}
-    </td>
+      /* CARD */
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
 
-    <td>
-      {% if sub.faculty_remark %} {{ sub.faculty_remark }} {% else %} No Remarks
-      {% endif %}
-    </td>
-  </tr>
+      /* TABLE */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
 
-  {% endfor %}
-</table>
+      th {
+        background: #1e3a5f;
+        color: white;
+        padding: 12px;
+        text-align: left;
+      }
+
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      tr:hover {
+        background: #f9fafb;
+      }
+
+      /* BADGES */
+      .mark {
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+
+      .mark-good {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .mark-pending {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      /* REMARK */
+      .remark-box {
+        background: #f9fafb;
+        padding: 8px;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      /* LINK */
+      a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      /* BACK BUTTON */
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background: #6b7280;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .back-btn:hover {
+        background: #4b5563;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- HEADER -->
+      <div class="header">
+        <h2>
+          <i class="fa-solid fa-file-circle-check"></i> My Document Marks &
+          Remarks
+        </h2>
+      </div>
+
+      <!-- CARD -->
+      <div class="card">
+        <table>
+          <tr>
+            <th>Document Title</th>
+            <th>Uploaded Date</th>
+            <th>File</th>
+            <th>Faculty Mark</th>
+            <th>Faculty Remarks</th>
+          </tr>
+
+          {% for sub in submissions %}
+          <tr>
+            <td>{{ sub.schedule.title }}</td>
+
+            <td>{{ sub.submitted_at }}</td>
+
+            <td>
+              <a href="{{ sub.file.url }}" target="_blank">
+                <i class="fa-solid fa-eye"></i> View
+              </a>
+            </td>
+
+            <!-- MARK -->
+            <td>
+              {% if sub.faculty_mark %}
+              <span class="mark mark-good"> {{ sub.faculty_mark }} / 10 </span>
+              {% else %}
+              <span class="mark mark-pending">Not Marked</span>
+              {% endif %}
+            </td>
+
+            <!-- REMARK -->
+            <td>
+              {% if sub.faculty_remark %}
+              <div class="remark-box">{{ sub.faculty_remark }}</div>
+              {% else %}
+              <span style="color: #6b7280">No Remarks</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+
+        <!-- BACK BUTTON -->
+        <a href="{% url 'student:dashboard' %}" class="back-btn">
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

@@ -32,7 +32,16 @@ def faculty_register(request):
                 designation=designation,
                 password=password
             )
-            return redirect('WAdmin:faculty_register')
+            messages.success(request, "Faculty Registered Successfully ✅")
+
+            return redirect('WAdmin:faculty_register')   # ✅ redirect once ONLY
+
+        else:
+            messages.error(request, "Passwords do not match ❌")
+
+            return redirect('WAdmin:faculty_register')   # ✅ redirect once ONLY
+
+    return render(request, 'Admin/faculty_reg.html')
 
     return render(request, 'Admin/faculty_reg.html')
 
@@ -478,3 +487,12 @@ def admin_schedule_submissions(request, schedule_id):
         'schedule': schedule,
         'data': data
     })
+
+from django.contrib.auth import logout
+
+def admin_logout(request):
+    """
+    Logs out the currently logged-in admin and redirects to the login page.
+    """
+    logout(request)  # Clears the session
+    return redirect('guest:guest_login')

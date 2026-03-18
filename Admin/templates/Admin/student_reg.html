@@ -1,119 +1,292 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Registration</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
     <style>
       body {
-        font-family: Arial;
-        background: #f4f6f8;
+        font-family: "Roboto", Arial, sans-serif;
+        background: #e3f2fd;
+        margin: 0;
+        padding: 0;
       }
-      .box {
-        width: 420px;
+
+      .container {
+        max-width: 420px;
         margin: 60px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 8px;
+        background: #fff;
+        padding: 35px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
       }
-      input,
-      select,
+
+      h2 {
+        text-align: center;
+        color: #0d6efd;
+        margin-bottom: 25px;
+        font-weight: 500;
+      }
+
+      /* FORM GROUP */
+      .form-group {
+        position: relative;
+        margin-bottom: 18px;
+      }
+
+      /* INPUTS & SELECTS */
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        height: 48px;
+        padding: 0 12px 0 42px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: 0.3s;
+        box-sizing: border-box;
+      }
+
+      /* FOCUS EFFECT */
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: #0d6efd;
+        outline: none;
+        box-shadow: 0 0 6px rgba(13, 110, 253, 0.2);
+      }
+
+      /* ICON ALIGNMENT */
+      .form-group i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 15px;
+      }
+
+      /* BUTTON */
       button {
         width: 100%;
-        padding: 8px;
-        margin: 8px 0;
-      }
-      button {
-        background: #28a745;
-        color: white;
+        height: 48px;
+        margin-top: 10px;
+        background: #0d6efd;
+        color: #fff;
+        font-size: 15px;
         border: none;
+        border-radius: 8px;
         cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: #0b5ed7;
+      }
+
+      /* ERROR TEXT */
+      small {
+        display: block;
+        margin-top: 5px;
+        font-size: 13px;
+        color: red;
+      }
+
+      /* POPUP CENTER FIX */
+      .popup-container {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+      }
+
+      .popup {
+        background: #22c55e;
+        color: white;
+        padding: 14px 20px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        animation: fadeInOut 4s forwards;
+        min-width: 300px;
+        text-align: center;
+      }
+
+      .popup.error {
+        background: #ef4444;
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      small {
+        color: red;
+        display: none;
       }
     </style>
   </head>
+
   <body>
-    <div class="box">
-      <h2 align="center">Student Registration</h2>
+    <!-- ✅ Popup -->
+    {% if messages %}
+    <div class="popup-container">
+      {% for message in messages %}
+      <div class="popup {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container">
+      <a href="{% url 'WAdmin:student_list' %}" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i>Back
+      </a>
+      <h2>Student Registration</h2>
 
       <form method="POST">
         {% csrf_token %}
 
-        <input
-          type="text"
-          name="admission_number"
-          placeholder="Admission Number"
-          required
-        />
+        <div class="form-group">
+          <i class="fa fa-id-card"></i>
+          <input
+            type="text"
+            name="admission_number"
+            pattern="[A-Za-z0-9]+"
+            title="Only letters and numbers"
+            required
+          />
+        </div>
 
-        <input type="text" name="name" placeholder="Full Name" required />
+        <div class="form-group">
+          <i class="fa fa-user"></i>
+          <input
+            type="text"
+            name="name"
+            pattern="[A-Za-z ]+"
+            title="Only letters allowed"
+            required
+          />
+        </div>
 
-        <input type="email" name="email" placeholder="Email" required />
+        <div class="form-group">
+          <i class="fa fa-envelope"></i>
+          <input type="email" name="email" required />
+        </div>
 
-        <input type="text" name="phone" placeholder="Phone Number" required />
+        <div class="form-group">
+          <i class="fa fa-phone"></i>
+          <input
+            type="text"
+            name="phone"
+            pattern="[0-9]{10}"
+            title="Enter 10 digit number"
+            required
+          />
+        </div>
 
-        <select name="department" required>
-          <option value="">Select Department</option>
-          <option>Computer Science</option>
-          <option>Electronics</option>
-          <option>Mechanical</option>
-          <option>Civil</option>
-        </select>
+        <div class="form-group">
+          <i class="fa fa-building"></i>
+          <select name="department" required>
+            <option value="">Department</option>
+            <option>Computer Science</option>
+            <option>Electronics</option>
+          </select>
+        </div>
 
-        <select id="course" name="course" required>
-          <option value="">Select Course</option>
-          <option value="BCA">BCA</option>
-          <option value="MCA">MCA</option>
-        </select>
+        <div class="form-group">
+          <i class="fa fa-graduation-cap"></i>
+          <select id="course" name="course" required>
+            <option value="">Course</option>
+            <option value="BCA">BCA</option>
+            <option value="MCA">MCA</option>
+          </select>
+        </div>
 
-        <select id="academic_batch" name="academic_batch" required>
-          <option value="">Select Academic Batch</option>
-        </select>
+        <div class="form-group">
+          <i class="fa fa-calendar"></i>
+          <select id="academic_batch" name="academic_batch" required>
+            <option value="">Academic Batch</option>
+          </select>
+        </div>
 
-        <select name="file_batch" required>
-          <option value="">Select File Batch</option>
-          <option>A</option>
-          <option>B</option>
-          <option>C</option>
-          <option>D</option>
-        </select>
+        <div class="form-group">
+          <i class="fa fa-folder"></i>
+          <select name="file_batch" required>
+            <option value="">File Batch</option>
+            <option>A</option>
+            <option>B</option>
+          </select>
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-        />
+        <div class="form-group">
+          <i class="fa fa-lock"></i>
+          <input type="password" name="password" minlength="6" required />
+        </div>
 
-        <input
-          type="password"
-          name="confirm_password"
-          placeholder="Confirm Password"
-          required
-        />
+        <div class="form-group">
+          <i class="fa fa-lock"></i>
+          <input type="password" name="confirm_password" required />
+          <small id="passwordError">Passwords do not match ❌</small>
+        </div>
 
         <button type="submit">Register</button>
       </form>
     </div>
 
+    <!-- ✅ JS -->
     <script>
       const courseSelect = document.getElementById("course");
       const batchSelect = document.getElementById("academic_batch");
 
       const batches = {
-        BCA: ["2024-2027", "2023-2026", "2022-2025"],
-        MCA: ["2024-2026", "2023-2025", "2022-2024"],
+        BCA: ["2024-2027", "2023-2026"],
+        MCA: ["2024-2026", "2023-2025"],
       };
 
       courseSelect.addEventListener("change", function () {
-        const selectedCourse = this.value;
-        batchSelect.innerHTML =
-          '<option value="">Select Academic Batch</option>'; // reset
+        batchSelect.innerHTML = '<option value="">Select Batch</option>';
+        batches[this.value]?.forEach((batch) => {
+          let opt = document.createElement("option");
+          opt.value = batch;
+          opt.text = batch;
+          batchSelect.appendChild(opt);
+        });
+      });
 
-        if (batches[selectedCourse]) {
-          batches[selectedCourse].forEach((batch) => {
-            const option = document.createElement("option");
-            option.value = batch;
-            option.text = batch;
-            batchSelect.appendChild(option);
-          });
+      // ✅ Password validation
+      const form = document.querySelector("form");
+      const password = document.querySelector("input[name='password']");
+      const confirmPassword = document.querySelector(
+        "input[name='confirm_password']",
+      );
+      const error = document.getElementById("passwordError");
+
+      form.addEventListener("submit", function (e) {
+        if (password.value !== confirmPassword.value) {
+          e.preventDefault();
+          error.style.display = "block";
+        } else {
+          error.style.display = "none";
         }
       });
     </script>

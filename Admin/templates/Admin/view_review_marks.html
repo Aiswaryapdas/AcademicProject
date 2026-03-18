@@ -1,40 +1,102 @@
-{% load custome_filters %}<!doctype html>
+{% load custome_filters %}
+<!doctype html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>All Students Review Marks</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", Arial, sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h2 {
+        text-align: center;
+        color: #0d6efd;
+        margin-bottom: 25px;
+        font-weight: 500;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: center;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      th {
+        background-color: #0d6efd;
+        color: #fff;
+        font-weight: 500;
+      }
+
+      tr:hover {
+        background-color: #f1f7ff;
+      }
+
+      td b {
+        color: #198754; /* highlight total marks */
+      }
+
+      @media screen and (max-width: 768px) {
+        table,
+        th,
+        td {
+          font-size: 14px;
+        }
+      }
+    </style>
   </head>
 
   <body>
     <h2>Students Review Marks</h2>
 
-    <table border="1" cellpadding="10">
-      <tr>
-        <th>Admission Number</th>
-        <th>Student Name</th>
+    <table>
+      <thead>
+        <tr>
+          <th>Admission Number</th>
+          <th>Student Name</th>
 
-        {% for review in reviews %}
-        <th>{{ review.review_topic }}</th>
+          {% for review in reviews %}
+          <th>{{ review.review_topic }}</th>
+          {% endfor %}
+
+          <th>Total</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for row in students %}
+        <tr>
+          <td>{{ row.student.admission_number }}</td>
+          <td>{{ row.student.name }}</td>
+
+          {% for review in reviews %}
+          <td>{{ row.marks|get_item:review.id }}</td>
+          {% endfor %}
+
+          <td><b>{{ row.total }}</b></td>
+        </tr>
         {% endfor %}
-
-        <th>Total</th>
-      </tr>
-
-      {% for row in students %}
-
-      <tr>
-        <td>{{ row.student.admission_number }}</td>
-        <td>{{ row.student.name }}</td>
-
-        {% for review in reviews %}
-
-        <td>{{ row.marks|get_item:review.id }}</td>
-
-        {% endfor %}
-
-        <td><b>{{ row.total }}</b></td>
-      </tr>
-
-      {% endfor %}
+      </tbody>
     </table>
+    <a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i>Back
+    </a>
   </body>
 </html>

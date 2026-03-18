@@ -18,4 +18,5 @@ path('add-mark/<int:submission_id>/',
       path('documents/', views.document_schedule_list, name='document_schedules'),
     path('documents/<int:schedule_id>/', views.schedule_submissions, name='schedule_submissions'),
     path('logout/', views.logout_view, name='logout'),
+       
 ]
