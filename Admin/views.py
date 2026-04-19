@@ -496,3 +496,25 @@ def admin_logout(request):
     """
     logout(request)  # Clears the session
     return redirect('guest:guest_login')
+
+
+def view_students(request):
+    course = request.GET.get('course')
+
+    # ✅ Filter logic
+    if course:
+        students = Student.objects.filter(course=course)
+    else:
+        students = Student.objects.all()
+
+    # ✅ Count logic
+    bca_count = Student.objects.filter(course='BCA').count()
+    mca_count = Student.objects.filter(course='MCA').count()
+    total_count = Student.objects.count()
+
+    return render(request, 'admin/view_students.html', {
+        'students': students,
+        'bca_count': bca_count,
+        'mca_count': mca_count,
+        'total_count': total_count
+    })

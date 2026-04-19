@@ -297,3 +297,74 @@ def schedule_submissions(request, schedule_id):
         'schedule': schedule,
         'data': data
     })
+
+def faculty_profile(request):
+    faculty_id = request.session.get('faculty_id')
+
+    if faculty_id:
+        faculty = Faculty.objects.get(id=faculty_id)
+        return render(request, 'faculty/profile.html', {'faculty': faculty})
+    else:
+        return redirect('faculty_login')
+    
+import calendar
+from datetime import datetime
+from django.shortcuts import render, redirect
+from django.apps import apps
+from .models import Attendance
+
+def monthwise_attendance(request):
+    if 'faculty_id' not in request.session:
+        return redirect('/faculty/login/')
+
+    faculty_id = request.session['faculty_id']
+
+    Student = apps.get_model('Admin', 'Student')
+    ProjectGroup = apps.get_model('Admin', 'ProjectGroup')
+
+    group = ProjectGroup.objects.filter(faculty_id=faculty_id).first()
+    students = Student.objects.filter(projectgroup=group) if group else []
+
+    month = int(request.GET.get('month', datetime.now().month))
+    year = int(request.GET.get('year', datetime.now().year))
+
+    # ✅ Get number of days in month
+    num_days = calendar.monthrange(year, month)[1]
+    days = list(range(1, num_days + 1))
+
+    attendance_table = []
+
+    for student in students:
+        row = {
+            'student': student,
+            'daily': [],
+            'present': 0,
+            'absent': 0
+        }
+
+        for day in days:
+            record = Attendance.objects.filter(
+                student=student,
+                date__year=year,
+                date__month=month,
+                date__day=day
+            ).first()
+
+            if record:
+                if record.status == 'Present':
+                    row['daily'].append('P')
+                    row['present'] += 1
+                else:
+                    row['daily'].append('A')
+                    row['absent'] += 1
+            else:
+                row['daily'].append('-')
+
+        attendance_table.append(row)
+
+    return render(request, 'faculty/monthwise_attendance.html', {
+        'attendance_table': attendance_table,
+        'days': days,
+        'month': month,
+        'year': year
+    })

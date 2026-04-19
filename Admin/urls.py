@@ -34,4 +34,5 @@ path('documents/', views.admin_document_schedules, name='admin_document_schedule
 path('documents/<int:schedule_id>/', views.admin_schedule_submissions, name='admin_schedule_submissions'),
 
  path('logout/', views.admin_logout, name='admin_logout'),
+ path('students/', views.view_students, name='view_students'),
 ]

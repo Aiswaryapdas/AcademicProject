@@ -1,0 +1,46 @@
+<h2>Students</h2>
+
+<!-- 🔥 FILTER BUTTONS -->
+<a
+  href="?"
+  style="padding: 10px; background: gray; color: white; text-decoration: none"
+>
+  All ({{ total_count }})
+</a>
+
+<a
+  href="?course=BCA"
+  style="padding: 10px; background: blue; color: white; text-decoration: none"
+>
+  BCA ({{ bca_count }})
+</a>
+
+<a
+  href="?course=MCA"
+  style="padding: 10px; background: green; color: white; text-decoration: none"
+>
+  MCA ({{ mca_count }})
+</a>
+
+<br /><br />
+
+<!-- 📋 STUDENT TABLE -->
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Name</th>
+    <th>Course</th>
+    <th>Department</th>
+  </tr>
+
+  {% for student in students %}
+  <tr>
+    <td>{{ student.name }}</td>
+    <td>{{ student.course }}</td>
+    <td>{{ student.department }}</td>
+  </tr>
+  {% empty %}
+  <tr>
+    <td colspan="3">No students found</td>
+  </tr>
+  {% endfor %}
+</table>

@@ -190,7 +190,7 @@
         <div class="profile-circle" onclick="toggleProfile()">
           {{ faculty.name|slice:":1" }}
         </div>
-
+        <a href="{% url 'faculty:faculty_profile' %}">My Profile</a>
         <a href="{% url 'faculty:logout' %}">
           <button class="logout-btn">Logout</button>
         </a>
@@ -298,7 +298,9 @@
         </div>
       </div>
     </div>
-
+    <a href="{% url 'faculty:monthwise_attendance' %}"
+      >View Monthly Attendance</a
+    >
     <script>
       function toggleProfile() {
         const card = document.getElementById("profileCard");

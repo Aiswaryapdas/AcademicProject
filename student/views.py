@@ -214,3 +214,59 @@ def student_document_marks(request):
     return render(request,'Student/document_marks.html',{
         'submissions': submissions
     })
+
+from django.contrib.auth.hashers import check_password, make_password
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+
+def student_change_password(request):
+    if request.method == 'POST':
+        current = request.POST['current_password']
+        new = request.POST['new_password']
+        confirm = request.POST['confirm_password']
+
+        user = request.session.get('student_id')
+
+        from .models import Student
+        student = Student.objects.get(id=user)
+
+        # Check current password
+        if current != student.password:
+            return HttpResponse("""
+                <script>
+                    alert('Current password is incorrect');
+                    window.history.back();
+                </script>
+            """)
+
+        # Check new password match
+        if new != confirm:
+            return HttpResponse("""
+                <script>
+                    alert('New passwords do not match');
+                    window.history.back();
+                </script>
+            """)
+
+        # Update password
+        student.password = new
+        student.save()
+
+        return HttpResponse("""
+       <script>
+            alert('Password changed successfully');
+            window.location.href = "{path('dashboard/', views.student_dashboard, name='dashboard'),}";
+        </script>
+""")
+
+    return render(request, 'student/student_change_password.html')
+
+
+def student_profile(request):
+    student_id = request.session.get('student_id')  # get logged-in student
+
+    if student_id:
+        student = Student.objects.get(id=student_id)
+        return render(request, 'student/profile.html', {'student': student})
+    else:
+        return redirect('login') 

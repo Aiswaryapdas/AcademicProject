@@ -204,7 +204,10 @@
           <p><b>Course:</b> {{ student.course }}</p>
           <p><b>Batch:</b> {{ student.academic_batch }}</p>
         </div>
-
+        <a href="{% url 'student:student_change_password' %}"
+          >Change Password</a
+        >
+        <a href="{% url 'student:student_profile' %}">My Profile</a>
         <a href="{% url 'student:logout' %}" class="logout">Logout</a>
       </div>
     </div>

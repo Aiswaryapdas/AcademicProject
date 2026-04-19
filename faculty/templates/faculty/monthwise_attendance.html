@@ -1,0 +1,35 @@
+<h2>{{ month }}/{{ year }} - All Students Attendance</h2>
+
+<form method="GET">
+  <input type="number" name="month" min="1" max="12" required />
+  <input type="number" name="year" required />
+  <button type="submit">View</button>
+</form>
+
+<br />
+
+<table border="1" cellpadding="5">
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Present</th>
+    <th>Absent</th>
+
+    {% for day in days %}
+    <th>{{ day }}</th>
+    {% endfor %}
+  </tr>
+
+  {% for row in attendance_table %}
+  <tr>
+    <td>{{ row.student.id }}</td>
+    <td>{{ row.student.name }}</td>
+    <td>{{ row.present }}</td>
+    <td>{{ row.absent }}</td>
+
+    {% for status in row.daily %}
+    <td>{{ status }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
