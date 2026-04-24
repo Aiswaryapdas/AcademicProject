@@ -35,4 +35,8 @@ path('documents/<int:schedule_id>/', views.admin_schedule_submissions, name='adm
 
  path('logout/', views.admin_logout, name='admin_logout'),
  path('students/', views.view_students, name='view_students'),
+ path('bca-proposals/', views.view_bca_proposals, name='bca_proposals'),
+path('mca-proposals/', views.view_mca_proposals, name='mca_proposals'),
+path('approve/<int:id>/', views.approve_proposal, name='approve_proposal'),
+path('reject/<int:id>/', views.reject_proposal, name='reject_proposal'),
 ]

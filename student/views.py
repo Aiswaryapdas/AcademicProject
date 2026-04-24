@@ -6,6 +6,8 @@ from faculty.models import Attendance
 from datetime import datetime
 from calendar import monthrange
 
+
+
 def student_dashboard(request):
     if 'student_id' not in request.session:
         return redirect('guest:guest_login')
@@ -27,11 +29,15 @@ def student_dashboard(request):
             schedule=schedule
         ).first()
 
+    # ⭐ ADD THIS (new feature)
+    proposal = ProjectProposal.objects.filter(student=student).first()
+
     context = {
         'student': student,
         'group': group,
         'reviews': reviews,
         'schedules': schedules,
+        'proposal': proposal,  # 👈 add this line
     }
 
     return render(request, 'student/student_dashboard.html', context)
@@ -270,3 +276,65 @@ def student_profile(request):
         return render(request, 'student/profile.html', {'student': student})
     else:
         return redirect('login') 
+    
+
+from django.shortcuts import render, redirect
+from .forms import ProjectProposalForm
+from .models import ProjectProposal
+from django.contrib import messages
+from Admin.models import Student   # 👈 important (your student model location)
+def submit_project_proposal(request):
+    student_id = request.session.get('student_id')
+
+    if not student_id:
+        messages.error(request, "Please login first")
+        return redirect('login')
+
+    student = Student.objects.get(id=student_id)
+
+    existing_proposal = ProjectProposal.objects.filter(student=student).first()
+
+    # ❗ Block only if NOT rejected
+    if existing_proposal and existing_proposal.status != "Rejected":
+        messages.warning(request, "You have already submitted a project proposal.")
+        return redirect('student:dashboard')
+
+    if request.method == 'POST':
+        form = ProjectProposalForm(request.POST)
+
+        if form.is_valid():
+
+            title = form.cleaned_data['title'].strip().lower()
+            domain = form.cleaned_data['domain'].strip().lower()
+            technology = form.cleaned_data['technology'].strip().lower()
+
+            # 🔍 Duplicate check
+            similar_projects = ProjectProposal.objects.exclude(student=student)
+
+            for word in title.split():
+                similar_projects = similar_projects.filter(title__icontains=word)
+
+            if similar_projects.exists():
+                messages.warning(request, "⚠️ Similar project already exists!")
+
+            # 🔄 If rejected → UPDATE existing
+            if existing_proposal:
+                existing_proposal.title = form.cleaned_data['title']
+                existing_proposal.domain = form.cleaned_data['domain']
+                existing_proposal.technology = form.cleaned_data['technology']
+                existing_proposal.description = form.cleaned_data['description']
+                existing_proposal.status = "Pending"
+                existing_proposal.admin_remark = ""
+                existing_proposal.save()
+            else:
+                proposal = form.save(commit=False)
+                proposal.student = student
+                proposal.save()
+
+            messages.success(request, "Project submitted successfully")
+            return redirect('student:dashboard')
+
+    else:
+        form = ProjectProposalForm()
+
+    return render(request, 'student/submit_proposal.html', {'form': form})

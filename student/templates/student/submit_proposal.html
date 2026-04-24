@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Submit Project Proposal</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; background-color: #f4f6f9">
+    <div
+      style="
+        width: 500px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <h2 style="text-align: center; margin-bottom: 20px">
+        Submit Project Proposal
+      </h2>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <label><b>Project Title</b></label
+        ><br />
+        {{ form.title }}<br /><br />
+
+        <label><b>Domain</b></label
+        ><br />
+        {{ form.domain }}<br /><br />
+
+        <label><b>Technology</b></label
+        ><br />
+        {{ form.technology }}<br /><br />
+
+        <label><b>Description</b></label
+        ><br />
+        {{ form.description }}<br /><br />
+
+        <button
+          type="submit"
+          style="
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+          "
+        >
+          Submit Proposal
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 15px">
+        <a
+          href="{% url 'student:dashboard' %}"
+          style="text-decoration: none; color: #007bff"
+        >
+          ← Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

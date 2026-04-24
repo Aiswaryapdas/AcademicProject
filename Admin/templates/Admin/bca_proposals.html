@@ -1,0 +1,62 @@
+<h2>BCA Project Proposals</h2>
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Student Name</th>
+    <th>Batch</th>
+    <th>Title</th>
+    <th>Domain</th>
+    <th>Technology</th>
+    <th>Status</th>
+    <th>Similar Project</th>
+    <th>Action</th>
+  </tr>
+
+  {% for item in proposal_data %}
+  <tr>
+    <td>{{ item.proposal.student.name }}</td>
+    <td>{{ item.proposal.student.academic_batch }}</td>
+    <td>{{ item.proposal.title }}</td>
+    <td>{{ item.proposal.domain }}</td>
+    <td>{{ item.proposal.technology }}</td>
+
+    <!-- STATUS -->
+    <td>
+      {% if item.proposal.status == "Pending" %}
+      <span style="color: orange">Pending</span>
+      {% elif item.proposal.status == "Approved" %}
+      <span style="color: green">Approved</span>
+      {% else %}
+      <span style="color: red">Rejected</span>
+      {% endif %}
+    </td>
+    <td>
+      {% if item.similar %}
+      <div style="color: red">
+        ⚠️ Similar Found:<br />
+        {{ item.similar.student.name }} - {{ item.similar.student.course }} - {{
+        item.similar.student.academic_batch }}<br />
+        "{{ item.similar.title }}"
+      </div>
+      {% else %}
+      <span style="color: green">No Similar</span>
+      {% endif %}
+    </td>
+    <td>
+      {% if item.proposal.status == "Pending" %}
+      <a
+        href="{% url 'WAdmin:approve_proposal' item.proposal.id %}"
+        style="color: green"
+        >Approve</a
+      >
+      |
+      <a
+        href="{% url 'WAdmin:reject_proposal' item.proposal.id %}"
+        style="color: red"
+        >Reject</a
+      >
+      {% else %} Action Done {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>

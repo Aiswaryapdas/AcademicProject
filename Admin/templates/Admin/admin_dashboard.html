@@ -169,7 +169,29 @@
     </style>
   </head>
   <body>
-    <!-- TOP NAVBAR -->
+    {% if messages %}
+    <div style="margin: 15px">
+      {% for message in messages %}
+      <div
+        style="
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        {% if message.tags == 'success' %}
+          background-color: #d4edda; color: #155724;
+        {% elif message.tags == 'warning' %}
+          background-color: #fff3cd; color: #856404;
+        {% elif message.tags == 'error' %}
+          background-color: #f8d7da; color: #721c24;
+        {% endif %}
+      "
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}<!-- TOP NAVBAR -->
     <div class="navbar">
       <div class="logo-top">🎓 Academic Admin</div>
       <div class="nav-links">
@@ -255,6 +277,39 @@
         </a>
 
         <a href="{% url 'WAdmin:view_students' %}"> View Students </a>
+      </div>
+      <div style="margin: 20px; text-align: center">
+        <a
+          href="{% url 'WAdmin:bca_proposals' %}"
+          style="
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 10px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+          "
+        >
+          View BCA Proposals
+        </a>
+
+        <a
+          href="{% url 'WAdmin:mca_proposals' %}"
+          style="
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+          "
+        >
+          View MCA Proposals
+        </a>
       </div>
     </div>
   </body>

@@ -518,3 +518,79 @@ def view_students(request):
         'mca_count': mca_count,
         'total_count': total_count
     })
+
+from student.models import ProjectProposal
+from django.shortcuts import render
+
+def view_bca_proposals(request):
+    current_batch = "2024-2026"   # 👈 change if needed
+
+    proposals = ProjectProposal.objects.filter(
+        student__course="BCA",
+        student__academic_batch=current_batch
+    ).order_by('-id')
+
+    proposal_data = []
+
+    for p in proposals:
+        # find similar project from ANY batch
+        similar = ProjectProposal.objects.exclude(id=p.id).filter(
+            title__icontains=p.title
+        ).first()
+
+        proposal_data.append({
+            'proposal': p,
+            'similar': similar
+        })
+
+    return render(request, 'admin/bca_proposals.html', {
+        'proposal_data': proposal_data
+    })
+
+def view_mca_proposals(request):
+    current_batch = "2024-2026"
+
+    proposals = ProjectProposal.objects.filter(
+        student__course="MCA",
+        student__academic_batch=current_batch
+    ).order_by('-id')
+
+    proposal_data = []
+
+    for p in proposals:
+        title_words = p.title.lower().split()
+
+        similar = ProjectProposal.objects.exclude(id=p.id)
+
+        for word in title_words:
+          similar = similar.filter(title__icontains=word)
+
+        similar = similar.first()
+
+        if similar:
+            similar_text = f"{similar.student.name} - {similar.student.course} - {similar.student.academic_batch} | {similar.title}"
+        else:
+            similar_text = None
+
+        proposal_data.append({
+            'proposal': p,
+            'similar_text': similar_text
+        })
+
+    # ✅ VERY IMPORTANT (this was missing)
+    return render(request, 'admin/mca_proposals.html', {
+        'proposal_data': proposal_data
+    })
+
+def approve_proposal(request, id):
+    proposal = ProjectProposal.objects.get(id=id)
+    proposal.status = 'Approved'
+    proposal.save()
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+def reject_proposal(request, id):
+    proposal = ProjectProposal.objects.get(id=id)
+    proposal.status = 'Rejected'
+    proposal.save()
+    return redirect(request.META.get('HTTP_REFERER'))

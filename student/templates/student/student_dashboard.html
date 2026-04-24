@@ -224,6 +224,9 @@
         <a href="{% url 'student:view_marks' %}"
           ><i class="fa-solid fa-chart-bar"></i> Review Marks</a
         >
+        <a href="{% url 'student:submit_proposal' %}">
+          <button>Submit Project Proposal</button>
+        </a>
       </div>
 
       <!-- CONTENT -->
@@ -296,13 +299,89 @@
           {% endif %}
         </div>
       </div>
-    </div>
+      <div
+        style="
+          margin-top: 20px;
+          padding: 20px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          background-color: #f9f9f9;
+        "
+      >
+        <h3 style="margin-bottom: 15px; color: #333">
+          Project Proposal Details
+        </h3>
 
-    <script>
-      function toggleProfile() {
-        const box = document.getElementById("profileBox");
-        box.style.display = box.style.display === "block" ? "none" : "block";
-      }
-    </script>
+        {% if proposal %}
+        <table style="width: 100%; border-collapse: collapse">
+          <tr>
+            <td style="padding: 8px; font-weight: bold; width: 30%">Title</td>
+            <td style="padding: 8px">{{ proposal.title }}</td>
+          </tr>
+
+          <tr>
+            <td style="padding: 8px; font-weight: bold">Domain</td>
+            <td style="padding: 8px">{{ proposal.domain }}</td>
+          </tr>
+
+          <tr>
+            <td style="padding: 8px; font-weight: bold">Technology</td>
+            <td style="padding: 8px">{{ proposal.technology }}</td>
+          </tr>
+
+          <tr>
+            <td style="padding: 8px; font-weight: bold">Status</td>
+            <td style="padding: 8px">
+              {% if proposal.status == "Pending" %}
+              <span style="color: orange; font-weight: bold">Pending</span>
+              {% elif proposal.status == "Approved" %}
+              <span style="color: green; font-weight: bold">Approved</span>
+              {% elif proposal.status == "Rejected" %}
+              <span style="color: red; font-weight: bold">Rejected</span>
+              {% endif %}
+            </td>
+          </tr>
+
+          <!-- ✅ ADMIN REMARK -->
+          {% if proposal.admin_remark %}
+          <tr>
+            <td style="padding: 8px; font-weight: bold">Admin Remark</td>
+            <td style="padding: 8px; color: #555">
+              {{ proposal.admin_remark }}
+            </td>
+          </tr>
+          {% endif %}
+        </table>
+
+        <!-- ✅ RESUBMIT BUTTON -->
+        {% if proposal.status == "Rejected" %}
+        <div style="margin-top: 15px; text-align: center">
+          <a
+            href="{% url 'student:submit_proposal' %}"
+            style="
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #dc3545;
+              color: white;
+              text-decoration: none;
+              border-radius: 5px;
+              font-weight: bold;
+            "
+          >
+            Resubmit Project
+          </a>
+        </div>
+        {% endif %} {% else %}
+        <p style="color: #777">No project proposal submitted yet.</p>
+        {% endif %}
+      </div>
+
+      <script>
+        function toggleProfile() {
+          const box = document.getElementById("profileBox");
+          box.style.display = box.style.display === "block" ? "none" : "block";
+        }
+      </script>
+    </div>
   </body>
 </html>

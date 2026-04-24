@@ -14,3 +14,25 @@ class DocumentSubmission(models.Model):
 
     faculty_mark = models.IntegerField(null=True, blank=True)
     faculty_remark = models.TextField(null=True, blank=True)   
+
+
+class ProjectProposal(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+
+    student = models.ForeignKey('Admin.Student', on_delete=models.CASCADE)    
+    title = models.CharField(max_length=200)
+    domain = models.CharField(max_length=100)
+    technology = models.CharField(max_length=200)
+    description = models.TextField()
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    admin_remark = models.TextField(blank=True, null=True)
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title    

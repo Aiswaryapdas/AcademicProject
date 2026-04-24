@@ -14,4 +14,5 @@ urlpatterns = [
 path('student/change-password/', views.student_change_password, name='student_change_password'),
     path('logout/', views.student_logout, name='logout'),
     path('student/profile/', views.student_profile, name='student_profile'),
+    path('submit-proposal/', views.submit_project_proposal, name='submit_proposal'),
 ]
