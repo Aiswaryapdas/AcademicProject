@@ -536,10 +536,20 @@ def view_students(request):
     })
 
 from student.models import ProjectProposal
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from difflib import SequenceMatcher
+from student.models import ProjectProposal as Proposal
+from student.models import Project
+from Admin.models import ProjectGroup
+
+
+# ✅ similarity function (NEW)
+def get_similarity(a, b):
+    return SequenceMatcher(None, a, b).ratio()
+
 
 def view_bca_proposals(request):
-    current_batch = "2024-2026"   # 👈 change if needed
+    current_batch = "2024-2026"
 
     proposals = ProjectProposal.objects.filter(
         student__course="BCA",
@@ -549,10 +559,19 @@ def view_bca_proposals(request):
     proposal_data = []
 
     for p in proposals:
-        # find similar project from ANY batch
-        similar = ProjectProposal.objects.exclude(id=p.id).filter(
-            title__icontains=p.title
-        ).first()
+        # ✅ NEW SIMILARITY LOGIC (description-based)
+        similar = None
+        max_score = 0
+
+        for other in ProjectProposal.objects.exclude(id=p.id):
+            text1 = (p.title + " " + p.description).lower()
+            text2 = (other.title + " " + other.description).lower()
+
+            score = get_similarity(text1, text2)
+
+            if score > 0.6 and score > max_score:
+                max_score = score
+                similar = other
 
         proposal_data.append({
             'proposal': p,
@@ -562,6 +581,7 @@ def view_bca_proposals(request):
     return render(request, 'admin/bca_proposals.html', {
         'proposal_data': proposal_data
     })
+
 
 def view_mca_proposals(request):
     current_batch = "2024-2026"
@@ -574,14 +594,19 @@ def view_mca_proposals(request):
     proposal_data = []
 
     for p in proposals:
-        title_words = p.title.lower().split()
+        # ✅ NEW SIMILARITY LOGIC (description-based)
+        similar = None
+        max_score = 0
 
-        similar = ProjectProposal.objects.exclude(id=p.id)
+        for other in ProjectProposal.objects.exclude(id=p.id):
+            text1 = (p.title + " " + p.description).lower()
+            text2 = (other.title + " " + other.description).lower()
 
-        for word in title_words:
-          similar = similar.filter(title__icontains=word)
+            score = get_similarity(text1, text2)
 
-        similar = similar.first()
+            if score > 0.6 and score > max_score:
+                max_score = score
+                similar = other
 
         if similar:
             similar_text = f"{similar.student.name} - {similar.student.course} - {similar.student.academic_batch} | {similar.title}"
@@ -593,13 +618,9 @@ def view_mca_proposals(request):
             'similar_text': similar_text
         })
 
-    # ✅ VERY IMPORTANT (this was missing)
     return render(request, 'admin/mca_proposals.html', {
         'proposal_data': proposal_data
     })
-
-from student.models import ProjectProposal as Proposal
-from student.models import Project
 
 
 def approve_proposal(request, id):
@@ -608,13 +629,9 @@ def approve_proposal(request, id):
     proposal.status = 'Approved'
     proposal.save()
 
-    # ✅ GET GROUP OF STUDENT
     group = ProjectGroup.objects.filter(students=proposal.student).first()
-
-    # ✅ GET FACULTY FROM GROUP
     faculty = group.faculty if group else None
 
-    # ✅ CREATE PROJECT WITH FULL DETAILS
     Project.objects.create(
         title=proposal.title,
         proposal=proposal,
@@ -625,6 +642,8 @@ def approve_proposal(request, id):
     )
 
     return redirect('WAdmin:mca_proposals')
+
+
 def reject_proposal(request, id):
     proposal = ProjectProposal.objects.get(id=id)
     proposal.status = 'Rejected'

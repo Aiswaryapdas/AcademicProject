@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MCA Project Proposals | Admin</title>
+    <title>MCA Project Proposals | ETLAB Admin</title>
 
+    <!-- Font Awesome for Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -12,19 +13,19 @@
 
     <style>
       :root {
-        --et-dark: #1e3a5f;
-        --et-sidebar: #2c3e50;
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
         --et-bg: #f4f7f9;
         --et-accent: #3498db;
         --et-border: #dcdde1;
-        --et-success: #2ecc71;
+        --et-success: #27ae60;
         --et-danger: #e74c3c;
-        --et-warning: #f1c40f;
+        --et-warning: #f39c12;
       }
 
       body {
         margin: 0;
-        font-family: "Segoe UI", Arial, sans-serif;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         background: var(--et-bg);
         display: flex;
         min-height: 100vh;
@@ -32,7 +33,7 @@
 
       /* SIDEBAR */
       .sidebar {
-        width: 240px;
+        width: 220px;
         background: var(--et-dark);
         color: white;
         flex-shrink: 0;
@@ -43,13 +44,13 @@
 
       .sidebar-brand {
         padding: 15px 20px;
-        background: #152943;
-        font-size: 1.2rem;
+        background: #1a252f;
+        font-size: 1.5rem;
         font-weight: bold;
         display: flex;
         align-items: center;
-        gap: 10px;
-        color: #ffd700;
+        gap: 8px;
+        color: #5dade2;
       }
 
       .nav-item {
@@ -59,60 +60,64 @@
         gap: 12px;
         color: #bdc3c7;
         text-decoration: none;
-        border-bottom: 1px solid #2c3e50;
-        font-size: 0.9rem;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.85rem;
       }
 
       .nav-item:hover,
       .nav-item.active {
-        background: #2c3e50;
+        background: #1a252f;
         color: white;
       }
 
-      .nav-item.active {
-        border-left: 4px solid var(--et-accent);
-      }
-
-      /* MAIN CONTENT */
+      /* MAIN LAYOUT */
       .main-wrapper {
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        width: calc(100% - 240px);
       }
 
-      .top-header {
-        background: #fff;
-        height: 50px;
+      .top-navbar {
+        background: #333;
+        color: #ccc;
+        height: 45px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 0 25px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        padding: 0 20px;
+        font-size: 0.8rem;
+        justify-content: space-between;
+      }
+
+      .breadcrumb-bar {
+        background: #eeeeee;
+        padding: 8px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.75rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
       }
 
       .content-area {
-        padding: 25px;
+        padding: 20px 25px;
       }
 
-      /* DATA CARD */
+      .page-title {
+        border-bottom: 1px solid #ccc;
+        margin: 0 0 20px 0;
+        padding-bottom: 10px;
+        color: #444;
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+
+      /* TABLE SYSTEM */
       .card {
         background: white;
         border: 1px solid var(--et-border);
-        border-radius: 4px;
-        overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      }
-
-      .card-header {
-        background: #f8f9fa;
-        padding: 15px 20px;
-        border-bottom: 1px solid var(--et-border);
-        font-weight: bold;
-        color: var(--et-dark);
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        border-radius: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       }
 
       table {
@@ -121,263 +126,230 @@
       }
 
       th {
-        background: #f1f4f6;
-        color: #2c3e50;
+        background: #f8f9fa;
+        color: #333;
         padding: 12px 15px;
         text-align: left;
-        font-size: 0.75rem;
-        border-bottom: 2px solid var(--et-border);
+        font-size: 0.8rem;
         text-transform: uppercase;
+        border-bottom: 2px solid #ddd;
       }
 
       td {
         padding: 12px 15px;
         border-bottom: 1px solid #eee;
         font-size: 0.85rem;
-        color: #333;
+        color: #555;
+        vertical-align: top;
       }
 
-      tr:hover {
-        background: #fcfcfc;
-      }
-
-      /* STATUS BADGES */
+      /* BADGES & UI ELEMENTS */
       .badge {
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 0.7rem;
+        font-weight: bold;
         text-transform: uppercase;
       }
-
       .pending {
-        background: #fff9db;
-        color: #f08c00;
-        border: 1px solid #ffe066;
+        background: #fff3cd;
+        color: #856404;
       }
       .approved {
-        background: #ebfbee;
-        color: #2b8a3e;
-        border: 1px solid #b2f2bb;
+        background: #d4edda;
+        color: #155724;
       }
       .rejected {
-        background: #fff5f5;
-        color: #e03131;
-        border: 1px solid #ffa8a8;
+        background: #f8d7da;
+        color: #721c24;
       }
 
-      /* SIMILARITY ALERT */
-      .similar-alert {
+      .similarity-box {
         background: #fff5f5;
-        border: 1px solid #ffa8a8;
-        padding: 6px 10px;
+        border: 1px solid #feb2b2;
+        padding: 8px;
         border-radius: 4px;
-        font-size: 0.8rem;
-        color: #c92a2a;
-        display: flex;
-        align-items: flex-start;
-        gap: 6px;
+        font-size: 0.75rem;
+        color: #c53030;
       }
 
-      .no-similar {
-        color: var(--et-success);
-        font-weight: 600;
-        font-size: 0.8rem;
+      .btn-view {
+        background: none;
+        border: none;
+        color: var(--et-accent);
+        cursor: pointer;
+        font-size: 0.75rem;
+        padding: 0;
+        text-decoration: underline;
+        margin-top: 5px;
       }
 
       /* ACTION BUTTONS */
       .action-group {
         display: flex;
-        gap: 8px;
+        gap: 5px;
       }
-
-      .btn-action {
-        text-decoration: none;
-        padding: 5px 8px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: bold;
-        transition: 0.2s;
-        display: inline-flex;
+      .btn-circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
         align-items: center;
-        gap: 4px;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        font-size: 0.8rem;
+        transition: 0.2s;
       }
-
-      .btn-approve {
+      .bg-approve {
         background: var(--et-success);
-        color: white;
       }
-      .btn-reject {
+      .bg-reject {
         background: var(--et-danger);
-        color: white;
       }
-      .btn-action:hover {
-        opacity: 0.85;
-        transform: translateY(-1px);
+      .btn-circle:hover {
+        opacity: 0.8;
+        transform: scale(1.1);
       }
     </style>
   </head>
 
   <body>
+    <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-brand">
-        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+        <i class="fa-solid fa-cloud"></i> EduTrack
       </div>
-      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
-        ><i class="fa-solid fa-gauge"></i> Dashboard</a
-      >
-      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
-        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
-      >
-      <a href="#" class="nav-item active"
-        ><i class="fa-solid fa-laptop-code"></i> MCA Proposals</a
-      >
-      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
-        ><i class="fa-solid fa-people-group"></i> Project Groups</a
-      >
-      <a href="{% url 'WAdmin:document_schedule_list' %}" class="nav-item"
-        ><i class="fa-solid fa-file-invoice"></i> Schedule</a
-      >
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item">
+        <i class="fa-solid fa-gauge"></i> Dashboard
+      </a>
+      <a href="#" class="nav-item active">
+        <i class="fa-solid fa-book-open"></i> MCA Proposals
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fa-solid fa-users"></i> Students
+      </a>
     </div>
 
     <div class="main-wrapper">
-      <div class="top-header">
-        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
-          Project Management / MCA Proposals
-        </div>
-        <div style="font-size: 0.85rem">
-          <i class="fa-solid fa-circle-user"></i> ADMIN
+      <!-- TOP NAV -->
+      <div class="top-navbar">
+        <div>Mar Baselios Institute of Technology and Science [MBITS]</div>
+        <div>
+          <i class="fa-solid fa-user-shield"></i> ADMINISTRATOR
+          <i class="fa-solid fa-caret-down"></i>
         </div>
       </div>
 
+      <!-- BREADCRUMBS -->
+      <div class="breadcrumb-bar">
+        <i class="fa-solid fa-house"></i> Home
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem"></i>
+        Projects
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem"></i> MCA
+        Proposals
+      </div>
+
       <div class="content-area">
+        <h2 class="page-title">Project Proposal Evaluation</h2>
+
         <div class="card">
-          <div class="card-header">
-            <i class="fa-solid fa-folder-tree"></i> MCA Project Proposal Reviews
-          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 20%">Student Details</th>
+                <th style="width: 35%">Project Proposal</th>
+                <th style="width: 10%">Status</th>
+                <th style="width: 25%">Similarity Check</th>
+                <th style="width: 10%">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in proposal_data %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600; color: #333">
+                    {{ item.proposal.student.name }}
+                  </div>
+                  <div style="font-size: 0.75rem; color: #777">
+                    Batch: {{ item.proposal.student.academic_batch }}
+                  </div>
+                </td>
 
-          <div style="overflow-x: auto">
-            <table>
-              <thead>
-                <tr>
-                  <th>Student & Batch</th>
-                  <th>Title & Domain</th>
-                  <th>Technology</th>
-                  <th>Status</th>
-                  <th>Similarity Check</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in proposal_data %}
-                <tr>
-                  <td>
-                    <div style="font-weight: 600; color: var(--et-dark)">
-                      {{ item.proposal.student.name }}
-                    </div>
-                    <div style="font-size: 0.75rem; color: #7f8c8d">
-                      {{ item.proposal.student.academic_batch }}
-                    </div>
-                  </td>
-                  <td>
-                    <div style="font-weight: 600">
-                      {{ item.proposal.title }}
-                    </div>
-                    <div style="font-size: 0.75rem; color: #3498db">
-                      {{ item.proposal.domain }}
-                    </div>
-                  </td>
-                  <td>
-                    <span
-                      style="
-                        background: #f1f4f6;
-                        padding: 3px 6px;
-                        border-radius: 4px;
-                        font-family: monospace;
-                        font-size: 0.8rem;
-                        border: 1px solid #ddd;
-                      "
-                    >
-                      {{ item.proposal.technology }}
-                    </span>
-                  </td>
-
-                  <td>
-                    {% if item.proposal.status == "Pending" %}
-                    <span class="badge pending">Pending</span>
-                    {% elif item.proposal.status == "Approved" %}
-                    <span class="badge approved">Approved</span>
-                    {% else %}
-                    <span class="badge rejected">Rejected</span>
-                    {% endif %}
-                  </td>
-
-                  <td style="max-width: 220px">
-                    {% if item.similar_text %}
-                    <div class="similar-alert">
-                      <i class="fa-solid fa-triangle-exclamation"></i>
-                      <span>{{ item.similar_text }}</span>
-                    </div>
-                    {% else %}
-                    <span class="no-similar"
-                      ><i class="fa-solid fa-circle-check"></i> Unique</span
-                    >
-                    {% endif %}
-                  </td>
-
-                  <td>
-                    {% if item.proposal.status == "Pending" %}
-                    <div class="action-group">
-                      <a
-                        href="{% url 'WAdmin:approve_proposal' item.proposal.id %}"
-                        class="btn-action btn-approve"
-                        title="Approve"
-                      >
-                        <i class="fa-solid fa-check"></i>
-                      </a>
-                      <a
-                        href="{% url 'WAdmin:reject_proposal' item.proposal.id %}"
-                        class="btn-action btn-reject"
-                        title="Reject"
-                      >
-                        <i class="fa-solid fa-xmark"></i>
-                      </a>
-                    </div>
-                    {% else %}
-                    <span
-                      style="
-                        color: #bdc3c7;
-                        font-size: 0.75rem;
-                        font-weight: bold;
-                        letter-spacing: 0.5px;
-                      "
-                      >PROCESSED</span
-                    >
-                    {% endif %}
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td
-                    colspan="6"
-                    style="text-align: center; padding: 60px; color: #95a5a6"
+                <td>
+                  <div style="font-weight: 600; margin-bottom: 4px">
+                    {{ item.proposal.title }}
+                  </div>
+                  <div style="font-size: 0.8rem; color: #666; line-height: 1.4">
+                    {{ item.proposal.description|truncatewords:15 }}
+                  </div>
+                  <button
+                    class="btn-view"
+                    onclick="alert('FULL DESCRIPTION:\n\n{{ item.proposal.description|escapejs }}')"
                   >
-                    <i
-                      class="fa-solid fa-inbox"
-                      style="
-                        font-size: 2rem;
-                        display: block;
-                        margin-bottom: 10px;
-                        opacity: 0.5;
-                      "
-                    ></i>
-                    No proposals currently awaiting review.
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+                    Read Full Proposal
+                  </button>
+                </td>
+
+                <td>
+                  {% if item.proposal.status == "Pending" %}
+                  <span class="badge pending">Pending</span>
+                  {% elif item.proposal.status == "Approved" %}
+                  <span class="badge approved">Approved</span>
+                  {% else %}
+                  <span class="badge rejected">Rejected</span>
+                  {% endif %}
+                </td>
+
+                <td>
+                  {% if item.similar_text %}
+                  <div class="similarity-box">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    {{ item.similar_text }} {% if item.similar %}
+                    <button
+                      class="btn-view"
+                      style="color: #c53030; display: block"
+                      onclick="alert('MATCHED WITH:\n\n{{ item.similar.description|escapejs }}')"
+                    >
+                      Compare with match
+                    </button>
+                    {% endif %}
+                  </div>
+                  {% else %}
+                  <span
+                    style="
+                      color: var(--et-success);
+                      font-size: 0.75rem;
+                      font-weight: 600;
+                    "
+                  >
+                    <i class="fa-solid fa-circle-check"></i> Unique Content
+                  </span>
+                  {% endif %}
+                </td>
+
+                <td>
+                  <div class="action-group">
+                    <a
+                      href="{% url 'WAdmin:approve_proposal' item.proposal.id %}"
+                      class="btn-circle bg-approve"
+                      title="Approve"
+                    >
+                      <i class="fa-solid fa-check"></i>
+                    </a>
+                    <a
+                      href="{% url 'WAdmin:reject_proposal' item.proposal.id %}"
+                      class="btn-circle bg-reject"
+                      title="Reject"
+                    >
+                      <i class="fa-solid fa-xmark"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
