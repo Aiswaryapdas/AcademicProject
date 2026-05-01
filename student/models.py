@@ -36,3 +36,30 @@ class ProjectProposal(models.Model):
 
     def __str__(self):
         return self.title    
+
+
+from django.db import models
+
+class Project(models.Model):
+    STATUS_CHOICES = [
+        ('Approved', 'Approved'),
+        ('In Progress', 'In Progress'),
+        ('Completed', 'Completed'),
+    ]
+
+    title = models.CharField(max_length=255)
+
+    # Assuming you already have these models
+    student = models.ForeignKey('Admin.Student', on_delete=models.CASCADE)
+    faculty = models.ForeignKey('Admin.Faculty', on_delete=models.SET_NULL, null=True, blank=True)
+    group = models.ForeignKey('Admin.ProjectGroup', on_delete=models.SET_NULL, null=True, blank=True)
+    proposal = models.ForeignKey('student.ProjectProposal', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Approved')
+
+    domain = models.CharField(max_length=100, blank=True, null=True)
+    technology = models.CharField(max_length=100, blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title        

@@ -1,134 +1,328 @@
-<h2 style="text-align: center; color: #0d6efd; margin-bottom: 20px">
-  Document Submission Schedule
-</h2>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document Submission Schedule | Admin</title>
 
-<!-- Back Button -->
-<a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn"
-  ><i class="fa fa-arrow-left"></i> Back</a
->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-<a href="{% url 'WAdmin:add_document_schedule' %}" class="add-btn"
-  >+ Add New Document</a
->
+    <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-success: #2ecc71;
+        --et-danger: #e74c3c;
+      }
 
-<br /><br />
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
+      }
 
-<table class="schedule-table">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Format</th>
-      <th>Max Size</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for doc in schedules %}
-    <tr>
-      <td>{{ doc.title }}</td>
-      <td>{{ doc.start_date }}</td>
-      <td>{{ doc.end_date }}</td>
-      <td>{{ doc.file_format }}</td>
-      <td>{{ doc.max_size }} MB</td>
-      <td>
-        <a
-          href="{% url 'WAdmin:edit_document_schedule' doc.id %}"
-          class="action-btn edit"
-          ><i class="fa fa-pen"></i> Edit</a
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
+      /* TABLE CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f1f4f6;
+        color: #2c3e50;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.8rem;
+        border-bottom: 2px solid var(--et-border);
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+        color: #333;
+      }
+
+      tr:hover {
+        background: #fcfcfc;
+      }
+
+      /* BUTTONS */
+      .btn-primary {
+        background: var(--et-accent);
+        color: white;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+
+      .btn-primary:hover {
+        background: var(--et-dark);
+      }
+
+      .action-link {
+        text-decoration: none;
+        font-size: 0.85rem;
+        margin-right: 15px;
+        font-weight: 600;
+      }
+
+      .edit-link {
+        color: var(--et-success);
+      }
+      .delete-link {
+        color: var(--et-danger);
+      }
+
+      .format-badge {
+        background: #eef2f7;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        color: #555;
+        border: 1px solid var(--et-border);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-file-arrow-up"></i> Document Schedule</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Submission Deadlines & Requirements
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div
+          style="
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
         >
-        <a
-          href="{% url 'WAdmin:delete_document_schedule' doc.id %}"
-          class="action-btn delete"
-          ><i class="fa fa-trash"></i> Delete</a
-        >
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+          <a
+            href="{% url 'WAdmin:admin_dashboard' %}"
+            style="
+              text-decoration: none;
+              color: #7f8c8d;
+              font-weight: 600;
+              font-size: 0.9rem;
+            "
+          >
+            <i class="fa-solid fa-chevron-left"></i> Dashboard
+          </a>
+          <a
+            href="{% url 'WAdmin:add_document_schedule' %}"
+            class="btn-primary"
+          >
+            <i class="fa-solid fa-plus-circle"></i> Add New Document
+          </a>
+        </div>
 
-<style>
-  .back-btn {
-    display: inline-block;
-    padding: 8px 15px;
-    background-color: #0d6efd;
-    color: white;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    margin-bottom: 10px;
-    transition: 0.3s;
-  }
-  .back-btn i {
-    margin-right: 6px;
-  }
-  .back-btn:hover {
-    background-color: #0b5ed7;
-  }
+        <div class="card">
+          <div class="card-header">
+            <span
+              ><i class="fa-solid fa-calendar-alt"></i> Document Submission
+              Records</span
+            >
+          </div>
 
-  .add-btn {
-    display: inline-block;
-    padding: 10px 18px;
-    background-color: #0d6efd;
-    color: white;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.3s;
-    margin-left: 10px;
-  }
-  .add-btn:hover {
-    background-color: #0b5ed7;
-  }
-
-  .schedule-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-family: "Roboto", Arial, sans-serif;
-  }
-
-  .schedule-table th,
-  .schedule-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #dee2e6;
-  }
-
-  .schedule-table th {
-    background-color: #0d6efd;
-    color: white;
-    font-weight: 500;
-  }
-
-  .schedule-table tr:hover {
-    background-color: #f1f7ff;
-  }
-
-  .action-btn {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 5px;
-    text-decoration: none;
-    color: white;
-    font-size: 14px;
-    margin-right: 5px;
-    transition: 0.3s;
-  }
-
-  .action-btn.edit {
-    background-color: #198754;
-  }
-  .action-btn.edit:hover {
-    background-color: #157347;
-  }
-
-  .action-btn.delete {
-    background-color: #dc3545;
-  }
-  .action-btn.delete:hover {
-    background-color: #b02a37;
-  }
-</style>
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Timeline</th>
+                  <th>Format</th>
+                  <th>Limit</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for doc in schedules %}
+                <tr>
+                  <td style="font-weight: 600; color: var(--et-dark)">
+                    {{ doc.title }}
+                  </td>
+                  <td>
+                    <div style="font-size: 0.85rem">
+                      <span style="color: #27ae60">Start:</span>
+                      {{ doc.start_date }}
+                    </div>
+                    <div style="font-size: 0.85rem">
+                      <span style="color: #e74c3c">End:</span>
+                      {{ doc.end_date }}
+                    </div>
+                  </td>
+                  <td>
+                    <span class="format-badge">{{ doc.file_format }}</span>
+                  </td>
+                  <td style="font-size: 0.85rem">{{ doc.max_size }} MB</td>
+                  <td>
+                    <a
+                      href="{% url 'WAdmin:edit_document_schedule' doc.id %}"
+                      class="action-link edit-link"
+                    >
+                      <i class="fa-solid fa-pen"></i> Edit
+                    </a>
+                    <a
+                      href="{% url 'WAdmin:delete_document_schedule' doc.id %}"
+                      class="action-link delete-link"
+                      onclick="return confirm('Delete this schedule?');"
+                    >
+                      <i class="fa-solid fa-trash"></i> Delete
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td
+                    colspan="5"
+                    style="text-align: center; padding: 40px; color: #95a5a6"
+                  >
+                    <i
+                      class="fa-solid fa-folder-open"
+                      style="
+                        font-size: 2.5rem;
+                        display: block;
+                        margin-bottom: 10px;
+                        opacity: 0.3;
+                      "
+                    ></i>
+                    No documents scheduled yet.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

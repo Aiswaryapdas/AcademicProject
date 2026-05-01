@@ -6,3 +6,10 @@ class ReviewScheduleAdmin(admin.ModelAdmin):
     list_display = ('review_topic', 'review_date', 'review_time', 'review_status', 'remarks', 'created_at', 'updated_at')
     list_filter = ('review_status', 'review_date')
     search_fields = ('review_topic', 'remarks')
+
+from student.models import Project
+admin.site.register(Project)
+
+from .models import Notice
+
+admin.site.register(Notice)

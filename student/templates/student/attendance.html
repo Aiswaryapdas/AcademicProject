@@ -1,92 +1,333 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>My Attendance</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Attendance | MBITS</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
+      :root {
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --present-bg: #e8f5e9;
+        --present-text: #2e7d32;
+        --absent-bg: #ffebee;
+        --absent-text: #c62828;
+      }
+
       body {
-        font-family: Arial;
-        background: #f4f6f8;
-        padding: 20px;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
 
-      h2 {
-        text-align: center;
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
 
-      .percentage-box {
-        text-align: center;
-        font-size: 20px;
-        margin-bottom: 20px;
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1a252f;
+        font-size: 1.2rem;
         font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: var(--et-sidebar);
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN WRAPPER */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .breadcrumb {
+        background: #fff;
+        padding: 12px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.85rem;
+        color: #7f8c8d;
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
+      /* PERCENTAGE WIDGET */
+      .stats-container {
+        background: white;
+        padding: 20px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .percentage-circle {
+        background: #f8f9fa;
+        border: 5px solid var(--et-accent);
+        height: 70px;
+        width: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: var(--et-dark);
+      }
+
+      /* ATTENDANCE TABLE */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--et-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-responsive {
+        overflow-x: auto;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        background: white;
-      }
-
-      th,
-      td {
-        border: 1px solid #ccc;
-        padding: 8px;
-        text-align: center;
       }
 
       th {
-        background: #2c3e50;
-        color: white;
+        background: #f1f4f6;
+        color: #2c3e50;
+        padding: 10px;
+        font-size: 0.75rem;
+        border-bottom: 2px solid var(--et-border);
+        border-right: 1px solid #eee;
       }
 
+      td {
+        padding: 10px;
+        border: 1px solid #eee;
+        font-size: 0.8rem;
+        text-align: center;
+      }
+
+      /* DYNAMIC CLASSES */
       .present {
-        background: #1abc9c;
-        color: white;
+        background: var(--present-bg) !important;
+        color: var(--present-text);
+        font-weight: bold;
       }
 
       .absent {
-        background: #e74c3c;
-        color: white;
+        background: var(--absent-bg) !important;
+        color: var(--absent-text);
+        font-weight: bold;
       }
 
       .empty {
-        background: #ecf0f1;
+        background: #fafafa;
+        color: #ccc;
       }
 
-      .back {
-        margin-top: 20px;
-        display: inline-block;
-        padding: 8px 15px;
-        background: #34495e;
-        color: white;
-        text-decoration: none;
+      /* LEGEND */
+      .legend {
+        display: flex;
+        gap: 15px;
+        font-size: 0.8rem;
+        margin-top: 15px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .box {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
       }
     </style>
   </head>
+
   <body>
-    <h2>{{ month }} {{ year }} Attendance</h2>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-cloud"></i> EduTrack
+      </div>
+      <a href="{% url 'student:dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-calendar-check"></i> Attendance</a
+      >
+      <a href="{% url 'student:student_document_list' %}" class="nav-item"
+        ><i class="fa-solid fa-file-invoice"></i> Assignments</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-book"></i> Materials</a
+      >
+    </div>
 
-    <div class="percentage-box">Total Attendance: {{ percentage }}%</div>
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          PROJECT Portal
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-user"></i> AISWARYA P DAS
+        </div>
+      </div>
 
-    <table>
-      <tr>
-        <th>Period</th>
-        {% for day in days_range %}
-        <th>{{ day }}</th>
-        {% endfor %}
-      </tr>
+      <div class="breadcrumb">
+        Home
+        <i
+          class="fa-solid fa-chevron-right"
+          style="font-size: 0.7rem; margin: 0 5px"
+        ></i>
+        Attendance
+      </div>
 
-      {% for period, row in attendance_display.items %}
-      <tr>
-        <td><b>Period {{ period }}</b></td>
+      <div class="content-area">
+        <div class="stats-container">
+          <div class="percentage-circle">{{ percentage }}%</div>
+          <div>
+            <h4 style="margin: 0; color: var(--et-dark)">
+              Monthly Attendance Summary
+            </h4>
+            <p style="margin: 5px 0 0; font-size: 0.85rem; color: #7f8c8d">
+              Overall attendance for {{ month }} {{ year }}
+            </p>
+          </div>
+        </div>
 
-        {% for value, css in row %}
-        <td class="{{ css }}">{{ value }}</td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
+        <div class="card">
+          <div class="card-header">
+            <strong
+              ><i class="fa-solid fa-table-cells"></i> Attendance Grid</strong
+            >
+            <span style="font-size: 0.8rem; color: #666"
+              >Month: {{ month }}</span
+            >
+          </div>
 
-    <br />
-    <a href="/student/dashboard/" class="back">Back to Dashboard</a>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 100px">Period</th>
+                  {% for day in days_range %}
+                  <th>{{ day }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for period, row in attendance_display.items %}
+                <tr>
+                  <td style="background: #fdfdfd; font-weight: 600">
+                    P{{ period }}
+                  </td>
+                  {% for value, css in row %}
+                  <td class="{{ css }}">{{ value|default:"-" }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item">
+            <div
+              class="box"
+              style="background: var(--present-bg); border: 1px solid #c8e6c9"
+            ></div>
+            Present (P)
+          </div>
+          <div class="legend-item">
+            <div
+              class="box"
+              style="background: var(--absent-bg); border: 1px solid #ffcdd2"
+            ></div>
+            Absent (A)
+          </div>
+          <div class="legend-item">
+            <div
+              class="box"
+              style="background: #fafafa; border: 1px solid #ddd"
+            ></div>
+            No Session
+          </div>
+        </div>
+
+        <br />
+        <a
+          href="{% url 'student:dashboard' %}"
+          style="text-decoration: none; color: #7f8c8d; font-size: 0.9rem"
+        >
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
   </body>
 </html>

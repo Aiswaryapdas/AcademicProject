@@ -39,4 +39,9 @@ path('documents/<int:schedule_id>/', views.admin_schedule_submissions, name='adm
 path('mca-proposals/', views.view_mca_proposals, name='mca_proposals'),
 path('approve/<int:id>/', views.approve_proposal, name='approve_proposal'),
 path('reject/<int:id>/', views.reject_proposal, name='reject_proposal'),
+path('add-notice/', views.add_notice, name='add_notice'),
+path('notice-board/', views.notice_board, name='notice_board'),
+path('manage-notices/', views.admin_notice_list, name='admin_notice_list'),
+path('edit-notice/<int:id>/', views.edit_notice, name='edit_notice'),
+path('delete-notice/<int:id>/', views.delete_notice, name='delete_notice'),
 ]

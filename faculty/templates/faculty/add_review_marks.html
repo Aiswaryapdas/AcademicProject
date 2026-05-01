@@ -4,150 +4,296 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Add Review Marks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Review Marks | ETLAB</title>
+
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
     <style>
+      :root {
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-save: #27ae60;
+      }
+
       body {
         margin: 0;
-        font-family: "Segoe UI", Arial, sans-serif;
-        background-color: #f4f6f8;
-        padding: 30px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
 
-      /* CONTAINER */
-      .container {
-        max-width: 900px;
-        margin: auto;
-      }
-
-      /* HEADER CARD */
-      .header-card {
-        background: #1e3a5f;
+      /* SIDEBAR - ETLAB Signature Style */
+      .sidebar {
+        width: 220px;
+        background: var(--et-dark);
         color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1a252f;
+        font-size: 1.5rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #5dade2;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.85rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #1a252f;
+        color: white;
+      }
+
+      /* TOP NAVBAR & BREADCRUMBS */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-navbar {
+        background: #333;
+        color: #ccc;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        font-size: 0.8rem;
+        justify-content: space-between;
+      }
+
+      .breadcrumb-bar {
+        background: #eeeeee;
+        padding: 8px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.75rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* CONTENT AREA */
+      .content-area {
         padding: 20px 25px;
-        border-radius: 10px;
+      }
+
+      .page-header {
+        border-bottom: 1px solid #ccc;
         margin-bottom: 20px;
+        padding-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
       }
 
-      .header-card h2 {
+      .page-title h2 {
         margin: 0;
+        color: #444;
+        font-size: 1.3rem;
+        font-weight: 500;
       }
-
-      .header-card p {
+      .page-title p {
         margin: 5px 0 0;
-        opacity: 0.9;
+        color: #777;
+        font-size: 0.85rem;
       }
 
-      /* MAIN CARD */
+      /* DATA CARD & TABLE */
       .card {
         background: white;
-        border-radius: 10px;
-        padding: 20px 25px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--et-border);
+        border-radius: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       }
 
-      /* TABLE */
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
-      }
-
-      th,
-      td {
-        padding: 12px;
-        text-align: left;
       }
 
       th {
-        background: #1e3a5f;
-        color: white;
+        background: #f8f9fa;
+        color: #333;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid #ddd;
       }
 
       td {
-        border-bottom: 1px solid #e5e7eb;
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.85rem;
+        color: #555;
+        vertical-align: middle;
       }
 
-      /* INPUT FIELD */
+      /* INPUTS & BUTTONS */
       input[type="number"] {
-        width: 80px;
+        width: 70px;
         padding: 6px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--et-border);
+        border-radius: 3px;
         text-align: center;
+        font-weight: bold;
       }
 
-      input[type="number"]:focus {
-        border-color: #3b82f6;
-        outline: none;
+      .total-badge {
+        background: #f1f4f6;
+        padding: 4px 10px;
+        border-radius: 12px;
+        color: var(--et-dark);
+        font-weight: 600;
+        font-size: 0.8rem;
       }
 
-      /* BUTTON */
-      button {
-        margin-top: 20px;
-        padding: 12px 25px;
-        background: #3b82f6;
+      .action-bar {
+        padding: 20px;
+        background: #fdfdfd;
+        border-top: 1px solid #eee;
+        text-align: right;
+      }
+
+      .btn-save {
+        background: var(--et-save);
         color: white;
         border: none;
-        border-radius: 8px;
-        font-size: 15px;
+        padding: 10px 25px;
+        border-radius: 4px;
+        font-weight: 600;
         cursor: pointer;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
       }
 
-      button:hover {
-        background: #2563eb;
-      }
-
-      /* ALIGN BUTTON */
-      .button-container {
-        text-align: right;
+      .btn-save:hover {
+        background: #219150;
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <!-- HEADER -->
-      <div class="header-card">
-        <h2>Review: {{review.review_topic}}</h2>
-        <p>Date: {{review.review_date}} | Time: {{review.review_time}}</p>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-cloud"></i> EduTrack
+      </div>
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-house"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-star"></i> Reviews</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-file-signature"></i> Internal Marks</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-calendar-check"></i> Attendance</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <!-- TOP NAV -->
+      <div class="top-navbar">
+        <div></div>
+        <div>
+          <i class="fa-solid fa-user"></i> FACULTY_PORTAL
+          <i class="fa-solid fa-caret-down"></i>
+        </div>
       </div>
 
-      <!-- FORM CARD -->
-      <div class="card">
-        <form method="POST">
-          {% csrf_token %}
+      <!-- BREADCRUMBS -->
+      <div class="breadcrumb-bar">
+        <i class="fa-solid fa-house"></i> Home
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem"></i>
+        Academic
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem"></i>
+        {{ review.review_topic }}
+      </div>
 
-          <table>
-            <tr>
-              <th>Student Name</th>
-              <th>Mark (Out of 10)</th>
-              <th>Total Marks</th>
-            </tr>
-
-            {% for student in students %}
-            <tr>
-              <td>{{student.name}}</td>
-
-              <td>
-                <input
-                  type="number"
-                  name="mark_{{student.id}}"
-                  min="0"
-                  max="10"
-                  value="{{ mark_dict|get_item:student.id }}"
-                />
-              </td>
-
-              <td>{{ total_dict|get_item:student.id }}</td>
-            </tr>
-            {% endfor %}
-          </table>
-
-          <div class="button-container">
-            <button type="submit">Save Marks</button>
+      <div class="content-area">
+        <div class="page-header">
+          <div class="page-title">
+            <h2>Review: {{ review.review_topic }}</h2>
+            <p>
+              <i class="fa-regular fa-calendar"></i> {{ review.review_date }} |
+              <i class="fa-regular fa-clock"></i> {{ review.review_time }}
+            </p>
           </div>
-        </form>
+        </div>
+
+        <div class="card">
+          <form method="POST">
+            {% csrf_token %}
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 50%">Student Name</th>
+                  <th style="text-align: center">Mark (Out of 10)</th>
+                  <th style="text-align: center">Total Aggregate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in students %}
+                <tr>
+                  <td><strong>{{ student.name }}</strong></td>
+                  <td style="text-align: center">
+                    <input
+                      type="number"
+                      name="mark_{{ student.id }}"
+                      min="0"
+                      max="10"
+                      step="0.5"
+                      value="{{ mark_dict|get_item:student.id }}"
+                    />
+                  </td>
+                  <td style="text-align: center">
+                    <span class="total-badge">
+                      {{ total_dict|get_item:student.id|default:"0" }}
+                    </span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            <div class="action-bar">
+              <button type="submit" class="btn-save">
+                <i class="fa-solid fa-check-double"></i> Save Review Marks
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </body>

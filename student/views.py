@@ -5,8 +5,10 @@ from Admin.models import Student, ProjectGroup, ReviewSchedule
 from faculty.models import Attendance
 from datetime import datetime
 from calendar import monthrange
-
-
+from .models import Project
+from Admin.models import Notice
+from django.utils import timezone
+from datetime import timedelta
 
 def student_dashboard(request):
     if 'student_id' not in request.session:
@@ -29,15 +31,40 @@ def student_dashboard(request):
             schedule=schedule
         ).first()
 
-    # ⭐ ADD THIS (new feature)
+    # Existing proposal
     proposal = ProjectProposal.objects.filter(student=student).first()
+
+    # Project
+    project = Project.objects.filter(student=student).first()
+
+    # =========================
+    # ✅ ADD NOTICE LOGIC HERE
+    # =========================
+    notices = Notice.objects.filter(
+        target__in=['ALL', 'STUDENT']
+    ).order_by('-created_at')
+
+    new_threshold = timezone.now() - timedelta(days=2)
+
+    notice_list = []
+    for n in notices:
+        is_new = n.created_at >= new_threshold
+        notice_list.append({
+            'notice': n,
+            'is_new': is_new
+        })
+    # =========================
 
     context = {
         'student': student,
         'group': group,
         'reviews': reviews,
         'schedules': schedules,
-        'proposal': proposal,  # 👈 add this line
+        'proposal': proposal,
+        'project': project,
+
+        # ✅ ADD THIS
+        'notice_list': notice_list,
     }
 
     return render(request, 'student/student_dashboard.html', context)

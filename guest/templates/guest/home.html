@@ -1,80 +1,267 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Academic Project Portal</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Academic Project Portal | ETLAB</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-      body {
-        font-family: Arial;
-        margin: 0;
-        background: #f4f6f9;
+      :root {
+        --et-dark: #1e3a5f;
+        --et-accent: #3498db;
+        --et-gold: #ffd700;
+        --et-text: #2c3e50;
+        --et-light: #f4f7f9;
       }
 
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--et-light);
+        color: var(--et-text);
+        line-height: 1.6;
+      }
+
+      /* NAVIGATION */
       .navbar {
-        background: #1e3a5f;
-        padding: 15px;
+        background: var(--et-dark);
+        padding: 0 5%;
+        height: 70px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
 
-      .navbar a {
+      .logo {
         color: white;
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo span {
+        color: var(--et-gold);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #ecf0f1;
         text-decoration: none;
-        margin: 0 15px;
-        font-weight: bold;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.3s;
       }
 
-      .navbar a:hover {
-        color: #ffd700;
+      .nav-links a:hover {
+        color: var(--et-gold);
       }
 
-      .title {
-        color: white;
-        font-size: 20px;
-        font-weight: bold;
+      .btn-signin {
+        background: var(--et-accent);
+        color: white !important;
+        padding: 8px 20px;
+        border-radius: 4px;
+        transition:
+          transform 0.2s,
+          background 0.3s;
       }
 
-      .container {
+      .btn-signin:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      /* HERO SECTION */
+      .hero {
+        background:
+          linear-gradient(rgba(30, 58, 95, 0.9), rgba(30, 58, 95, 0.9)),
+          url("https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=2000");
+        background-size: cover;
+        background-position: center;
+        height: 60vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         text-align: center;
-        margin-top: 120px;
-      }
-
-      .btn {
-        background: #1e3a5f;
         color: white;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
+        padding: 0 20px;
       }
 
-      .btn:hover {
-        background: #16304d;
+      .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        letter-spacing: -1px;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin-bottom: 30px;
+        font-weight: 300;
+      }
+
+      .hero .cta-btn {
+        background: var(--et-gold);
+        color: var(--et-dark);
+        padding: 15px 35px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+      }
+
+      .hero .cta-btn:hover {
+        background: white;
+        transform: scale(1.05);
+      }
+
+      /* FEATURES / ROLES */
+      .roles-container {
+        max-width: 1100px;
+        margin: -50px auto 50px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        padding: 0 20px;
+      }
+
+      .role-card {
+        background: white;
+        padding: 35px 25px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border-top: 5px solid var(--et-accent);
+        transition: 0.3s;
+      }
+
+      .role-card:hover {
+        transform: translateY(-10px);
+      }
+
+      .role-card i {
+        font-size: 2.5rem;
+        color: var(--et-dark);
+        margin-bottom: 20px;
+      }
+
+      .role-card h3 {
+        margin-bottom: 12px;
+        font-size: 1.2rem;
+      }
+
+      .role-card p {
+        font-size: 0.85rem;
+        color: #7f8c8d;
+      }
+
+      footer {
+        text-align: center;
+        padding: 40px;
+        color: #95a5a6;
+        font-size: 0.8rem;
+        border-top: 1px solid #eee;
+      }
+
+      @media (max-width: 768px) {
+        .roles-container {
+          grid-template-columns: 1fr;
+          margin-top: 30px;
+        }
+        .hero h1 {
+          font-size: 2rem;
+        }
+        .nav-links {
+          display: none;
+        }
       }
     </style>
   </head>
 
   <body>
-    <div class="navbar">
-      <div class="title">🎓 Academic Project System</div>
-
-      <div>
+    <nav class="navbar">
+      <div class="logo">
+        <i class="fa-solid fa-graduation-cap"></i> EDUTRACK
+        <span>PROJECTS</span>
+      </div>
+      <div class="nav-links">
         <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-        <a href="/login/">Sign In</a>
+        <a href="#">Announcements</a>
+        <a href="#">Support</a>
+        <a href="/login/" class="btn-signin">Sign In</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1>Streamline Your Academic Projects</h1>
+      <p>
+        A unified platform for proposal submission, and performance evaluation.
+      </p>
+      <a href="/login/" class="cta-btn">Access Portal</a>
+    </header>
+
+    <div class="roles-container">
+      <div class="role-card">
+        <i class="fa-solid fa-user-graduate"></i>
+        <h3>Students</h3>
+        <p>
+          Submit project proposals, track review status, and upload academic
+          documents seamlessly.
+        </p>
+      </div>
+
+      <div class="role-card" style="border-top-color: var(--et-gold)">
+        <i class="fa-solid fa-user-tie"></i>
+        <h3>Faculty</h3>
+        <p>
+          Manage project batches, provide feedback, and evaluate student
+          performance in real-time.
+        </p>
+      </div>
+
+      <div class="role-card" style="border-top-color: var(--et-dark)">
+        <i class="fa-solid fa-user-shield"></i>
+        <h3>Administrators</h3>
+        <p>
+          Coordinate courses, monitor system-wide analytics, and manage
+          department notifications.
+        </p>
       </div>
     </div>
 
-    <div class="container">
-      <h1>Welcome to Academic Project Portal</h1>
-      <p>Manage student projects, submissions and reviews.</p>
-
-      <a href="/login/">
-        <button class="btn">Sign In</button>
-      </a>
-    </div>
+    <footer>
+      &copy; 2026 Academic Project Management System | Powered by EDUTRACK
+      Framework
+    </footer>
   </body>
 </html>

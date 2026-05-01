@@ -149,8 +149,24 @@ def create_project_group(request):
     if request.method == 'POST':
         form = ProjectGroupForm(request.POST)
         if form.is_valid():
-            form.save()
+
+            group = form.save()   # ✅ get group object
+
+            # ✅ ADD THIS PART BELOW
+            students = group.students.all()   # many-to-many
+            faculty = group.faculty
+
+            for student in students:
+                project = Project.objects.filter(student=student).first()
+
+                if project:
+                    project.group = group
+                    project.faculty = faculty
+                    project.status = 'In Progress'
+                    project.save()
+
             return redirect('WAdmin:admin_dashboard')
+
     else:
         form = ProjectGroupForm()
 
@@ -582,15 +598,123 @@ def view_mca_proposals(request):
         'proposal_data': proposal_data
     })
 
+from student.models import ProjectProposal as Proposal
+from student.models import Project
+
+
 def approve_proposal(request, id):
-    proposal = ProjectProposal.objects.get(id=id)
+    proposal = Proposal.objects.get(id=id)
+
     proposal.status = 'Approved'
     proposal.save()
-    return redirect(request.META.get('HTTP_REFERER'))
 
+    # ✅ GET GROUP OF STUDENT
+    group = ProjectGroup.objects.filter(students=proposal.student).first()
 
+    # ✅ GET FACULTY FROM GROUP
+    faculty = group.faculty if group else None
+
+    # ✅ CREATE PROJECT WITH FULL DETAILS
+    Project.objects.create(
+        title=proposal.title,
+        proposal=proposal,
+        student=proposal.student,
+        group=group,
+        faculty=faculty,
+        status='Approved'
+    )
+
+    return redirect('WAdmin:mca_proposals')
 def reject_proposal(request, id):
     proposal = ProjectProposal.objects.get(id=id)
     proposal.status = 'Rejected'
     proposal.save()
     return redirect(request.META.get('HTTP_REFERER'))
+
+from django.shortcuts import render, redirect
+from .models import Notice
+
+def add_notice(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        message = request.POST.get('message')
+        target = request.POST.get('target')
+
+        Notice.objects.create(
+            title=title,
+            message=message,
+            target=target
+        )
+
+        return redirect('WAdmin:admin_dashboard')  # make sure this name exists
+
+    return render(request, 'Admin/add_notice.html')
+
+def notice_board(request):
+    from .models import Notice
+    from django.utils import timezone
+    from datetime import timedelta
+
+    if 'student_id' in request.session:
+        notices = Notice.objects.filter(
+            target__in=['ALL']
+        ).order_by('-created_at')
+
+    elif 'faculty_id' in request.session:
+        notices = Notice.objects.filter(
+            target__in=['ALL', 'FACULTY']
+        ).order_by('-created_at')
+
+    else:
+        notices = Notice.objects.all().order_by('-created_at')
+
+    new_threshold = timezone.now() - timedelta(days=2)
+
+    notice_list = []
+    for n in notices:
+        is_new = n.created_at >= new_threshold
+        notice_list.append({
+            'notice': n,
+            'is_new': is_new
+        })
+
+    return render(request, 'Admin/notice_board.html', {
+        'notice_list': notice_list
+    })
+
+def admin_notice_list(request):
+    from .models import Notice
+
+    if 'admin_id' not in request.session:
+        return redirect('guest:guest_login')
+
+    notices = Notice.objects.all().order_by('-created_at')
+
+    return render(request, 'Admin/admin_notice_list.html', {
+        'notices': notices
+    })
+
+def delete_notice(request, id):
+    from .models import Notice
+
+    notice = Notice.objects.get(id=id)
+    notice.delete()
+
+    return redirect('WAdmin:admin_notice_list')
+
+def edit_notice(request, id):
+    from .models import Notice
+
+    notice = Notice.objects.get(id=id)
+
+    if request.method == "POST":
+        notice.title = request.POST.get('title')
+        notice.message = request.POST.get('message')
+        notice.target = request.POST.get('target')
+        notice.save()
+
+        return redirect('WAdmin:admin_notice_list')
+
+    return render(request, 'Admin/edit_notice.html', {
+        'notice': notice
+    })

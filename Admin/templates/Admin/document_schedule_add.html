@@ -2,48 +2,137 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Add Document Schedule</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% if schedule %}Edit{% else %}Add{% endif %} Document Schedule | Admin
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
-      /* Basic Reset */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
       }
 
       body {
-        background-color: #f4f7f8;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
         display: flex;
-        justify-content: center;
-        align-items: flex-start;
         min-height: 100vh;
-        padding: 50px 20px;
       }
 
-      .form-container {
-        background-color: #fff;
-        padding: 30px 40px;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* FORM CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
         width: 100%;
-        max-width: 500px;
+        max-width: 600px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       }
 
-      h2 {
-        text-align: center;
-        margin-bottom: 25px;
-        color: #333;
-        font-size: 24px;
-        font-weight: 600;
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      /* FORM STYLING */
+      .form-group {
+        margin-bottom: 20px;
       }
 
       label {
         display: block;
-        margin-bottom: 6px;
-        color: #555;
-        font-weight: 500;
-        font-size: 14px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 8px;
       }
 
       input[type="text"],
@@ -52,20 +141,19 @@
       select,
       textarea {
         width: 100%;
-        padding: 12px 15px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: all 0.2s;
+        padding: 10px 12px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+        transition: border 0.3s;
       }
 
       input:focus,
       select:focus,
       textarea:focus {
+        border-color: var(--et-accent);
         outline: none;
-        border-color: #4a90e2;
-        box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
       }
 
       textarea {
@@ -73,146 +161,245 @@
         min-height: 80px;
       }
 
-      button {
-        width: 100%;
-        padding: 12px;
-        border: none;
-        background-color: #4a90e2;
+      .btn-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 25px;
+      }
+
+      .btn-save {
+        background: var(--et-dark);
         color: white;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 8px;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 4px;
+        font-weight: bold;
         cursor: pointer;
-        transition: background-color 0.3s;
+        flex-grow: 1;
+        font-size: 0.95rem;
       }
 
-      button:hover {
-        background-color: #357abd;
+      .btn-save:hover {
+        background: #152943;
       }
 
-      @media (max-width: 500px) {
-        .form-container {
-          padding: 20px;
-        }
+      .btn-back {
+        text-decoration: none;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        padding: 11px 15px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+      }
+
+      .btn-back:hover {
+        background: #f8f9fa;
       }
     </style>
   </head>
+
   <body>
-    <div class="form-container">
-      <h2>Add Document Schedule</h2>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> ETLAB ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a href="{% url 'WAdmin:document_schedule' %}" class="nav-item active"
+        ><i class="fa-solid fa-file-arrow-up"></i> Document Schedule</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+    </div>
 
-      <form method="POST">
-        {% csrf_token %}
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Document Manager / {% if schedule %}Update{% else %}New{% endif %}
+          Requirement
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
 
-        <label for="title">Title</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          placeholder="Enter document title"
-          value="{{ schedule.title|default:'' }}"
-          required
-        />
+      <div class="content-area">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-calendar-plus"></i>
+            {% if schedule %}Edit Submission Deadline{% else %}Add Document
+            Submission Schedule{% endif %}
+          </div>
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %}
 
-        <label for="document_type">Document Type</label>
-        <select id="document_type" name="document_type">
-          <option
-            value="abstract"
-            {%
-            if
-            schedule.document_type=""
-            ="abstract"
-            %}selected{%
-            endif
-            %}
-          >
-            Abstract
-          </option>
-          <option
-            value="DFD"
-            {%
-            if
-            schedule.document_type=""
-            ="DFD"
-            %}selected{%
-            endif
-            %}
-          >
-            DFD
-          </option>
-          <option
-            value="report"
-            {%
-            if
-            schedule.document_type=""
-            ="report"
-            %}selected{%
-            endif
-            %}
-          >
-            Final Report
-          </option>
-          <option
-            value="presentation"
-            {%
-            if
-            schedule.document_type=""
-            ="presentation"
-            %}selected{%
-            endif
-            %}
-          >
-            Presentation
-          </option>
-        </select>
+              <div class="form-group">
+                <label for="title"
+                  ><i class="fa-solid fa-heading"></i> Document Title</label
+                >
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="e.g., Phase 1 Project Report"
+                  value="{{ schedule.title|default:'' }}"
+                  required
+                />
+              </div>
 
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          name="description"
-          placeholder="Enter a brief description"
-        >
+              <div class="form-group">
+                <label for="document_type"
+                  ><i class="fa-solid fa-tags"></i> Document Category</label
+                >
+                <select id="document_type" name="document_type">
+                  <option
+                    value="abstract"
+                    {%
+                    if
+                    schedule.document_type=""
+                    ="abstract"
+                    %}selected{%
+                    endif
+                    %}
+                  >
+                    Abstract
+                  </option>
+                  <option
+                    value="DFD"
+                    {%
+                    if
+                    schedule.document_type=""
+                    ="DFD"
+                    %}selected{%
+                    endif
+                    %}
+                  >
+                    DFD / Diagram
+                  </option>
+                  <option
+                    value="report"
+                    {%
+                    if
+                    schedule.document_type=""
+                    ="report"
+                    %}selected{%
+                    endif
+                    %}
+                  >
+                    Final Report
+                  </option>
+                  <option
+                    value="presentation"
+                    {%
+                    if
+                    schedule.document_type=""
+                    ="presentation"
+                    %}selected{%
+                    endif
+                    %}
+                  >
+                    Presentation PPT
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="description"
+                  ><i class="fa-solid fa-align-left"></i> Description /
+                  Instructions</label
+                >
+                <textarea
+                  id="description"
+                  name="description"
+                  placeholder="Provide specific instructions for students..."
+                >
 {{ schedule.description|default:'' }}</textarea
-        >
+                >
+              </div>
 
-        <label for="start_datetime">Start Date & Time</label>
-        <input
-          type="datetime-local"
-          id="start_datetime"
-          name="start_datetime"
-          value="{{ schedule.start_datetime|date:'Y-m-d\\TH:i' }}"
-          required
-        />
+              <div style="display: flex; gap: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label for="start_datetime"
+                    ><i class="fa-solid fa-calendar-check"></i> Submission
+                    Opens</label
+                  >
+                  <input
+                    type="datetime-local"
+                    id="start_datetime"
+                    name="start_datetime"
+                    value="{{ schedule.start_datetime|date:'Y-m-d\\TH:i' }}"
+                    required
+                  />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label for="end_datetime"
+                    ><i class="fa-solid fa-calendar-xmark"></i> Submission
+                    Closes</label
+                  >
+                  <input
+                    type="datetime-local"
+                    id="end_datetime"
+                    name="end_datetime"
+                    value="{{ schedule.end_datetime|date:'Y-m-d\\TH:i' }}"
+                    required
+                  />
+                </div>
+              </div>
 
-        <label for="end_datetime">End Date & Time</label>
-        <input
-          type="datetime-local"
-          id="end_datetime"
-          name="end_datetime"
-          value="{{ schedule.end_datetime|date:'Y-m-d\\TH:i' }}"
-          required
-        />
+              <div style="display: flex; gap: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label for="allowed_file_type"
+                    ><i class="fa-solid fa-file-code"></i> Allowed
+                    Formats</label
+                  >
+                  <input
+                    type="text"
+                    id="allowed_file_type"
+                    name="allowed_file_type"
+                    placeholder="e.g., pdf, zip"
+                    value="{{ schedule.allowed_file_type|default:'pdf' }}"
+                  />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label for="max_file_size"
+                    ><i class="fa-solid fa-weight-hanging"></i> Max Size
+                    (MB)</label
+                  >
+                  <input
+                    type="number"
+                    id="max_file_size"
+                    name="max_file_size"
+                    min="1"
+                    value="{{ schedule.max_file_size|default:'10' }}"
+                  />
+                </div>
+              </div>
 
-        <label for="allowed_file_type">Allowed File Type</label>
-        <input
-          type="text"
-          id="allowed_file_type"
-          name="allowed_file_type"
-          placeholder="e.g., pdf, docx"
-          value="{{ schedule.allowed_file_type|default:'pdf' }}"
-        />
-
-        <label for="max_file_size">Max File Size (MB)</label>
-        <input
-          type="number"
-          id="max_file_size"
-          name="max_file_size"
-          min="1"
-          value="{{ schedule.max_file_size|default:'10' }}"
-        />
-
-        <button type="submit">Save Schedule</button>
-      </form>
+              <div class="btn-container">
+                <button type="submit" class="btn-save">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Schedule
+                </button>
+                <a href="{% url 'WAdmin:document_schedule' %}" class="btn-back"
+                  >Cancel</a
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>

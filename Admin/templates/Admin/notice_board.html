@@ -1,0 +1,158 @@
+<style>
+  :root {
+    --etlab-blue: #007bff;
+    --date-bg: #f4f4f4;
+    --text-main: #333;
+    --text-muted: #777;
+    --border-light: #eee;
+  }
+
+  .notice-container {
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--etlab-blue);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .notice-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .notice-card {
+    display: flex;
+    gap: 20px;
+    background: #fff;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-light);
+    transition: background 0.2s;
+  }
+
+  .notice-card:hover {
+    background-color: #fcfcfc;
+  }
+
+  /* The Date Badge */
+  .notice-date-box {
+    min-width: 70px;
+    text-align: center;
+    background: var(--date-bg);
+    border-radius: 4px;
+    padding: 10px 5px;
+    height: fit-content;
+    border: 1px solid #e0e0e0;
+  }
+
+  .notice-date-day {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  .notice-date-month {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Content Area */
+  .notice-content {
+    flex-grow: 1;
+  }
+
+  .notice-title {
+    margin: 0 0 5px 0;
+    font-size: 15px;
+    color: var(--text-main);
+    line-height: 1.4;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .notice-msg {
+    margin: 0 0 10px 0;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .notice-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .new-badge {
+    background: #ff4d4d;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    vertical-align: middle;
+    margin-left: 5px;
+  }
+
+  .view-doc-link {
+    color: var(--etlab-blue);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .view-doc-link:hover {
+    text-decoration: underline;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+</style>
+
+<div class="notice-container">
+  <div class="notice-header">
+    <h2><span style="color: var(--etlab-blue)">📢</span> Notice Board</h2>
+  </div>
+
+  {% for item in notice_list %}
+  <div class="notice-card">
+    <div class="notice-date-box">
+      <span class="notice-date-day">{{ item.notice.created_at|date:"d" }}</span>
+      <span class="notice-date-month"
+        >{{ item.notice.created_at|date:"M Y" }}</span
+      >
+    </div>
+
+    <div class="notice-content">
+      <h3 class="notice-title">
+        {{ item.notice.title }} {% if item.is_new %}
+        <span class="new-badge">NEW</span>
+        {% endif %}
+      </h3>
+
+      <p class="notice-msg">{{ item.notice.message }}</p>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty-state">
+    <p>No notices have been posted yet.</p>
+  </div>
+  {% endfor %}
+</div>

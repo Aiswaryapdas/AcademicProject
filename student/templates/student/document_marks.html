@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>My Document Marks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Document Marks | MBITS</title>
 
     <link
       rel="stylesheet"
@@ -10,172 +11,289 @@
     />
 
     <style>
+      :root {
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-green: #27ae60;
+      }
+
       body {
         margin: 0;
         font-family: "Segoe UI", Arial, sans-serif;
-        background: #f4f6f8;
-        padding: 40px;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
 
-      /* CONTAINER */
-      .container {
-        max-width: 1100px;
-        margin: auto;
-      }
-
-      /* HEADER */
-      .header {
-        background: linear-gradient(90deg, #1e3a5f, #2c3e50);
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
         color: white;
-        padding: 20px 25px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
 
-      .header h2 {
-        margin: 0;
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1a252f;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
-      /* CARD */
-      .card {
-        background: white;
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: var(--et-sidebar);
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN LAYOUT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid #eee;
+      }
+
+      .breadcrumb {
+        background: #fff;
+        padding: 12px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.85rem;
+        color: #7f8c8d;
+      }
+
+      .breadcrumb i {
+        margin: 0 8px;
+        font-size: 0.7rem;
+      }
+
+      .content-area {
         padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
       }
 
-      /* TABLE */
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-      }
-
-      th {
-        background: #1e3a5f;
-        color: white;
-        padding: 12px;
-        text-align: left;
-      }
-
-      td {
-        padding: 12px;
-        border-bottom: 1px solid #e5e7eb;
-      }
-
-      tr:hover {
-        background: #f9fafb;
-      }
-
-      /* BADGES */
-      .mark {
-        padding: 5px 10px;
-        border-radius: 6px;
+      .page-title {
+        border-bottom: 2px solid #ddd;
+        margin: 0 0 20px 0;
+        padding-bottom: 10px;
+        color: var(--et-dark);
         font-weight: 500;
       }
 
+      /* CARD & TABLE */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: #333;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f1f4f6;
+        color: #2c3e50;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid var(--et-border);
+      }
+
+      td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+        color: #444;
+      }
+
+      tr:hover {
+        background: #fcfcfc;
+      }
+
+      /* BADGES */
+      .mark-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+
       .mark-good {
-        background: #d1fae5;
-        color: #065f46;
+        background: #e8f5e9;
+        color: #2e7d32;
       }
 
       .mark-pending {
-        background: #fee2e2;
-        color: #991b1b;
+        background: #ffebee;
+        color: #c62828;
       }
 
-      /* REMARK */
-      .remark-box {
-        background: #f9fafb;
-        padding: 8px;
-        border-radius: 6px;
-        font-size: 14px;
+      .remark-text {
+        font-style: italic;
+        color: #555;
+        font-size: 0.85rem;
       }
 
-      /* LINK */
-      a {
-        color: #2563eb;
+      .btn-view {
+        color: var(--et-accent);
         text-decoration: none;
+        font-weight: 600;
       }
 
-      a:hover {
+      .btn-view:hover {
         text-decoration: underline;
-      }
-
-      /* BACK BUTTON */
-      .back-btn {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 10px 15px;
-        background: #6b7280;
-        color: white;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-      }
-
-      .back-btn:hover {
-        background: #4b5563;
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <!-- HEADER -->
-      <div class="header">
-        <h2>
-          <i class="fa-solid fa-file-circle-check"></i> My Document Marks &
-          Remarks
-        </h2>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-cloud"></i> EduTrack
+      </div>
+      <a href="{% url 'student:dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-calendar-check"></i> Attendance</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-file-invoice"></i> Assignments</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-book"></i> Materials</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.85rem; color: #333">
+          <i class="fa-solid fa-circle-user"></i> AISWARYA P DAS
+        </div>
       </div>
 
-      <!-- CARD -->
-      <div class="card">
-        <table>
-          <tr>
-            <th>Document Title</th>
-            <th>Uploaded Date</th>
-            <th>File</th>
-            <th>Faculty Mark</th>
-            <th>Faculty Remarks</th>
-          </tr>
+      <div class="breadcrumb">
+        <i class="fa-solid fa-house"></i> Home
+        <i class="fa-solid fa-chevron-right"></i> Dashboard
+        <i class="fa-solid fa-chevron-right"></i> My Marks
+      </div>
 
-          {% for sub in submissions %}
-          <tr>
-            <td>{{ sub.schedule.title }}</td>
+      <div class="content-area">
+        <h3 class="page-title">My Document Marks & Remarks</h3>
 
-            <td>{{ sub.submitted_at }}</td>
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-list-check"></i> Submission History
+          </div>
 
-            <td>
-              <a href="{{ sub.file.url }}" target="_blank">
-                <i class="fa-solid fa-eye"></i> View
-              </a>
-            </td>
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Document Title</th>
+                  <th>Uploaded Date</th>
+                  <th>File</th>
+                  <th>Faculty Mark</th>
+                  <th>Faculty Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sub in submissions %}
+                <tr>
+                  <td><b>{{ sub.schedule.title }}</b></td>
+                  <td>{{ sub.submitted_at|date:"d M Y, h:i A" }}</td>
+                  <td>
+                    <a
+                      href="{{ sub.file.url }}"
+                      target="_blank"
+                      class="btn-view"
+                    >
+                      <i class="fa-solid fa-eye"></i> View File
+                    </a>
+                  </td>
+                  <td>
+                    {% if sub.faculty_mark %}
+                    <span class="mark-badge mark-good"
+                      >{{ sub.faculty_mark }} / 10</span
+                    >
+                    {% else %}
+                    <span class="mark-badge mark-pending">Pending</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if sub.faculty_remark %}
+                    <span class="remark-text">{{ sub.faculty_remark }}</span>
+                    {% else %}
+                    <span style="color: #bbb">No remarks</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td
+                    colspan="5"
+                    style="text-align: center; padding: 30px; color: #999"
+                  >
+                    No submissions found.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-            <!-- MARK -->
-            <td>
-              {% if sub.faculty_mark %}
-              <span class="mark mark-good"> {{ sub.faculty_mark }} / 10 </span>
-              {% else %}
-              <span class="mark mark-pending">Not Marked</span>
-              {% endif %}
-            </td>
-
-            <!-- REMARK -->
-            <td>
-              {% if sub.faculty_remark %}
-              <div class="remark-box">{{ sub.faculty_remark }}</div>
-              {% else %}
-              <span style="color: #6b7280">No Remarks</span>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </table>
-
-        <!-- BACK BUTTON -->
-        <a href="{% url 'student:dashboard' %}" class="back-btn">
+        <br />
+        <a
+          href="{% url 'student:dashboard' %}"
+          style="color: #7f8c8d; text-decoration: none; font-size: 0.9rem"
+        >
           <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
         </a>
       </div>

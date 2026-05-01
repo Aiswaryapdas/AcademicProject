@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Document Submissions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduTrack | Document Submissions</title>
 
     <link
       rel="stylesheet"
@@ -10,188 +11,329 @@
     />
 
     <style>
+      :root {
+        --etlab-blue: #00a0e3;
+        --sidebar-bg: #343a40;
+        --bg-light: #f4f7f6;
+        --border-color: #dee2e6;
+        --text-main: #333;
+        --text-muted: #6c757d;
+      }
+
       body {
         margin: 0;
-        font-family: "Segoe UI", Arial, sans-serif;
-        background: #f4f6f8;
-        padding: 30px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-light);
+        color: var(--text-main);
       }
 
-      /* CONTAINER */
-      .container {
-        max-width: 1100px;
-        margin: auto;
+      /* ===== TOPBAR ===== */
+      .topbar {
+        height: 55px;
+        background: #ffffff;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
       }
 
-      /* HEADER */
-      .header {
-        background: linear-gradient(90deg, #1e3a5f, #2c3e50);
-        color: white;
-        padding: 20px 25px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+      .brand {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--etlab-blue);
+        text-decoration: none;
+        margin-right: 20px;
       }
 
-      .header h2 {
-        margin: 0;
+      .breadcrumb {
+        font-size: 13px;
+        color: var(--text-muted);
       }
 
-      /* CARD */
+      /* ===== MAIN LAYOUT ===== */
+      .wrapper {
+        display: flex;
+      }
+
+      /* ===== SIDEBAR ===== */
+      .sidebar {
+        width: 80px;
+        background: var(--sidebar-bg);
+        min-height: calc(100vh - 55px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 15px;
+      }
+
+      .sidebar a {
+        width: 100%;
+        padding: 18px 0;
+        color: #adb5bd;
+        text-decoration: none;
+        text-align: center;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .sidebar a i {
+        display: block;
+        font-size: 20px;
+        margin-bottom: 6px;
+      }
+      .sidebar a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      /* ===== CONTENT AREA ===== */
+      .main-content {
+        flex: 1;
+        padding: 25px;
+      }
+
       .card {
-        background: white;
-        padding: 20px 25px;
-        border-radius: 10px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        overflow: hidden;
       }
 
-      /* TABLE */
-      table {
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card-header h3 {
+        margin: 0;
+        font-size: 15px;
+        color: #444;
+      }
+
+      .card-body {
+        padding: 0;
+      } /* Table flush with card edges */
+
+      /* TABLES */
+      .et-table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
+        font-size: 13px;
       }
 
-      th {
-        background: #1e3a5f;
-        color: white;
+      .et-table th {
+        background: #f1f3f5;
         padding: 12px;
         text-align: left;
+        border-bottom: 2px solid var(--border-color);
+        color: #555;
+        font-weight: 600;
       }
 
-      td {
-        padding: 12px;
-        border-bottom: 1px solid #e5e7eb;
+      .et-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
       }
-
-      tr:hover {
-        background: #f9fafb;
+      .et-table tr:hover {
+        background: #fafafa;
       }
 
       /* STATUS BADGES */
       .badge {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 500;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: bold;
+        display: inline-block;
+      }
+      .bg-open {
+        background: #e6fffa;
+        color: #23856d;
+        border: 1px solid #b2f5ea;
+      }
+      .bg-closed {
+        background: #fff5f5;
+        color: #c53030;
+        border: 1px solid #feb2b2;
+      }
+      .bg-waiting {
+        background: #fffaf0;
+        color: #9c4221;
+        border: 1px solid #feebc8;
+      }
+      .bg-uploaded {
+        background: #ebf8ff;
+        color: #2b6cb0;
+        border: 1px solid #bee3f8;
+      }
+      .bg-muted {
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 1px solid #dee2e6;
       }
 
-      .green {
-        background: #d1fae5;
-        color: #065f46;
-      }
-
-      .red {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-
-      .orange {
-        background: #fef3c7;
-        color: #92400e;
-      }
-
-      .gray {
-        background: #e5e7eb;
-        color: #374151;
-      }
-
-      /* BUTTON */
-      .action-btn {
-        background: #2563eb;
+      /* ACTION BUTTON */
+      .btn-open {
+        background-color: var(--etlab-blue);
         color: white;
-        padding: 6px 12px;
-        border-radius: 6px;
+        padding: 6px 14px;
+        border-radius: 4px;
         text-decoration: none;
-        font-size: 14px;
+        font-weight: bold;
+        font-size: 12px;
+        transition: background 0.2s;
       }
 
-      .action-btn:hover {
-        background: #1e40af;
+      .btn-open:hover {
+        background-color: #008cc6;
       }
 
-      /* EMPTY */
-      .empty {
-        text-align: center;
-        padding: 20px;
-        color: #777;
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--etlab-blue);
+        text-decoration: none;
+        font-size: 13px;
+        margin-bottom: 15px;
+        font-weight: 600;
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <!-- HEADER -->
-      <div class="header">
-        <h2><i class="fa-solid fa-file-arrow-up"></i> Document Submissions</h2>
+    <div class="topbar">
+      <a href="{% url 'student:dashboard' %}" class="brand">EduTrack</a>
+      <div class="breadcrumb">
+        <i class="fa fa-home"></i> / Academic / Document Submissions
       </div>
-      <a href="{% url 'student:dashboard' %}" class="back-btn">
-        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
-      </a>
-      <!-- CARD -->
-      <div class="card">
-        <table>
-          <tr>
-            <th>Title</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Upload Status</th>
-            <th>Submission Window</th>
-            <th>Action</th>
-          </tr>
+    </div>
 
-          {% for item in data %}
-          <tr>
-            <td>{{ item.schedule.title }}</td>
+    <div class="wrapper">
+      <div class="sidebar">
+        <a href="{% url 'student:dashboard' %}"
+          ><i class="fa-solid fa-gauge-high"></i>Dash</a
+        >
+        <a href="#"><i class="fa-solid fa-address-card"></i>Profile</a>
+        <a href="#"><i class="fa-solid fa-calendar-day"></i>Attend</a>
+        <a href="#"><i class="fa-solid fa-chart-simple"></i>Marks</a>
+        <a href="#" class="active"
+          ><i class="fa-solid fa-folder-open"></i>Files</a
+        >
+      </div>
 
-            <td>{{ item.schedule.start_date }}</td>
+      <div class="main-content">
+        <a href="{% url 'student:dashboard' %}" class="back-link">
+          <i class="fa fa-chevron-left"></i> Back to Dashboard
+        </a>
 
-            <td>{{ item.schedule.end_date }}</td>
+        <div class="card">
+          <div class="card-header">
+            <h3>
+              <i
+                class="fa-solid fa-file-arrow-up"
+                style="color: var(--etlab-blue); margin-right: 8px"
+              ></i>
+              Document Submissions
+            </h3>
+          </div>
+          <div class="card-body">
+            <table class="et-table">
+              <thead>
+                <tr>
+                  <th>Submission Title</th>
+                  <th>Timeline</th>
+                  <th>Upload Status</th>
+                  <th>Window</th>
+                  <th style="text-align: center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in data %}
+                <tr>
+                  <td>
+                    <span style="font-weight: 600; color: #2d3748"
+                      >{{ item.schedule.title }}</span
+                    >
+                  </td>
 
-            <!-- Upload Status -->
-            <td>
-              {% if item.submission %}
-              <span class="badge green">Uploaded</span>
-              {% else %}
-              <span class="badge red">Not Uploaded</span>
-              {% endif %}
-            </td>
+                  <td style="color: #666; font-size: 12px">
+                    <div>
+                      <i class="fa fa-calendar-plus" style="width: 15px"></i>
+                      {{ item.schedule.start_date }}
+                    </div>
+                    <div>
+                      <i class="fa fa-calendar-check" style="width: 15px"></i>
+                      {{ item.schedule.end_date }}
+                    </div>
+                  </td>
 
-            <!-- Window Status -->
-            <td>
-              {% if item.status == "Open" %}
-              <span class="badge green">Open</span>
+                  <td>
+                    {% if item.submission %}
+                    <span class="badge bg-uploaded"
+                      ><i class="fa fa-check-circle"></i> Uploaded</span
+                    >
+                    {% else %}
+                    <span class="badge bg-closed" style="background: #fff5f5"
+                      ><i class="fa fa-times-circle"></i> Not Uploaded</span
+                    >
+                    {% endif %}
+                  </td>
 
-              {% elif item.status == "Closed" %}
-              <span class="badge red">Closed</span>
+                  <td>
+                    {% if item.status == "Open" %}
+                    <span class="badge bg-open">Open</span>
+                    {% elif item.status == "Closed" %}
+                    <span class="badge bg-closed">Closed</span>
+                    {% else %}
+                    <span class="badge bg-waiting">Not Started</span>
+                    {% endif %}
+                  </td>
 
-              {% else %}
-              <span class="badge orange">Not Started</span>
-              {% endif %}
-            </td>
-
-            <!-- Action -->
-            <td>
-              {% if item.allow_upload %}
-              <a
-                href="{% url 'student:upload_document' item.schedule.id %}"
-                class="action-btn"
-              >
-                <i class="fa-solid fa-upload"></i> Open
-              </a>
-              {% else %}
-              <span class="badge gray">Closed</span>
-              {% endif %}
-            </td>
-          </tr>
-
-          {% empty %}
-          <tr>
-            <td colspan="6" class="empty">
-              <i class="fa-solid fa-circle-info"></i> No submissions available
-            </td>
-          </tr>
-          {% endfor %}
-        </table>
+                  <td style="text-align: center">
+                    {% if item.allow_upload %}
+                    <a
+                      href="{% url 'student:upload_document' item.schedule.id %}"
+                      class="btn-open"
+                    >
+                      <i class="fa-solid fa-folder-open"></i> Open Portal
+                    </a>
+                    {% else %}
+                    <span class="badge bg-muted">Access Locked</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td
+                    colspan="5"
+                    style="text-align: center; padding: 40px; color: #999"
+                  >
+                    <i
+                      class="fa-solid fa-folder-open"
+                      style="
+                        font-size: 30px;
+                        display: block;
+                        margin-bottom: 10px;
+                      "
+                    ></i>
+                    No submission schedules found.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </body>

@@ -1,78 +1,318 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Student List</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Management | Admin</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-danger: #e74c3c;
+      }
+
       body {
-        font-family: Arial;
-        background: #f4f6f8;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
-      table {
-        width: 80%;
-        margin: 50px auto;
-        border-collapse: collapse;
-        background: white;
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
       }
-      th {
-        background: #28a745;
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
         color: white;
       }
-      h2 {
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
+      /* SEARCH BAR */
+      .search-container {
+        background: white;
+        padding: 15px 20px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .search-container input {
+        flex-grow: 1;
+        padding: 8px 12px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        outline: none;
+      }
+
+      .search-container button {
+        background: var(--et-accent);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      /* TABLE CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f1f4f6;
+        color: #2c3e50;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.85rem;
+        border-bottom: 2px solid var(--et-border);
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+      }
+
+      tr:hover {
+        background: #fcfcfc;
+      }
+
+      /* ACTIONS */
+      .btn-delete {
+        color: var(--et-danger);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .btn-delete:hover {
+        text-decoration: underline;
+      }
+
+      .empty-msg {
         text-align: center;
-        margin-top: 30px;
+        padding: 40px;
+        color: #95a5a6;
       }
     </style>
   </head>
+
   <body>
-    <h2>Student List</h2>
-    <form method="GET" style="text-align: center; margin-top: 20px">
-      <input
-        type="text"
-        name="q"
-        placeholder="Search by name or admission number"
-      />
-      <button type="submit">Search</button>
-    </form>
-    <table>
-      <tr>
-        <th>Admission number</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Course</th>
-        <th>Action</th>
-      </tr>
-      {% for student in students %}
-      <tr>
-        <td>{{ student.admission_number }}</td>
-        <td>{{ student.name }}</td>
-        <td>{{ student.email }}</td>
-        <td>{{ student.course }}</td>
-        <td>
-          |
-          <a
-            href="{% url 'WAdmin:delete_student' student.id %}"
-            onclick="
-              return confirm('Are you sure you want to delete this student?');
-            "
-          >
-            Delete
-          </a>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="3" style="text-align: center">No students registered</td>
-      </tr>
-      {% endfor %}
-    </table>
-    <a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn">
-      <i class="fa-solid fa-arrow-left"></i>Back
-    </a>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Student Registration Records
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
+
+      <div class="content-area">
+        <form method="GET" class="search-container">
+          <input
+            type="text"
+            name="q"
+            placeholder="Search by name or admission number..."
+            value="{{ request.GET.q }}"
+          />
+          <button type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i> Search
+          </button>
+        </form>
+
+        <div class="card">
+          <div class="card-header">
+            <span><i class="fa-solid fa-list-ul"></i> Registered Students</span>
+            <a
+              href="{% url 'WAdmin:student_register' %}"
+              style="
+                font-size: 0.8rem;
+                color: var(--et-accent);
+                text-decoration: none;
+              "
+            >
+              <i class="fa-solid fa-user-plus"></i> Add New Student
+            </a>
+          </div>
+
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Adm. Number</th>
+                  <th>Student Name</th>
+                  <th>Email Address</th>
+                  <th>Course</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in students %}
+                <tr>
+                  <td style="font-weight: 600; color: var(--et-dark)">
+                    {{ student.admission_number }}
+                  </td>
+                  <td>{{ student.name }}</td>
+                  <td>{{ student.email }}</td>
+                  <td>
+                    <span
+                      style="
+                        background: #eef2f7;
+                        padding: 2px 8px;
+                        border-radius: 10px;
+                        font-size: 0.8rem;
+                      "
+                      >{{ student.course }}</span
+                    >
+                  </td>
+                  <td>
+                    <a
+                      href="{% url 'WAdmin:delete_student' student.id %}"
+                      class="btn-delete"
+                      onclick="return confirm('Confirm deletion of student: {{ student.name }}?');"
+                    >
+                      <i class="fa-solid fa-trash-can"></i> Delete
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="empty-msg">
+                    <i
+                      class="fa-solid fa-face-meh"
+                      style="
+                        font-size: 2rem;
+                        display: block;
+                        margin-bottom: 10px;
+                      "
+                    ></i>
+                    No students registered yet.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <br />
+        <a
+          href="{% url 'WAdmin:admin_dashboard' %}"
+          style="text-decoration: none; color: #7f8c8d; font-size: 0.9rem"
+        >
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
   </body>
 </html>

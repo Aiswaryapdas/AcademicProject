@@ -2,222 +2,328 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Submissions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submissions | {{ schedule.title }} | ETLAB</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
     <style>
+      :root {
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-save: #27ae60;
+      }
+
       body {
         margin: 0;
-        font-family: "Segoe UI", Arial, sans-serif;
-        background-color: #f4f6f8;
-        padding: 30px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
 
-      /* CONTAINER */
-      .container {
-        max-width: 1100px;
-        margin: auto;
-      }
-
-      /* HEADER */
-      .header {
-        background: #1e3a5f;
+      /* SIDEBAR - ETLAB STYLE */
+      .sidebar {
+        width: 200px;
+        background: var(--et-dark);
         color: white;
-        padding: 20px 25px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
 
-      .header h2 {
-        margin: 0;
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1a252f;
+        font-size: 1.5rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #5dade2;
       }
 
-      /* CARD */
-      .card {
-        background: white;
-        border-radius: 10px;
-        padding: 20px 25px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      .nav-item {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.85rem;
       }
 
-      /* TABLE */
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-      }
-
-      th,
-      td {
-        padding: 12px;
-        text-align: left;
-        vertical-align: middle;
-      }
-
-      th {
-        background: #1e3a5f;
+      .nav-item:hover,
+      .nav-item.active {
+        background: #1a252f;
         color: white;
       }
 
-      td {
-        border-bottom: 1px solid #e5e7eb;
+      /* TOP NAV & BREADCRUMB */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
       }
 
-      /* STATUS */
-      .not-submitted {
-        color: red;
+      .top-navbar {
+        background: #333;
+        color: #ccc;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        font-size: 0.8rem;
+        justify-content: space-between;
+      }
+
+      .breadcrumb-bar {
+        background: #eeeeee;
+        padding: 8px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.75rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* CONTENT AREA */
+      .content-area {
+        padding: 20px 25px;
+      }
+
+      .page-title {
+        border-bottom: 1px solid #ccc;
+        margin: 0 0 20px 0;
+        padding-bottom: 10px;
+        color: #444;
+        font-size: 1.2rem;
         font-weight: 500;
       }
 
-      .not-uploaded {
-        color: red;
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       }
 
-      /* INPUT */
+      /* TABLE SYSTEM */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f8f9fa;
+        color: #333;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid #ddd;
+      }
+
+      td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.85rem;
+        color: #555;
+        vertical-align: middle;
+      }
+
+      /* FORM CONTROLS */
       input[type="number"] {
-        width: 70px;
-        padding: 6px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
+        width: 60px;
+        padding: 5px;
+        border: 1px solid var(--et-border);
+        border-radius: 3px;
         text-align: center;
       }
 
-      input[type="number"]:focus {
-        border-color: #3b82f6;
-        outline: none;
-      }
-
-      /* TEXTAREA */
       textarea {
         width: 100%;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        padding: 6px;
-        resize: vertical;
+        padding: 8px;
+        border: 1px solid var(--et-border);
+        border-radius: 3px;
         font-family: inherit;
+        font-size: 0.8rem;
+        resize: vertical;
       }
 
-      textarea:focus {
-        border-color: #3b82f6;
-        outline: none;
+      .not-submitted {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 0.75rem;
       }
 
-      /* LINKS */
-      a {
-        color: #2563eb;
+      .view-link {
+        color: var(--et-accent);
         text-decoration: none;
+        font-weight: bold;
       }
-
-      a:hover {
+      .view-link:hover {
         text-decoration: underline;
       }
 
-      /* BUTTON */
       .button-container {
-        text-align: right;
-        margin-top: 20px;
+        padding: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #fdfdfd;
+        border-top: 1px solid #eee;
       }
 
-      button {
-        padding: 12px 25px;
-        background: #10b981;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 15px;
+      .btn {
+        padding: 8px 20px;
+        border-radius: 4px;
+        font-weight: 600;
         cursor: pointer;
+        border: none;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
-      button:hover {
-        background: #059669;
+      .btn-save {
+        background: var(--et-save);
+        color: white;
       }
-      .back-btn {
-        background: #6b7280;
-        margin-right: 10px;
+      .btn-save:hover {
+        background: #219150;
       }
 
-      .back-btn:hover {
-        background: #4b5563;
+      .btn-back {
+        background: #95a5a6;
+        color: white;
+        text-decoration: none;
+      }
+      .btn-back:hover {
+        background: #7f8c8d;
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <!-- HEADER -->
-      <div class="header">
-        <h2>{{ schedule.title }} - Submissions</h2>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand"><i class="fa-solid fa-cloud"></i>EduTrack</div>
+      <a href="{% url 'faculty:homepage' %}" class="nav-item"
+        ><i class="fa-solid fa-house"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-file-signature"></i> Submissions</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-calendar-check"></i> Attendance</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <!-- TOP NAV -->
+      <div class="top-navbar">
+        <div></div>
+        <div>
+          <i class="fa-solid fa-user"></i> FACULTY_USER
+          <i class="fa-solid fa-caret-down"></i>
+        </div>
       </div>
 
-      <!-- CARD -->
-      <div class="card">
-        <form method="post">
-          {% csrf_token %}
+      <!-- BREADCRUMBS -->
+      <div class="breadcrumb-bar">
+        <i class="fa-solid fa-house"></i> Home
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem"></i>
+        Assignments
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem"></i>
+        {{ schedule.title }}
+      </div>
 
-          <table>
-            <tr>
-              <th>Admission No</th>
-              <th>Name</th>
-              <th>Upload Time</th>
-              <th>File</th>
-              <th>Mark</th>
-              <th>Remarks</th>
-            </tr>
+      <div class="content-area">
+        <h2 class="page-title">{{ schedule.title }} - Submission Portal</h2>
 
-            {% for row in data %}
-            <tr>
-              <td>{{ row.student.admission_number }}</td>
+        <div class="card">
+          <form method="post">
+            {% csrf_token %}
+            <table>
+              <thead>
+                <tr>
+                  <th>Admn No</th>
+                  <th>Student Name</th>
+                  <th>Submitted At</th>
+                  <th>File</th>
+                  <th style="width: 100px">Mark (max 10)</th>
+                  <th>Faculty Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in data %}
+                <tr>
+                  <td style="color: #888">
+                    #{{ row.student.admission_number }}
+                  </td>
+                  <td><strong>{{ row.student.name }}</strong></td>
+                  <td>
+                    {% if row.submission %}
+                    {{row.submission.submitted_at|date:"d M, h:i A" }} {% else%}
 
-              <td>{{ row.student.name }}</td>
-
-              <td>
-                {% if row.submission %} {{ row.submission.submitted_at }}
-                {%else%}
-                <span class="not-submitted">Not Submitted</span>
-                {% endif %}
-              </td>
-              <td>
-                {% if row.submission %}
-                <a href="{{ row.submission.file.url }}" target="_blank">View</a>
-                |
-                <a href="{{ row.submission.file.url }}" download>Download</a>
-                {% else %}
-                <span class="not-uploaded">Not Uploaded</span>
-                {% endif %}
-              </td>
-
-              <td>
-                {% if row.submission %}
-                <input
-                  type="number"
-                  name="mark_{{ row.student.id }}"
-                  value="{{ row.submission.faculty_mark }}"
-                  min="0"
-                  max="10"
-                />
-                {% else %} - {% endif %}
-              </td>
-
-              <td>
-                {% if row.submission %}
-                <textarea name="remark_{{ row.student.id }}" rows="2">
+                    <span class="not-submitted">PENDING</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if row.submission %}
+                    <a
+                      href="{{ row.submission.file.url }}"
+                      target="_blank"
+                      class="view-link"
+                    >
+                      <i class="fa-solid fa-eye"></i> View
+                    </a>
+                    {% else %} - {% endif %}
+                  </td>
+                  <td>
+                    {% if row.submission %}
+                    <input
+                      type="number"
+                      name="mark_{{ row.student.id }}"
+                      value="{{ row.submission.faculty_mark }}"
+                      min="0"
+                      max="10"
+                    />
+                    {% else %} - {% endif %}
+                  </td>
+                  <td>
+                    {% if row.submission %}
+                    <textarea name="remark_{{ row.student.id }}" rows="1">
 {{ row.submission.faculty_remark }}</textarea
-                >
-                {% else %} - {% endif %}
-              </td>
-            </tr>
-            {% endfor %}
-          </table>
+                    >
+                    {% else %} - {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
 
-          <div class="button-container">
-            <a href="{% url 'faculty:homepage' %}">
-              <button type="button" class="back-btn">
-                ← Back to Dashboard
+            <div class="button-container">
+              <a href="{% url 'faculty:homepage' %}" class="btn btn-back">
+                <i class="fa-solid fa-arrow-left"></i> Back
+              </a>
+              <button type="submit" class="btn btn-save">
+                <i class="fa-solid fa-check-double"></i> Update All Marks
               </button>
-            </a>
-
-            <button type="submit">Save Marks</button>
-          </div>
-        </form>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </body>

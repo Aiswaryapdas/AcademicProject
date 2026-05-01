@@ -2,127 +2,267 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Document Schedules</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document Schedules | ETLAB</title>
+
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
     <style>
+      :root {
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-text: #333;
+      }
+
       body {
         margin: 0;
-        font-family: "Segoe UI", Arial, sans-serif;
-        background-color: #f4f6f8;
-        padding: 30px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
 
-      /* CONTAINER */
-      .container {
-        max-width: 1000px;
-        margin: auto;
+      /* SIDEBAR - Matching the screenshot */
+      .sidebar {
+        width: 200px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
 
-      /* HEADER */
-      .header {
-        margin-bottom: 20px;
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1a252f;
+        font-size: 1.5rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #5dade2;
       }
 
-      .header h2 {
-        color: #1e3a5f;
-        margin: 0;
+      .nav-item {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.85rem;
       }
 
-      /* CARD */
-      .card {
-        background: #ffffff;
-        border-radius: 10px;
-        padding: 20px 25px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-      }
-
-      /* TABLE */
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        font-size: 14px;
-      }
-
-      th,
-      td {
-        padding: 12px;
-        text-align: left;
-      }
-
-      th {
-        background: #1e3a5f;
+      .nav-item:hover,
+      .nav-item.active {
+        background: #1a252f;
         color: white;
       }
 
+      /* MAIN LAYOUT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-navbar {
+        background: #333;
+        color: #ccc;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        font-size: 0.8rem;
+        justify-content: space-between;
+      }
+
+      .breadcrumb-bar {
+        background: #eeeeee;
+        padding: 8px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.75rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .content-area {
+        padding: 20px 25px;
+      }
+
+      .page-title {
+        border-bottom: 1px solid #ccc;
+        margin: 0 0 20px 0;
+        padding-bottom: 10px;
+        color: #444;
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+
+      /* TABLE STYLING - ETLAB STYLE */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f8f9fa;
+        color: #333;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid #ddd;
+      }
+
       td {
-        border-bottom: 1px solid #e5e7eb;
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.85rem;
+        color: #555;
+      }
+
+      tr:hover {
+        background: #fcfcfc;
       }
 
       /* BUTTON */
       .view-btn {
-        background: #3b82f6;
+        background: #3498db;
         border: none;
         color: white;
-        padding: 6px 12px;
-        border-radius: 6px;
+        padding: 5px 12px;
+        border-radius: 3px;
         cursor: pointer;
-        font-size: 13px;
+        font-size: 0.75rem;
+        transition: background 0.2s;
       }
 
       .view-btn:hover {
-        background: #2563eb;
+        background: #2980b9;
       }
 
-      /* EMPTY STATE */
-      .empty {
+      .empty-msg {
+        padding: 40px;
         text-align: center;
-        padding: 20px;
-        color: #777;
+        color: #999;
+        font-style: italic;
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <!-- HEADER -->
-      <div class="header">
-        <h2>Document Schedules</h2>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand"><i class="fa-solid fa-cloud"></i>EduTrack</div>
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-house"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-calendar-check"></i> Attendance</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-file-lines"></i> Assignments</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-book"></i> Materials</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-user-gear"></i> My Profile</a
+      >
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+      <!-- Top Black Bar -->
+      <div class="top-navbar">
+        <div></div>
+        <div style="display: flex; gap: 15px; align-items: center">
+          <span
+            ><i class="fa-solid fa-user"></i> AISWARYA P DAS
+            <i class="fa-solid fa-caret-down"></i
+          ></span>
+        </div>
       </div>
 
-      <!-- CARD -->
-      <div class="card">
-        {% if schedules %}
-        <table>
-          <tr>
-            <th>Title</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Format</th>
-            <th>Max Size</th>
-            <th>Action</th>
-          </tr>
+      <!-- Breadcrumb -->
+      <div class="breadcrumb-bar">
+        <i class="fa-solid fa-house"></i> Home
+        <i
+          class="fa-solid fa-chevron-right"
+          style="font-size: 0.6rem; color: #aaa"
+        ></i>
+        Dashboard
+        <i
+          class="fa-solid fa-chevron-right"
+          style="font-size: 0.6rem; color: #aaa"
+        ></i>
+        Document Schedules
+      </div>
 
-          {% for s in schedules %}
-          <tr>
-            <td>{{ s.title }}</td>
-            <td>{{ s.start_date }}</td>
-            <td>{{ s.end_date }}</td>
-            <td>{{ s.format }}</td>
-            <td>{{ s.max_size }} MB</td>
+      <div class="content-area">
+        <h2 class="page-title">Document Schedules</h2>
 
-            <td>
-              <a href="{% url 'faculty:schedule_submissions' s.id %}">
-                <button class="view-btn">View Submissions</button>
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-        </table>
-
-        {% else %}
-        <div class="empty">No document schedules available.</div>
-        {% endif %}
+        <div class="card">
+          {% if schedules %}
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Format</th>
+                <th>Max Size</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in schedules %}
+              <tr>
+                <td><strong>{{ s.title }}</strong></td>
+                <td>{{ s.start_date }}</td>
+                <td>{{ s.end_date }}</td>
+                <td>
+                  <span style="color: #e67e22; font-weight: bold"
+                    >{{ s.format }}</span
+                  >
+                </td>
+                <td>{{ s.max_size }} MB</td>
+                <td>
+                  <a href="{% url 'faculty:schedule_submissions' s.id %}">
+                    <button class="view-btn">
+                      <i class="fa-solid fa-eye"></i> View Submissions
+                    </button>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="empty-msg">
+            No document schedules have been created yet.
+          </div>
+          {% endif %}
+        </div>
       </div>
     </div>
   </body>

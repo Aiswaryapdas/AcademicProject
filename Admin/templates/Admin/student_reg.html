@@ -3,105 +3,189 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Registration</title>
+    <title>Student Registration | Admin</title>
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
       rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
 
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+      }
+
       body {
-        font-family: "Roboto", Arial, sans-serif;
-        background: #e3f2fd;
         margin: 0;
-        padding: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
 
-      .container {
-        max-width: 420px;
-        margin: 60px auto;
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
         background: #fff;
-        padding: 35px 30px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       }
 
-      h2 {
-        text-align: center;
-        color: #0d6efd;
-        margin-bottom: 25px;
-        font-weight: 500;
+      .content-area {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
-      /* FORM GROUP */
-      .form-group {
-        position: relative;
-        margin-bottom: 18px;
-      }
-
-      /* INPUTS & SELECTS */
-      .form-group input,
-      .form-group select {
+      /* FORM CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
         width: 100%;
-        height: 48px;
-        padding: 0 12px 0 42px;
-        border: 1px solid #ced4da;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: 0.3s;
+        max-width: 600px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .full-width {
+        grid-column: span 2;
+      }
+
+      label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 5px;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-wrapper i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #95a5a6;
+        font-size: 0.9rem;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px 10px 10px 35px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        font-size: 0.9rem;
         box-sizing: border-box;
       }
 
-      /* FOCUS EFFECT */
-      .form-group input:focus,
-      .form-group select:focus {
-        border-color: #0d6efd;
+      input:focus,
+      select:focus {
+        border-color: var(--et-accent);
         outline: none;
-        box-shadow: 0 0 6px rgba(13, 110, 253, 0.2);
       }
 
-      /* ICON ALIGNMENT */
-      .form-group i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #6c757d;
-        font-size: 15px;
-      }
-
-      /* BUTTON */
-      button {
-        width: 100%;
-        height: 48px;
-        margin-top: 10px;
-        background: #0d6efd;
-        color: #fff;
-        font-size: 15px;
+      .btn-register {
+        background: var(--et-dark);
+        color: white;
         border: none;
-        border-radius: 8px;
+        padding: 12px;
+        width: 100%;
+        border-radius: 4px;
+        font-weight: bold;
         cursor: pointer;
-        transition: 0.3s;
+        margin-top: 10px;
+        text-transform: uppercase;
       }
 
-      button:hover {
-        background: #0b5ed7;
+      .btn-register:hover {
+        background: #152943;
       }
 
-      /* ERROR TEXT */
-      small {
-        display: block;
-        margin-top: 5px;
-        font-size: 13px;
-        color: red;
-      }
-
-      /* POPUP CENTER FIX */
+      /* POPUP / MESSAGES */
       .popup-container {
         position: fixed;
         top: 20px;
@@ -113,147 +197,215 @@
       .popup {
         background: #22c55e;
         color: white;
-        padding: 14px 20px;
-        border-radius: 8px;
+        padding: 12px 25px;
+        border-radius: 4px;
         margin-bottom: 10px;
-        animation: fadeInOut 4s forwards;
-        min-width: 300px;
-        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       }
 
-      .popup.error {
-        background: #ef4444;
-      }
-
-      @keyframes fadeInOut {
-        0% {
-          opacity: 0;
-        }
-        10% {
-          opacity: 1;
-        }
-        90% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-        }
-      }
-
-      small {
-        color: red;
+      .error-text {
+        color: #e74c3c;
+        font-size: 0.75rem;
+        margin-top: 4px;
         display: none;
       }
     </style>
   </head>
 
   <body>
-    <!-- ✅ Popup -->
     {% if messages %}
     <div class="popup-container">
       {% for message in messages %}
-      <div class="popup {{ message.tags }}">{{ message }}</div>
+      <div class="popup">{{ message }}</div>
       {% endfor %}
     </div>
     {% endif %}
 
-    <div class="container">
-      <a href="{% url 'WAdmin:student_list' %}" class="back-btn">
-        <i class="fa-solid fa-arrow-left"></i>Back
-      </a>
-      <h2>Student Registration</h2>
-
-      <form method="POST">
-        {% csrf_token %}
-
-        <div class="form-group">
-          <i class="fa fa-id-card"></i>
-          <input
-            type="text"
-            name="admission_number"
-            pattern="[A-Za-z0-9]+"
-            title="Only letters and numbers"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-user"></i>
-          <input
-            type="text"
-            name="name"
-            pattern="[A-Za-z ]+"
-            title="Only letters allowed"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-envelope"></i>
-          <input type="email" name="email" required />
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-phone"></i>
-          <input
-            type="text"
-            name="phone"
-            pattern="[0-9]{10}"
-            title="Enter 10 digit number"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-building"></i>
-          <select name="department" required>
-            <option value="">Department</option>
-            <option>Computer Science</option>
-            <option>Electronics</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-graduation-cap"></i>
-          <select id="course" name="course" required>
-            <option value="">Course</option>
-            <option value="BCA">BCA</option>
-            <option value="MCA">MCA</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-calendar"></i>
-          <select id="academic_batch" name="academic_batch" required>
-            <option value="">Academic Batch</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-folder"></i>
-          <select name="file_batch" required>
-            <option value="">File Batch</option>
-            <option>A</option>
-            <option>B</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-lock"></i>
-          <input type="password" name="password" minlength="6" required />
-        </div>
-
-        <div class="form-group">
-          <i class="fa fa-lock"></i>
-          <input type="password" name="confirm_password" required />
-          <small id="passwordError">Passwords do not match ❌</small>
-        </div>
-
-        <button type="submit">Register</button>
-      </form>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item active"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
     </div>
 
-    <!-- ✅ JS -->
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          New Admission Entry
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-user"></i> ADMIN
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-user-plus"></i> Student Registration Form
+          </div>
+          <div class="card-body">
+            <form method="POST" id="regForm">
+              {% csrf_token %}
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Admission No.</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-id-card"></i>
+                    <input
+                      type="text"
+                      name="admission_number"
+                      placeholder="Enter Admission No."
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-user"></i>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Enter Full Name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label>Email Address</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="example@gmail.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-phone"></i>
+                    <input
+                      type="text"
+                      name="phone"
+                      pattern="[0-9]{10}"
+                      placeholder="10-digit number"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Department</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-building"></i>
+                    <select name="department" required>
+                      <option value="">Select Dept</option>
+                      <option>Computer Applications</option>
+                      <option>Computer Science</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Course</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <select id="course" name="course" required>
+                      <option value="">Select Course</option>
+                      <option value="BCA">BCA</option>
+                      <option value="MCA">MCA</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Academic Batch</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-calendar"></i>
+                    <select id="academic_batch" name="academic_batch" required>
+                      <option value="">2022-20</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>File Batch</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-folder"></i>
+                    <select name="file_batch" required>
+                      <option value="">Select Batch</option>
+                      <option>A</option>
+                      <option>B</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Password</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input
+                      type="password"
+                      name="password"
+                      minlength="6"
+                      placeholder="Min 6 chars"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label>Confirm Password</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input
+                      type="password"
+                      name="confirm_password"
+                      placeholder="Re-type password"
+                      required
+                    />
+                  </div>
+                  <small id="passwordError" class="error-text"
+                    >Passwords do not match ❌</small
+                  >
+                </div>
+              </div>
+
+              <button type="submit" class="btn-register">
+                Complete Registration
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <br />
+        <a
+          href="{% url 'WAdmin:student_list' %}"
+          style="text-decoration: none; color: #7f8c8d; font-size: 0.9rem"
+        >
+          <i class="fa-solid fa-arrow-left"></i> Back to Student List
+        </a>
+      </div>
+    </div>
+
     <script>
       const courseSelect = document.getElementById("course");
       const batchSelect = document.getElementById("academic_batch");
@@ -273,8 +425,7 @@
         });
       });
 
-      // ✅ Password validation
-      const form = document.querySelector("form");
+      const form = document.getElementById("regForm");
       const password = document.querySelector("input[name='password']");
       const confirmPassword = document.querySelector(
         "input[name='confirm_password']",

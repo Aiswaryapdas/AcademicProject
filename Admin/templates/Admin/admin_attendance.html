@@ -1,93 +1,320 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>All Students Attendance</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Dashboard | Admin</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-success: #2ecc71;
+        --et-danger: #e74c3c;
+      }
+
       body {
-        font-family: Arial;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+        overflow-x: hidden;
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
         padding: 20px;
-        background: #f4f6f8;
+      }
+
+      /* ATTENDANCE CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card-title {
+        font-weight: bold;
+        color: var(--et-dark);
+        font-size: 1rem;
+      }
+
+      /* TABLE STYLING */
+      .table-wrapper {
+        overflow-x: auto;
+        max-height: 70vh;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        background: white;
         font-size: 12px;
-      }
-
-      th,
-      td {
-        border: 1px solid #ccc;
-        padding: 5px;
-        text-align: center;
+        min-width: 1000px;
       }
 
       th {
-        background: #2c3e50;
-        color: white;
+        background: #f1f4f6;
+        color: var(--et-dark);
+        padding: 10px 5px;
+        font-weight: 600;
+        border: 1px solid var(--et-border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
       }
 
+      td {
+        padding: 8px 5px;
+        border: 1px solid #eee;
+        text-align: center;
+      }
+
+      /* STICKY COLUMNS FOR NAME/ID */
+      th:nth-child(1),
+      th:nth-child(2),
+      td:nth-child(1),
+      td:nth-child(2) {
+        position: sticky;
+        left: 0;
+        z-index: 11;
+        background: #fff;
+        border-right: 2px solid var(--et-border);
+      }
+
+      th:nth-child(2),
+      td:nth-child(2) {
+        left: 50px;
+      } /* Adjust based on ID width */
+      th:nth-child(1),
+      th:nth-child(2) {
+        z-index: 12;
+        background: #f1f4f6;
+      }
+
+      /* STATUS DECORATION */
       .present {
-        background: #2ecc71;
-        color: white;
-      }
-      .absent {
-        background: #e74c3c;
-        color: white;
-      }
-      .empty {
-        background: #ecf0f1;
+        background-color: rgba(46, 204, 113, 0.2);
+        color: #27ae60;
+        font-weight: bold;
       }
 
-      /* Button styling */
+      .absent {
+        background-color: rgba(231, 76, 60, 0.2);
+        color: #c0392b;
+        font-weight: bold;
+      }
+
+      .empty {
+        color: #bdc3c7;
+      }
+
+      .stats-box {
+        font-weight: 600;
+        background: #fdfdfd;
+      }
+
       .btn-semester {
-        display: inline-block;
-        padding: 8px 16px;
-        margin-bottom: 20px;
-        background-color: #2563eb;
+        background: var(--et-accent);
         color: white;
         text-decoration: none;
-        border-radius: 5px;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: 0.3s;
       }
 
       .btn-semester:hover {
-        background-color: #1d4ed8;
+        background: var(--et-dark);
       }
     </style>
   </head>
+
   <body>
-    <h2>{{ month }} {{ year }} - All Students Attendance</h2>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+    </div>
 
-    <!-- Semester Attendance Button -->
-    <a href="{% url 'WAdmin:semester_attendance' %}" class="btn-semester">
-      View Full Semester Attendance
-    </a>
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Monthly Attendance: {{ month }} {{ year }}
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
 
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Present</th>
-        <th>Absent</th>
+      <div class="content-area">
+        <div
+          style="
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <a
+            href="{% url 'WAdmin:admin_dashboard' %}"
+            style="
+              text-decoration: none;
+              color: var(--et-dark);
+              font-weight: 600;
+              font-size: 0.9rem;
+            "
+          >
+            <i class="fa-solid fa-chevron-left"></i> Dashboard
+          </a>
+          <a href="{% url 'WAdmin:semester_attendance' %}" class="btn-semester">
+            <i class="fa-solid fa-chart-line"></i> Full Semester View
+          </a>
+        </div>
 
-        {% for day in days_range %}
-        <th>{{ day }}</th>
-        {% endfor %}
-      </tr>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"
+              ><i class="fa-solid fa-calendar-days"></i> Attendance Ledger</span
+            >
+            <span style="font-size: 0.8rem; color: #7f8c8d"
+              >P = Present | A = Absent</span
+            >
+          </div>
 
-      {% for student in attendance_data %}
-      <tr>
-        <td>{{ student.student_id }}</td>
-        <td>{{ student.name }}</td>
-        <td>{{ student.present }}</td>
-        <td>{{ student.absent }}</td>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 50px">ID</th>
+                  <th style="width: 180px">Student Name</th>
+                  <th class="stats-box" style="color: var(--et-success)">P</th>
+                  <th class="stats-box" style="color: var(--et-danger)">A</th>
+                  {% for day in days_range %}
+                  <th>{{ day }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in attendance_data %}
+                <tr>
+                  <td>{{ student.student_id }}</td>
+                  <td
+                    style="
+                      text-align: left;
+                      padding-left: 10px;
+                      font-weight: 600;
+                    "
+                  >
+                    {{ student.name }}
+                  </td>
+                  <td class="stats-box">{{ student.present }}</td>
+                  <td class="stats-box">{{ student.absent }}</td>
 
-        {% for value, css in student.attendance_display %}
-        <td class="{{ css }}">{{ value }}</td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
+                  {% for value, css in student.attendance_display %}
+                  <td class="{{ css }}">{{ value }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

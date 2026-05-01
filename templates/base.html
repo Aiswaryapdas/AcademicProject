@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>EduTrack</title>
+
+    <!-- ICONS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f4f6f8;
+      }
+
+      .topbar {
+        height: 65px;
+        background: linear-gradient(90deg, #1e3a5f, #2c3e50);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+      }
+
+      .brand {
+        font-size: 22px;
+        font-weight: 600;
+      }
+
+      .profile {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .avatar {
+        width: 42px;
+        height: 42px;
+        background: #1abc9c;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .logout {
+        background: #e74c3c;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+      }
+
+      .profile-box {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 260px;
+        background: #fff;
+        padding: 15px;
+        display: none;
+      }
+
+      .container {
+        display: flex;
+      }
+
+      .sidebar {
+        width: 230px;
+        background: #2c3e50;
+        min-height: calc(100vh - 65px);
+        padding-top: 15px;
+      }
+
+      .sidebar a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        color: #ecf0f1;
+        text-decoration: none;
+      }
+
+      .sidebar a:hover {
+        background: #1abc9c;
+      }
+
+      .content {
+        flex: 1;
+        padding: 30px;
+      }
+
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+      }
+
+      .action-card {
+        background: linear-gradient(135deg, #1abc9c, #16a085);
+        color: white;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #1e3a5f;
+        color: white;
+        padding: 10px;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="brand">EduTrack</div>
+
+      <div class="profile">
+        <div class="avatar" onclick="toggleProfile()">
+          {{ student.name|first }}
+        </div>
+
+        <div class="profile-box" id="profileBox">
+          <p><b>Name:</b> {{ student.name }}</p>
+          <p><b>Email:</b> {{ student.email }}</p>
+        </div>
+
+        <a href="{% url 'student:logout' %}" class="logout">Logout</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <a href="#"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="#"><i class="fa-solid fa-user"></i> My Profile</a>
+        <a href="{% url 'student:attendance' %}">
+          <i class="fa-solid fa-calendar-check"></i> Attendance</a
+        >
+        <a href="{% url 'student:view_marks' %}">
+          <i class="fa-solid fa-chart-bar"></i> Marks</a
+        >
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="content">{% block content %} {% endblock %}</div>
+    </div>
+
+    <script>
+      function toggleProfile() {
+        const box = document.getElementById("profileBox");
+        box.style.display = box.style.display === "block" ? "none" : "block";
+      }
+    </script>
+  </body>
+</html>

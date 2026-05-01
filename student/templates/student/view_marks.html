@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>My Review Marks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Review Marks | MBITS</title>
 
     <link
       rel="stylesheet"
@@ -10,137 +11,254 @@
     />
 
     <style>
+      :root {
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-green: #27ae60;
+      }
+
       body {
         margin: 0;
         font-family: "Segoe UI", Arial, sans-serif;
-        background: #f4f6f8;
-        padding: 40px;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
 
-      /* CONTAINER */
-      .container {
-        max-width: 900px;
-        margin: auto;
-      }
-
-      /* HEADER */
-      .header {
-        background: linear-gradient(90deg, #1e3a5f, #2c3e50);
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
         color: white;
-        padding: 20px 25px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
 
-      .header h2 {
-        margin: 0;
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1a252f;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
-      /* CARD */
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: var(--et-sidebar);
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN LAYOUT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .breadcrumb {
+        background: #fff;
+        padding: 12px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.85rem;
+        color: #7f8c8d;
+      }
+
+      .breadcrumb i {
+        margin: 0 8px;
+        font-size: 0.7rem;
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
+      .page-title {
+        border-bottom: 2px solid #ddd;
+        margin: 0 0 20px 0;
+        padding-bottom: 10px;
+        color: var(--et-dark);
+        font-weight: 500;
+      }
+
+      /* CARD & TABLE */
       .card {
         background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       }
 
-      /* TABLE */
+      .card-header {
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: #333;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
       }
 
       th {
-        background: #1e3a5f;
-        color: white;
-        padding: 12px;
+        background: #f1f4f6;
+        color: #2c3e50;
+        padding: 12px 15px;
         text-align: left;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid var(--et-border);
       }
 
       td {
-        padding: 12px;
-        border-bottom: 1px solid #e5e7eb;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+        color: #444;
       }
 
-      tr:hover {
-        background: #f9fafb;
-      }
-
-      /* TOTAL ROW */
       .total-row {
-        background: #ecfdf5;
+        background: #f0fff4;
         font-weight: bold;
       }
 
       .total-row td {
-        border-top: 2px solid #10b981;
+        border-top: 2px solid var(--et-green);
+        color: var(--et-green);
+        font-size: 1rem;
       }
 
       /* BADGE */
       .mark-badge {
-        background: #dbeafe;
-        color: #1e40af;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-weight: 500;
-      }
-
-      /* BACK BUTTON */
-      .back-btn {
+        background: #ebf5ff;
+        color: #004a99;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
         display: inline-block;
-        margin-top: 20px;
-        padding: 10px 15px;
-        background: #6b7280;
-        color: white;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-      }
-
-      .back-btn:hover {
-        background: #4b5563;
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <!-- HEADER -->
-      <div class="header">
-        <h2><i class="fa-solid fa-chart-line"></i> My Review Marks</h2>
+    <div class="sidebar">
+      <div class="sidebar-brand"><i class="fa-solid fa-cloud"></i>EduTrack</div>
+      <a href="{% url 'student:dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-calendar-check"></i> Attendance</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-chart-line"></i> Results</a
+      >
+      <a href="{% url 'student:student_document_list' %}" class="nav-item"
+        ><i class="fa-solid fa-file-invoice"></i> Assignments</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555"></div>
+        <div style="font-size: 0.85rem; color: #333">
+          <i class="fa-solid fa-circle-user"></i> AISWARYA P DAS
+        </div>
       </div>
 
-      <!-- CARD -->
-      <div class="card">
-        <table>
-          <tr>
-            <th>Review Topic</th>
-            <th>Date</th>
-            <th>Mark</th>
-          </tr>
+      <div class="breadcrumb">
+        <i class="fa-solid fa-house"></i> Home
+        <i class="fa-solid fa-chevron-right"></i> Dashboard
+        <i class="fa-solid fa-chevron-right"></i> Review Marks
+      </div>
 
-          {% for mark in marks %}
-          <tr>
-            <td>{{ mark.review.review_topic }}</td>
+      <div class="content-area">
+        <h3 class="page-title">My Review Marks</h3>
 
-            <td>{{ mark.review.review_date }}</td>
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-file-signature"></i> Performance Summary
+          </div>
 
-            <td>
-              <span class="mark-badge">{{ mark.mark }}</span>
-            </td>
-          </tr>
-          {% endfor %}
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Review Topic</th>
+                  <th>Date</th>
+                  <th>Mark Obtained</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for mark in marks %}
+                <tr>
+                  <td><b>{{ mark.review.review_topic }}</b></td>
+                  <td>{{ mark.review.review_date|date:"d M Y" }}</td>
+                  <td>
+                    <span class="mark-badge">{{ mark.mark }}</span>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td
+                    colspan="3"
+                    style="text-align: center; padding: 30px; color: #999"
+                  >
+                    No review marks recorded yet.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="2" style="text-align: right">
+                    Total Cumulative Marks:
+                  </td>
+                  <td>{{ total }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
 
-          <!-- TOTAL -->
-          <tr class="total-row">
-            <td colspan="2">Total Marks</td>
-            <td>{{ total }}</td>
-          </tr>
-        </table>
-
-        <!-- BACK BUTTON -->
-        <a href="{% url 'student:dashboard' %}" class="back-btn">
+        <br />
+        <a
+          href="{% url 'student:dashboard' %}"
+          style="color: #7f8c8d; text-decoration: none; font-size: 0.9rem"
+        >
           <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
         </a>
       </div>

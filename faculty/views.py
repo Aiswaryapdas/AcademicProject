@@ -5,6 +5,9 @@ from .models import ReviewMark
 from django.apps import apps
 from .models import Attendance
 from datetime import datetime, date
+from Admin.models import Notice
+from django.utils import timezone
+from datetime import timedelta
 
 def homepage(request):
 
@@ -22,14 +25,33 @@ def homepage(request):
 
     reviews = ReviewSchedule.objects.all().order_by('review_date', 'review_time')
 
+    # =========================
+    # ✅ ADD NOTICE LOGIC HERE
+    # =========================
+    notices = Notice.objects.filter(
+        target__in=['ALL', 'FACULTY']
+    ).order_by('-created_at')
+
+    new_threshold = timezone.now() - timedelta(days=2)
+
+    notice_list = []
+    for n in notices:
+        is_new = n.created_at >= new_threshold
+        notice_list.append({
+            'notice': n,
+            'is_new': is_new
+        })
+    # =========================
+
     return render(request, 'Faculty/faculty_dashboard.html', {
         'faculty': faculty,
         'group': group,
         'students': students,
-        'reviews': reviews 
+        'reviews': reviews,
 
+        # ✅ ADD THIS
+        'notice_list': notice_list
     })
-
 
 def faculty_view_submissions(request):
     faculty = Faculty.objects.get(id=request.session['faculty_id'])

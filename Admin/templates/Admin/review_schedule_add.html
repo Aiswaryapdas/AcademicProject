@@ -2,84 +2,283 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      {% if form.instance.pk %}Edit{% else %}Add{% endif %} Review Schedule
+      {% if form.instance.pk %}Edit{% else %}Add{% endif %} Review Schedule |
+      Admin
     </title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+      }
+
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        padding: 20px;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
-      h2 {
-        text-align: center;
-        color: #333;
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
-      form {
-        background-color: #fff;
-        max-width: 500px;
-        margin: 20px auto;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
       }
-      div {
-        margin-bottom: 15px;
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
       }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* FORM CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        width: 100%;
+        max-width: 550px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      /* FORM STYLING */
+      .form-group {
+        margin-bottom: 18px;
+      }
+
       label {
         display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 8px;
       }
+
       input,
       select,
       textarea {
         width: 100%;
-        padding: 8px;
-        box-sizing: border-box;
+        padding: 10px 12px;
+        border: 1px solid var(--et-border);
         border-radius: 4px;
-        border: 1px solid #ccc;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+        transition: border 0.3s;
       }
-      button {
-        padding: 10px 15px;
-        background-color: #007bff;
-        color: #fff;
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--et-accent);
+        outline: none;
+      }
+
+      .btn-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 25px;
+      }
+
+      .btn-save {
+        background: var(--et-dark);
+        color: white;
         border: none;
-        border-radius: 5px;
+        padding: 10px 25px;
+        border-radius: 4px;
+        font-weight: bold;
         cursor: pointer;
+        flex-grow: 1;
       }
-      button:hover {
-        background-color: #0056b3;
+
+      .btn-save:hover {
+        background: #152943;
       }
-      a {
-        margin-left: 10px;
+
+      .btn-back {
         text-decoration: none;
-        color: #555;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        padding: 10px 15px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+      }
+
+      .btn-back:hover {
+        background: #f8f9fa;
       }
     </style>
   </head>
+
   <body>
-    <h2>
-      {% if form.instance.pk %}Edit{% else %}Add{% endif %} Review Schedule
-    </h2>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a href="{% url 'WAdmin:review_schedule' %}" class="nav-item active"
+        ><i class="fa-solid fa-calendar-check"></i> Review Schedule</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+    </div>
 
-    <form method="post">
-      {% csrf_token %}
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Project Management / {% if form.instance.pk %}Edit{% else %} Add
+          {%endif%} Review
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
 
-      <div>{{ form.review_topic.label_tag }} {{ form.review_topic }}</div>
+      <div class="content-area">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            {% if form.instance.pk %}Update Existing Schedule{% else %}Schedule
+            New Review{% endif %}
+          </div>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
 
-      <div>{{ form.review_date.label_tag }} {{ form.review_date }}</div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-book"></i> Topic</label>
+                {{ form.review_topic }}
+              </div>
 
-      <div>{{ form.review_time.label_tag }} {{ form.review_time }}</div>
+              <div style="display: flex; gap: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label><i class="fa-solid fa-calendar-day"></i> Date</label>
+                  {{ form.review_date }}
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label><i class="fa-solid fa-clock"></i> Time</label>
+                  {{ form.review_time }}
+                </div>
+              </div>
 
-      <div>{{ form.review_status.label_tag }} {{ form.review_status }}</div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-spinner"></i> Status</label>
+                {{ form.review_status }}
+              </div>
 
-      <div>{{ form.remarks.label_tag }} {{ form.remarks }}</div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-comment-dots"></i> Remarks</label>
+                {{ form.remarks }}
+              </div>
 
-      <button type="submit">
-        {% if form.instance.pk %}Update{% else %}Save{% endif %}
-      </button>
-      <a href="{% url 'WAdmin:review_schedule' %}">Back</a>
-    </form>
+              <div class="btn-container">
+                <button type="submit" class="btn-save">
+                  <i class="fa-solid fa-check"></i>
+                  {% if form.instance.pk %}Update Review{% else %}Save
+                  Schedule{% endif %}
+                </button>
+                <a href="{% url 'WAdmin:review_schedule' %}" class="btn-back"
+                  >Cancel</a
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

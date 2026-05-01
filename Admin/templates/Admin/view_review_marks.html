@@ -1,102 +1,267 @@
 {% load custome_filters %}
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>All Students Review Marks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Review Marks | Admin</title>
+
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+
     <style>
-      body {
-        font-family: "Roboto", Arial, sans-serif;
-        background-color: #f4f6f8;
-        margin: 0;
-        padding: 20px;
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-success: #2ecc71;
       }
 
-      h2 {
-        text-align: center;
-        color: #0d6efd;
-        margin-bottom: 25px;
-        font-weight: 500;
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
+      /* TABLE CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        background: #ffffff;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      }
-
-      th,
-      td {
-        padding: 12px 15px;
-        text-align: center;
-        border-bottom: 1px solid #dee2e6;
       }
 
       th {
-        background-color: #0d6efd;
-        color: #fff;
-        font-weight: 500;
+        background: #f1f4f6;
+        color: #2c3e50;
+        padding: 12px 15px;
+        text-align: center;
+        font-size: 0.75rem;
+        border-bottom: 2px solid var(--et-border);
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.85rem;
+        color: #333;
+        text-align: center;
       }
 
       tr:hover {
-        background-color: #f1f7ff;
+        background: #fcfcfc;
       }
 
-      td b {
-        color: #198754; /* highlight total marks */
+      .total-cell {
+        font-weight: bold;
+        color: var(--et-success);
+        background-color: #f9fffb;
       }
 
-      @media screen and (max-width: 768px) {
-        table,
-        th,
-        td {
-          font-size: 14px;
-        }
+      .back-link {
+        text-decoration: none;
+        color: #7f8c8d;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        display: inline-block;
       }
     </style>
   </head>
 
   <body>
-    <h2>Students Review Marks</h2>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrackADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a href="{% url 'WAdmin:review_schedule' %}" class="nav-item active"
+        ><i class="fa-solid fa-star"></i> Review Marks</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+    </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Admission Number</th>
-          <th>Student Name</th>
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Performance Analytics / Review Marks
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
 
-          {% for review in reviews %}
-          <th>{{ review.review_topic }}</th>
-          {% endfor %}
+      <div class="content-area">
+        <a href="{% url 'WAdmin:admin_dashboard' %}" class="back-link">
+          <i class="fa-solid fa-chevron-left"></i> Back to Dashboard
+        </a>
 
-          <th>Total</th>
-        </tr>
-      </thead>
+        <div class="card">
+          <div class="card-header">
+            <span
+              ><i class="fa-solid fa-chart-simple"></i> Students consolidated
+              Review Marks</span
+            >
+            <button
+              onclick="window.print()"
+              style="
+                background: none;
+                border: 1px solid var(--et-border);
+                padding: 5px 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.8rem;
+              "
+            >
+              <i class="fa-solid fa-print"></i> Print
+            </button>
+          </div>
 
-      <tbody>
-        {% for row in students %}
-        <tr>
-          <td>{{ row.student.admission_number }}</td>
-          <td>{{ row.student.name }}</td>
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Adm. No</th>
+                  <th>Student Name</th>
+                  {% for review in reviews %}
+                  <th>{{ review.review_topic }}</th>
+                  {% endfor %}
+                  <th style="background: #eef2f7">Total Marks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in students %}
+                <tr>
+                  <td style="font-weight: 600; color: var(--et-dark)">
+                    {{ row.student.admission_number }}
+                  </td>
+                  <td style="text-align: left; padding-left: 20px">
+                    {{ row.student.name }}
+                  </td>
 
-          {% for review in reviews %}
-          <td>{{ row.marks|get_item:review.id }}</td>
-          {% endfor %}
+                  {% for review in reviews %}
+                  <td>{{ row.marks|get_item:review.id|default:"-" }}</td>
+                  {% endfor %}
 
-          <td><b>{{ row.total }}</b></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn">
-      <i class="fa-solid fa-arrow-left"></i>Back
-    </a>
+                  <td class="total-cell">{{ row.total }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td
+                    colspan="{{ reviews|length|add:3 }}"
+                    style="padding: 40px; color: #95a5a6"
+                  >
+                    No student marks recorded yet.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

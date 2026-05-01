@@ -2,83 +2,97 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Academic Portal Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | ETLAB Portal</title>
 
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-accent: #3498db;
+        --et-gold: #ffd700;
+        --et-bg: #f4f7f9;
+        --et-border: #dcdde1;
+      }
+
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: "Segoe UI", sans-serif;
+        font-family: "Inter", "Segoe UI", sans-serif;
       }
-
-      /* BACKGROUND */
 
       body {
         height: 100vh;
-        background: linear-gradient(135deg, #1e3a5f, #2d6cdf);
+        background: linear-gradient(135deg, var(--et-dark), #2c3e50);
         display: flex;
         flex-direction: column;
       }
 
       /* NAVBAR */
-
       .navbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 18px 60px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
+        padding: 15px 5%;
+        background: rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       .logo {
         color: white;
-        font-size: 22px;
-        font-weight: bold;
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+
+      .logo span {
+        color: var(--et-gold);
       }
 
       .nav-links a {
-        color: white;
+        color: #ecf0f1;
         text-decoration: none;
         margin-left: 25px;
+        font-size: 0.9rem;
         font-weight: 500;
       }
 
       .nav-links a:hover {
-        color: #ffd700;
+        color: var(--et-gold);
       }
 
-      /* MAIN AREA */
-
+      /* LOGIN CONTAINER */
       .main-container {
         flex: 1;
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 20px;
       }
 
-      /* LOGIN CARD */
-
-      .login-container {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 45px;
-        width: 380px;
-        border-radius: 15px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-
-        animation: fadeIn 1s;
+      .login-card {
+        background: #ffffff;
+        width: 100%;
+        max-width: 400px;
+        border-radius: 8px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        animation: slideUp 0.6s ease-out;
       }
 
-      @keyframes fadeIn {
+      @keyframes slideUp {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(30px);
         }
         to {
           opacity: 1;
@@ -86,126 +100,191 @@
         }
       }
 
-      .login-container h2 {
+      .card-header {
+        background: #f8f9fa;
+        padding: 30px;
         text-align: center;
-        margin-bottom: 30px;
-        color: #1e3a5f;
+        border-bottom: 1px solid var(--et-border);
       }
 
-      /* INPUT GROUP */
+      .card-header h2 {
+        color: var(--et-dark);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
 
-      .input-group {
-        position: relative;
+      .card-header p {
+        color: #7f8c8d;
+        font-size: 0.85rem;
+      }
+
+      .card-body {
+        padding: 35px;
+      }
+
+      /* FORM STYLING */
+      .form-group {
         margin-bottom: 20px;
       }
 
-      .input-group i {
+      .form-group label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--et-dark);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-wrapper i {
         position: absolute;
-        top: 12px;
-        left: 12px;
-        color: #888;
-      }
-
-      .input-group input {
-        width: 100%;
-        padding: 10px 10px 10px 35px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-      }
-
-      /* BUTTON */
-
-      button {
-        width: 100%;
-        padding: 12px;
-        background: #1e3a5f;
-        border: none;
-        color: white;
-        font-size: 16px;
-        border-radius: 6px;
-        cursor: pointer;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #bdc3c7;
         transition: 0.3s;
       }
 
-      button:hover {
-        background: #16304d;
-        transform: scale(1.03);
+      .input-wrapper input {
+        width: 100%;
+        padding: 12px 12px 12px 45px;
+        border: 1px solid var(--et-border);
+        border-radius: 5px;
+        font-size: 0.95rem;
+        transition: 0.3s;
+        outline: none;
       }
 
-      /* ERROR */
+      .input-wrapper input:focus {
+        border-color: var(--et-accent);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+      }
 
-      .error-msg {
-        color: red;
+      .input-wrapper input:focus + i {
+        color: var(--et-accent);
+      }
+
+      .btn-login {
+        width: 100%;
+        padding: 12px;
+        background: var(--et-dark);
+        border: none;
+        color: white;
+        font-weight: 700;
+        font-size: 0.95rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition:
+          background 0.3s,
+          transform 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .btn-login:hover {
+        background: #152943;
+        transform: translateY(-1px);
+      }
+
+      /* ERROR MESSAGE */
+      .error-alert {
+        background: #fff5f5;
+        border: 1px solid #feb2b2;
+        color: #c53030;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 0.85rem;
         text-align: center;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
       }
-
-      /* FOOTER */
 
       .footer {
         text-align: center;
-        color: white;
-        padding: 15px;
-        font-size: 14px;
+        padding: 20px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.8rem;
       }
     </style>
   </head>
 
   <body>
-    <!-- NAVBAR -->
-
-    <div class="navbar">
-      <div class="logo">🎓 EduTrack</div>
-
+    <nav class="navbar">
+      <div class="logo">
+        <i class="fa-solid fa-graduation-cap"></i> EDUTRACK<span>PORTAL</span>
+      </div>
       <div class="nav-links">
         <a href="/">Home</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-        <a href="#">Sign In</a>
+        <a href="#">Support</a>
       </div>
-    </div>
-
-    <!-- LOGIN -->
+    </nav>
 
     <div class="main-container">
-      <div class="login-container">
-        <h2>Portal Login</h2>
+      <div class="login-card">
+        <div class="card-header">
+          <h2>Welcome Back</h2>
+          <p>Please sign in to your academic account</p>
+        </div>
 
-        {% if msg %}
-        <div class="error-msg">{{ msg }}</div>
-        {% endif %}
-
-        <form method="POST">
-          {% csrf_token %}
-
-          <div class="input-group">
-            <i class="fa fa-envelope"></i>
-            <input
-              type="email"
-              name="txt_email"
-              id="txt_email"
-              placeholder="Enter your email"
-              required
-            />
+        <div class="card-body">
+          {% if msg %}
+          <div class="error-alert">
+            <i class="fa-solid fa-circle-exclamation"></i> {{ msg }}
           </div>
+          {% endif %}
 
-          <div class="input-group">
-            <i class="fa fa-lock"></i>
-            <input
-              type="password"
-              name="txt_pass"
-              id="txt_pass"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
+          <form method="POST">
+            {% csrf_token %}
 
-          <button type="submit"><i class="fa fa-sign-in-alt"></i> Login</button>
-        </form>
+            <div class="form-group">
+              <label for="txt_email">Email Address</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-envelope"></i>
+                <input
+                  type="email"
+                  name="txt_email"
+                  id="txt_email"
+                  placeholder="name@college.edu"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="txt_pass">Password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock"></i>
+                <input
+                  type="password"
+                  name="txt_pass"
+                  id="txt_pass"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="btn-login">
+              Sign In <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
 
-    <div class="footer">© Academic Project Management System</div>
+    <div class="footer">
+      &copy; 2026 Academic Project Management System | v2.4.0
+    </div>
   </body>
 </html>

@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Upload Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Document | MBITS</title>
 
     <link
       rel="stylesheet"
@@ -10,135 +11,195 @@
     />
 
     <style>
+      :root {
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+      }
+
       body {
         margin: 0;
         font-family: "Segoe UI", Arial, sans-serif;
-        background: #f4f6f8;
-        padding: 40px;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
 
-      /* CONTAINER */
-      .container {
-        max-width: 700px;
-        margin: auto;
-      }
-
-      /* HEADER */
-      .header {
-        background: linear-gradient(90deg, #1e3a5f, #2c3e50);
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
         color: white;
-        padding: 20px 25px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+        flex-shrink: 0;
       }
 
-      .header h2 {
-        margin: 0;
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1a252f;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
-      /* CARD */
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.9rem;
+      }
+
+      .nav-item.active {
+        background: var(--et-sidebar);
+        color: white;
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN LAYOUT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid #eee;
+      }
+
+      .breadcrumb {
+        background: #fff;
+        padding: 12px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.85rem;
+        color: #7f8c8d;
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
       .card {
         background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
       }
 
-      /* DESCRIPTION */
-      .description {
-        color: #555;
-        margin-bottom: 20px;
+      .card-header {
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
       }
 
-      /* FILE BOX */
-      .file-box {
-        background: #f9fafb;
-        padding: 12px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+      .card-body {
+        padding: 30px;
       }
 
-      /* INPUT */
-      input[type="file"] {
-        margin-top: 10px;
-        margin-bottom: 20px;
+      .instruction-box {
+        background: #fff9e6;
+        border-left: 4px solid #f1c40f;
+        padding: 15px;
+        margin-bottom: 25px;
       }
 
-      /* BUTTON */
-      button {
-        padding: 10px 20px;
-        background: #10b981;
+      .btn-etlab {
+        background: var(--et-dark);
         color: white;
         border: none;
-        border-radius: 8px;
+        padding: 12px 25px;
+        border-radius: 4px;
         cursor: pointer;
-        font-size: 15px;
-      }
-
-      button:hover {
-        background: #059669;
-      }
-
-      /* BACK BUTTON */
-      .back-btn {
-        display: inline-block;
-        margin-top: 15px;
-        text-decoration: none;
-        color: #374151;
-        font-size: 14px;
-      }
-
-      .back-btn:hover {
-        text-decoration: underline;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <!-- HEADER -->
-      <div class="header">
-        <h2><i class="fa-solid fa-file-upload"></i> {{ schedule.title }}</h2>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-cloud"></i> EduTrack
+      </div>
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-file-invoice"></i> Assignments</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          PROJECT Portal
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-user"></i> AISWARYA P DAS
+        </div>
       </div>
 
-      <!-- CARD -->
-      <div class="card">
-        <p class="description">{{ schedule.description }}</p>
+      <div class="breadcrumb">
+        Home
+        <i
+          class="fa-solid fa-chevron-right"
+          style="font-size: 0.7rem; margin: 0 5px"
+        ></i>
+        Upload
+      </div>
 
-        <!-- CURRENT FILE -->
-        {% if submission %}
-        <div class="file-box">
-          <b>Current File:</b><br />
-          <a href="{{ submission.file.url }}" target="_blank">
-            <i class="fa-solid fa-file"></i> {{ submission.file.name }}
-          </a>
+      <div class="content-area">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-file-upload"></i> {{ schedule.title }}
+          </div>
+          <div class="card-body">
+            <div class="instruction-box">
+              <strong>Notice:</strong> {{ schedule.description }}
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <p>
+                <b>Current File:</b>
+                {% if submission %}
+                <a href="{{ submission.file.url }}"
+                  >{{ submission.file.name }}</a
+                >
+                {% else %} None {% endif %}
+              </p>
+
+              <input
+                type="file"
+                name="file"
+                required
+                style="margin: 20px 0; display: block"
+              />
+
+              <button type="submit" class="btn-etlab">
+                {% if submission %}
+                <i class="fa-solid fa-rotate"></i> Replace Submission {% else %}
+                <i class="fa-solid fa-upload"></i> Upload Document {% endif %}
+              </button>
+            </form>
+          </div>
         </div>
-        {% else %}
-        <div class="file-box">
-          <b>No file uploaded yet</b>
-        </div>
-        {% endif %}
-
-        <!-- FORM -->
-        <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-
-          <label><b>Select File</b></label
-          ><br />
-
-          <input type="file" name="file" required />
-
-          <br />
-
-          <button type="submit">
-            {% if submission %} Replace File {% else %} Upload File {% endif %}
-          </button>
-        </form>
-
-        <!-- BACK -->
-        <a href="{% url 'student:student_document_list' %}" class="back-btn">
-          ← Back to Submissions
-        </a>
       </div>
     </div>
   </body>

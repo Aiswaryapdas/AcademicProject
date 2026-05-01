@@ -1,82 +1,337 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Full Semester Attendance</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Full Semester Attendance | Admin</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-success: #2ecc71;
+        --et-danger: #e74c3c;
+      }
+
       body {
-        font-family: Arial;
-        padding: 20px;
-        background: #f4f6f8;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
-      table {
-        width: 80%;
-        border-collapse: collapse;
-        margin: auto;
-        background: white;
-        font-size: 14px;
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
-      th,
-      td {
-        border: 1px solid #ccc;
-        padding: 10px;
-        text-align: center;
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
       }
-      th {
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
         background: #2c3e50;
         color: white;
       }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 20px;
+      }
+
+      /* FILTER BAR */
+      .filter-card {
+        background: white;
+        padding: 15px 20px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+      }
+
+      .filter-card input[type="month"] {
+        padding: 8px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        font-family: inherit;
+      }
+
+      .btn-search {
+        background: var(--et-accent);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      /* MONTHLY CARDS */
+      .month-section {
+        margin-bottom: 40px;
+      }
+
+      .month-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--et-dark);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .table-card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow-x: auto;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        min-width: 900px;
+      }
+
+      th {
+        background: #f1f4f6;
+        color: var(--et-dark);
+        padding: 10px 5px;
+        font-weight: 600;
+        border: 1px solid var(--et-border);
+      }
+
+      td {
+        padding: 8px 5px;
+        border: 1px solid #eee;
+        text-align: center;
+      }
+
+      /* STATUS COLORS */
+      .present {
+        color: #27ae60;
+        font-weight: bold;
+        background: rgba(46, 204, 113, 0.1);
+      }
+      .absent {
+        color: #c0392b;
+        font-weight: bold;
+        background: rgba(231, 76, 60, 0.1);
+      }
+      .empty {
+        color: #bdc3c7;
+      }
+
+      .reset-link {
+        font-size: 0.85rem;
+        color: var(--et-danger);
+        text-decoration: none;
+        margin-left: 10px;
+      }
+
+      .reset-link:hover {
+        text-decoration: underline;
+      }
     </style>
   </head>
+
   <body>
-    <body>
-      <h2>Semester Attendance {{ year }}</h2>
-
-      <!-- Month search filter -->
-      <form method="get" style="margin-bottom: 20px">
-        <label for="month">Filter by month:</label>
-        <input
-          type="month"
-          id="month"
-          name="month"
-          value="{{ month_filter }}"
-        />
-        <button type="submit">Search</button>
-        {% if month_filter %}
-        <a href="{% url 'WAdmin:semester_attendance' %}">Show All Months</a>
-        {% endif %}
-      </form>
-
-      {% for month in semester_data %}
-      <h3>{{ month.month_name }} {{ year }}</h3>
-
-      <table
-        border="1"
-        style="width: 100%; margin-bottom: 30px; text-align: center"
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
       >
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Present</th>
-          <th>Absent</th>
-          {% for day in month.days_range %}
-          <th>{{ day.day }}</th>
-          {% endfor %}
-        </tr>
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item active"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+    </div>
 
-        {% for student in month.month_data %}
-        <tr>
-          <td>{{ student.student_id }}</td>
-          <td>{{ student.name }}</td>
-          <td>{{ student.present }}</td>
-          <td>{{ student.absent }}</td>
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Semester Attendance Log - {{ year }}
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
 
-          {% for value, css in student.attendance_display %}
-          <td class="{{ css }}">{{ value }}</td>
-          {% endfor %}
-        </tr>
+      <div class="content-area">
+        <div style="margin-bottom: 20px">
+          <a
+            href="{% url 'WAdmin:admin_attendance' %}"
+            style="
+              text-decoration: none;
+              color: var(--et-dark);
+              font-weight: 600;
+              font-size: 0.9rem;
+            "
+          >
+            <i class="fa-solid fa-chevron-left"></i> Back to Monthly View
+          </a>
+        </div>
+
+        <div class="filter-card">
+          <form
+            method="get"
+            style="display: flex; align-items: center; gap: 15px; width: 100%"
+          >
+            <label style="font-size: 0.85rem; font-weight: 600; color: #666"
+              >Filter Month:</label
+            >
+            <input type="month" name="month" value="{{ month_filter }}" />
+            <button type="submit" class="btn-search">
+              <i class="fa-solid fa-magnifying-glass"></i> Search
+            </button>
+
+            {% if month_filter %}
+            <a href="{% url 'WAdmin:semester_attendance' %}" class="reset-link">
+              <i class="fa-solid fa-rotate-left"></i> Reset Filter
+            </a>
+            {% endif %}
+          </form>
+        </div>
+
+        {% for month in semester_data %}
+        <div class="month-section">
+          <div class="month-title">
+            <i class="fa-solid fa-calendar-check"></i> {{ month.month_name}}
+            {{year}}
+          </div>
+
+          <div class="table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 50px">ID</th>
+                  <th
+                    style="width: 150px; text-align: left; padding-left: 10px"
+                  >
+                    Name
+                  </th>
+                  <th style="background: #e8f5e9; color: #2e7d32">P</th>
+                  <th style="background: #ffebee; color: #c62828">A</th>
+                  {% for day in month.days_range %}
+                  <th>{{ day.day }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in month.month_data %}
+                <tr>
+                  <td>{{ student.student_id }}</td>
+                  <td
+                    style="
+                      text-align: left;
+                      padding-left: 10px;
+                      font-weight: 500;
+                    "
+                  >
+                    {{ student.name }}
+                  </td>
+                  <td style="background: #fafafa">{{ student.present }}</td>
+                  <td style="background: #fafafa">{{ student.absent }}</td>
+
+                  {% for value, css in student.attendance_display %}
+                  <td class="{{ css }}">{{ value }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% empty %}
+        <div
+          style="
+            text-align: center;
+            padding: 50px;
+            color: #95a5a6;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid var(--et-border);
+          "
+        >
+          <i
+            class="fa-solid fa-calendar-xmark"
+            style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5"
+          ></i>
+          <p>No attendance records found for this period.</p>
+        </div>
         {% endfor %}
-      </table>
-      {% endfor %}
-    </body>
+      </div>
+    </div>
   </body>
 </html>

@@ -1,96 +1,318 @@
-<h2 style="text-align: center; margin-bottom: 20px">
-  Schedule Document Submission
-</h2>
-<!-- Back Button -->
-<a href="{% url 'WAdmin:document_schedule_list' %}" class="back-btn">
-  <i class="fa fa-arrow-left"></i> Back
-</a>
-<div
-  style="
-    width: 500px;
-    margin: auto;
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  "
->
-  <form method="POST">
-    {% csrf_token %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule Document Submission | Admin</title>
 
-    <div style="margin-bottom: 15px">
-      <label><strong>Document Title</strong></label
-      ><br />
-      <input
-        type="text"
-        name="title"
-        required
-        style="width: 100%; padding: 8px"
-      />
-    </div>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-    <div style="margin-bottom: 15px">
-      <label><strong>Description</strong></label
-      ><br />
-      <textarea
-        name="description"
-        rows="3"
-        style="width: 100%; padding: 8px"
-      ></textarea>
-    </div>
+    <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+      }
 
-    <div style="margin-bottom: 15px">
-      <label><strong>Start Date</strong></label
-      ><br />
-      <input
-        type="date"
-        name="start_date"
-        required
-        style="width: 100%; padding: 8px"
-      />
-    </div>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
+      }
 
-    <div style="margin-bottom: 15px">
-      <label><strong>End Date</strong></label
-      ><br />
-      <input
-        type="date"
-        name="end_date"
-        required
-        style="width: 100%; padding: 8px"
-      />
-    </div>
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
 
-    <div style="margin-bottom: 15px">
-      <label><strong>Allowed File Format</strong></label
-      ><br />
-      <input
-        type="text"
-        name="file_format"
-        placeholder="pdf / docx"
-        style="width: 100%; padding: 8px"
-      />
-    </div>
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
 
-    <div style="margin-bottom: 20px">
-      <label><strong>Maximum File Size (MB)</strong></label
-      ><br />
-      <input type="number" name="max_size" style="width: 100%; padding: 8px" />
-    </div>
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
 
-    <div style="text-align: center">
-      <button
-        type="submit"
-        style="
-          background: #2f6fed;
-          color: white;
-          padding: 10px 25px;
-          border: none;
-          border-radius: 5px;
-        "
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* FORM CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        width: 100%;
+        max-width: 550px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      /* FORM STYLING */
+      .form-group {
+        margin-bottom: 18px;
+      }
+
+      label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 8px;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+        transition: border 0.3s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--et-accent);
+        outline: none;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      .btn-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 25px;
+      }
+
+      .btn-save {
+        background: var(--et-dark);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        flex-grow: 1;
+        font-size: 0.9rem;
+      }
+
+      .btn-save:hover {
+        background: #152943;
+      }
+
+      .btn-back {
+        text-decoration: none;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        padding: 10px 15px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+      }
+
+      .btn-back:hover {
+        background: #f8f9fa;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
       >
-        Create Schedule
-      </button>
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a
+        href="{% url 'WAdmin:document_schedule_list' %}"
+        class="nav-item active"
+        ><i class="fa-solid fa-file-circle-plus"></i> Document Schedule</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
     </div>
-  </form>
-</div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Submission Manager / Create Schedule
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div style="width: 100%; max-width: 550px; margin-bottom: 15px">
+          <a
+            href="{% url 'WAdmin:document_schedule_list' %}"
+            style="
+              text-decoration: none;
+              color: var(--et-dark);
+              font-weight: 600;
+              font-size: 0.9rem;
+            "
+          >
+            <i class="fa-solid fa-chevron-left"></i> Back to Schedule List
+          </a>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-calendar-plus"></i> Schedule New Submission
+          </div>
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %}
+
+              <div class="form-group">
+                <label>Document Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="e.g., Phase I Dissertation"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  rows="3"
+                  placeholder="Enter instructions for students..."
+                ></textarea>
+              </div>
+
+              <div style="display: flex; gap: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label>Start Date</label>
+                  <input type="date" name="start_date" required />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label>End Date</label>
+                  <input type="date" name="end_date" required />
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label>Allowed Formats</label>
+                  <input
+                    type="text"
+                    name="file_format"
+                    placeholder="pdf, docx, zip"
+                  />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label>Max Size (MB)</label>
+                  <input type="number" name="max_size" placeholder="10" />
+                </div>
+              </div>
+
+              <div class="btn-container">
+                <button type="submit" class="btn-save">
+                  <i class="fa-solid fa-paper-plane"></i> Create Schedule
+                </button>
+                <a
+                  href="{% url 'WAdmin:document_schedule_list' %}"
+                  class="btn-back"
+                  >Cancel</a
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Faculty Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faculty Registration | Admin</title>
 
     <link
       rel="stylesheet"
@@ -10,181 +11,223 @@
     />
 
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-danger: #e74c3c;
+      }
+
       body {
+        margin: 0;
         font-family: "Segoe UI", Arial, sans-serif;
-        background-color: #f4f6f8;
+        background: var(--et-bg);
         display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 60px 20px;
+        min-height: 100vh;
       }
 
-      /* Form container */
-      .form-container {
-        width: 480px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
-        padding: 40px 35px 50px 35px;
-        position: relative;
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
 
-      /* Back button */
-      .back-btn {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        text-decoration: none;
-        color: #2563eb;
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
         font-weight: bold;
-        font-size: 14px;
         display: flex;
         align-items: center;
-        transition: 0.3s;
+        gap: 10px;
+        color: #ffd700;
       }
 
-      .back-btn i {
-        margin-right: 6px;
-        font-size: 14px;
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
       }
 
-      .back-btn:hover {
-        color: #1e40af;
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
       }
 
-      /* Form heading */
-      h2 {
-        text-align: center;
-        color: #1e3a5f;
-        font-size: 24px;
-        margin-bottom: 35px;
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
       }
 
-      /* Form groups */
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* FORM CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
       .form-group {
-        position: relative;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
       }
 
-      .form-group i {
+      .full-width {
+        grid-column: span 2;
+      }
+
+      label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 5px;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-wrapper i {
         position: absolute;
         left: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: #2563eb;
-        font-size: 16px;
+        color: var(--et-accent);
+        font-size: 0.9rem;
       }
 
       input,
       select {
         width: 100%;
-        padding: 12px 12px 12px 40px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        font-size: 14px;
+        padding: 10px 10px 10px 35px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        font-size: 0.9rem;
         box-sizing: border-box;
       }
 
       input:focus,
       select:focus {
-        border-color: #2563eb;
+        border-color: var(--et-accent);
         outline: none;
       }
 
-      /* Submit button */
-      button {
-        width: 100%;
-        padding: 14px;
-        margin-top: 10px;
-        background: #2563eb;
+      .btn-register {
+        background: var(--et-dark);
         color: white;
-        font-size: 16px;
-        font-weight: bold;
         border: none;
-        border-radius: 8px;
+        padding: 12px;
+        width: 100%;
+        border-radius: 4px;
+        font-weight: bold;
         cursor: pointer;
-        transition: 0.3s;
+        margin-top: 10px;
+        text-transform: uppercase;
       }
 
-      button:hover {
-        background: #1e40af;
+      .btn-register:hover {
+        background: #152943;
       }
 
-      /* ✅ Popup styles */
+      /* POPUP */
       .popup-container {
         position: fixed;
         top: 20px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
       }
 
       .popup {
         background: #22c55e;
         color: white;
-        padding: 14px 20px;
-        border-radius: 8px;
+        padding: 12px 25px;
+        border-radius: 4px;
         margin-bottom: 10px;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         animation: fadeInOut 4s forwards;
       }
 
-      .popup.error {
-        background: #ef4444;
-      }
-
       @keyframes fadeInOut {
-        0% {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        10% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        90% {
-          opacity: 1;
-        }
+        0%,
         100% {
           opacity: 0;
           transform: translateY(-20px);
         }
+        10%,
+        90% {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
-      /* Responsive */
-      @media (max-width: 500px) {
-        .form-container {
-          width: 90%;
-          padding: 30px 20px 40px 20px;
-        }
+      .error-text {
+        color: var(--et-danger);
+        font-size: 0.75rem;
+        margin-top: 4px;
+        display: none;
       }
     </style>
   </head>
-  <script>
-    const form = document.querySelector("form");
-    const password = document.querySelector("input[name='password']");
-    const confirmPassword = document.querySelector(
-      "input[name='confirm_password']",
-    );
-    const errorMsg = document.getElementById("passwordError");
 
-    form.addEventListener("submit", function (e) {
-      if (password.value !== confirmPassword.value) {
-        e.preventDefault(); // stop form
-
-        errorMsg.style.display = "block"; // show error
-        confirmPassword.style.borderColor = "red";
-      } else {
-        errorMsg.style.display = "none"; // hide error
-        confirmPassword.style.borderColor = "#ccc";
-      }
-    });
-  </script>
   <body>
-    <!-- ✅ Popup Message -->
     {% if messages %}
     <div class="popup-container">
       {% for message in messages %}
@@ -193,111 +236,194 @@
     </div>
     {% endif %}
 
-    <div class="form-container">
-      <a href="{% url 'WAdmin:faculty_list' %}" class="back-btn">
-        <i class="fa-solid fa-arrow-left"></i>Back
-      </a>
-
-      <h2>Faculty Registration</h2>
-
-      <form method="POST">
-        {% csrf_token %}
-
-        <div class="form-group">
-          <i class="fa-solid fa-id-badge"></i>
-          <input
-            type="text"
-            name="faculty_id"
-            placeholder="Faculty ID"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <i class="fa-solid fa-user"></i>
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            pattern="[A-Za-z ]+"
-            title="Only letters allowed"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <i class="fa-solid fa-envelope"></i>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            title="Enter a valid email address"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <i class="fa-solid fa-phone"></i>
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone Number"
-            pattern="[0-9]{10}"
-            title="Enter 10 digit phone number"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <i class="fa-solid fa-building-columns"></i>
-          <select name="department" required>
-            <option value="">Select Department</option>
-            <option>Computer Science</option>
-            <option>Electronics</option>
-            <option>Mechanical</option>
-            <option>Civil</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <i class="fa-solid fa-chalkboard-user"></i>
-          <select name="designation" required>
-            <option value="">Select Designation</option>
-            <option>Assistant Professor</option>
-            <option>Associate Professor</option>
-            <option>Professor</option>
-            <option>HOD</option>
-            <option>Lecturer</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <i class="fa-solid fa-lock"></i>
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            minlength="6"
-            title="Minimum 6 characters required"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <i class="fa-solid fa-lock"></i>
-          <input
-            type="password"
-            name="confirm_password"
-            placeholder="Confirm Password"
-            required
-          />
-          <small id="passwordError" style="color: red; display: none">
-            Passwords do not match ❌
-          </small>
-        </div>
-
-        <button type="submit">Register</button>
-      </form>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item active"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
     </div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Faculty Onboarding
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-chalkboard-user"></i> Faculty Registration
+            Form
+          </div>
+          <div class="card-body">
+            <form method="POST" id="facultyForm">
+              {% csrf_token %}
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Faculty ID</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-id-badge"></i>
+                    <input
+                      type="text"
+                      name="faculty_id"
+                      placeholder="Ex: FAC101"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-user"></i>
+                    <input
+                      type="text"
+                      name="name"
+                      pattern="[A-Za-z ]+"
+                      placeholder="Name with Initials"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label>Email Address</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="faculty@gmail.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-phone"></i>
+                    <input
+                      type="text"
+                      name="phone"
+                      pattern="[0-9]{10}"
+                      placeholder="10-digit number"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Department</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <select name="department" required>
+                      <option value="">Select Dept</option>
+                      <option>Computer Applications</option>
+                      <option>Computer Science</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label>Designation</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <select name="designation" required>
+                      <option value="">Select Designation</option>
+                      <option>Assistant Professor</option>
+                      <option>Associate Professor</option>
+                      <option>Professor</option>
+                      <option>HOD</option>
+                      <option>Lecturer</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Create Password</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input
+                      type="password"
+                      name="password"
+                      minlength="6"
+                      placeholder="Min 6 characters"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Confirm Password</label>
+                  <div class="input-wrapper">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <input
+                      type="password"
+                      name="confirm_password"
+                      placeholder="Re-enter password"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="full-width">
+                  <small id="passwordError" class="error-text"
+                    >Passwords do not match ❌</small
+                  >
+                </div>
+              </div>
+
+              <button type="submit" class="btn-register">
+                Register Faculty Member
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <br />
+        <a
+          href="{% url 'WAdmin:faculty_list' %}"
+          style="text-decoration: none; color: #7f8c8d; font-size: 0.9rem"
+        >
+          <i class="fa-solid fa-arrow-left"></i> Back to Faculty List
+        </a>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("facultyForm");
+      const password = document.querySelector("input[name='password']");
+      const confirmPassword = document.querySelector(
+        "input[name='confirm_password']",
+      );
+      const errorMsg = document.getElementById("passwordError");
+
+      form.addEventListener("submit", function (e) {
+        if (password.value !== confirmPassword.value) {
+          e.preventDefault();
+          errorMsg.style.display = "block";
+          confirmPassword.style.borderColor = "var(--et-danger)";
+        } else {
+          errorMsg.style.display = "none";
+          confirmPassword.style.borderColor = "var(--et-border)";
+        }
+      });
+    </script>
   </body>
 </html>

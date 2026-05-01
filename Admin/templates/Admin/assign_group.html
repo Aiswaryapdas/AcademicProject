@@ -2,90 +2,319 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Assign Students to Faculty</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assign Project Groups | Admin</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-success: #22c55e;
+        --et-danger: #ef4444;
+      }
+
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        padding: 30px;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
-      h2 {
-        text-align: center;
-        color: #333;
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
-      form {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: #fff;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      label {
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
         font-weight: bold;
-        display: block;
-        margin-top: 15px;
-        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
       }
-      input[type="text"],
-      select {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-      }
-      button {
-        margin-top: 20px;
+
+      .nav-item {
         padding: 12px 20px;
-        border: none;
-        background-color: #007bff;
-        color: #fff;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
       }
-      button:hover {
-        background-color: #0056b3;
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
       }
-      .messages {
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* FORM CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        width: 100%;
         max-width: 600px;
-        margin: 10px auto;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       }
-      .success {
-        color: green;
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
         font-weight: bold;
+        color: var(--et-dark);
       }
-      .error {
-        color: red;
+
+      .card-body {
+        padding: 25px;
+      }
+
+      /* FORM STYLING */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
+      }
+
+      /* Targets Django's rendered inputs/selects */
+      input[type="text"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+        background-color: #fff;
+      }
+
+      /* Specific height for multi-select students box */
+      select[multiple] {
+        height: 180px;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: var(--et-accent);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+      }
+
+      .btn-submit {
+        background: var(--et-dark);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        width: 100%;
+        border-radius: 4px;
         font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: background 0.3s;
+      }
+
+      .btn-submit:hover {
+        background: #152943;
+      }
+
+      /* POPUP MESSAGES */
+      .popup-container {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+      }
+
+      .popup {
+        padding: 12px 25px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        animation: fadeInOut 4s forwards;
+        min-width: 300px;
+        text-align: center;
+      }
+
+      .popup.success {
+        background: var(--et-success);
+      }
+      .popup.error {
+        background: var(--et-danger);
+      }
+
+      @keyframes fadeInOut {
+        0%,
+        100% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        10%,
+        90% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .help-text {
+        font-size: 0.75rem;
+        color: #7f8c8d;
+        margin-top: 5px;
+        display: block;
       }
     </style>
   </head>
-  <body>
-    <h2>Assign Students to Faculty</h2>
 
-    <!-- Display messages -->
-    <div class="messages">
-      {% if messages %} {% for message in messages %}
-      <p
-        class="{% if message.tags == 'success' %}success{% else %}error{% endif %}"
+  <body>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
       >
-        {{ message }}
-      </p>
-      {% endfor %} {% endif %}
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="{% url 'WAdmin:faculty_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item active"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
     </div>
 
-    <form method="post">
-      {% csrf_token %}
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Assign Project Guides
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
 
-      <div>{{ form.group_name.label_tag }} {{ form.group_name }}</div>
+      {% if messages %}
+      <div class="popup-container">
+        {% for message in messages %}
+        <div
+          class="popup {% if message.tags == 'success' %}success{% else %}error{% endif %}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
 
-      <div>{{ form.faculty.label_tag }} {{ form.faculty }}</div>
+      <div class="content-area">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-link"></i> New Group Assignment
+          </div>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
 
-      <div>{{ form.students.label_tag }} {{ form.students }}</div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-tag"></i> Group Name</label>
+                {{ form.group_name }} {% if form.group_name.help_text %}<span
+                  class="help-text"
+                  >{{ form.group_name.help_text }}</span
+                >{% endif %}
+              </div>
 
-      <button type="submit">Assign Group</button>
-    </form>
+              <div class="form-group">
+                <label
+                  ><i class="fa-solid fa-user-tie"></i> Faculty Guide</label
+                >
+                {{ form.faculty }}
+              </div>
+
+              <div class="form-group">
+                <label><i class="fa-solid fa-users"></i> Select Students</label>
+                {{ form.students }}
+                <span class="help-text"
+                  >Hold Ctrl (or Cmd) to select multiple students.</span
+                >
+              </div>
+
+              <button type="submit" class="btn-submit">
+                Create & Assign Group
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <br />
+        <a
+          href="{% url 'WAdmin:project_group_list' %}"
+          style="text-decoration: none; color: #7f8c8d; font-size: 0.9rem"
+        >
+          <i class="fa-solid fa-arrow-left"></i> Back to Group List
+        </a>
+      </div>
+    </div>
   </body>
 </html>

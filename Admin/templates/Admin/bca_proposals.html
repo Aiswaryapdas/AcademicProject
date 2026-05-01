@@ -1,62 +1,367 @@
-<h2>BCA Project Proposals</h2>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Proposals | Admin</title>
 
-<table border="1" cellpadding="10">
-  <tr>
-    <th>Student Name</th>
-    <th>Batch</th>
-    <th>Title</th>
-    <th>Domain</th>
-    <th>Technology</th>
-    <th>Status</th>
-    <th>Similar Project</th>
-    <th>Action</th>
-  </tr>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-  {% for item in proposal_data %}
-  <tr>
-    <td>{{ item.proposal.student.name }}</td>
-    <td>{{ item.proposal.student.academic_batch }}</td>
-    <td>{{ item.proposal.title }}</td>
-    <td>{{ item.proposal.domain }}</td>
-    <td>{{ item.proposal.technology }}</td>
+    <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-success: #2ecc71;
+        --et-danger: #e74c3c;
+        --et-warning: #f1c40f;
+      }
 
-    <!-- STATUS -->
-    <td>
-      {% if item.proposal.status == "Pending" %}
-      <span style="color: orange">Pending</span>
-      {% elif item.proposal.status == "Approved" %}
-      <span style="color: green">Approved</span>
-      {% else %}
-      <span style="color: red">Rejected</span>
-      {% endif %}
-    </td>
-    <td>
-      {% if item.similar %}
-      <div style="color: red">
-        ⚠️ Similar Found:<br />
-        {{ item.similar.student.name }} - {{ item.similar.student.course }} - {{
-        item.similar.student.academic_batch }}<br />
-        "{{ item.similar.title }}"
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
+      /* DATA CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f1f4f6;
+        color: #2c3e50;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.75rem;
+        border-bottom: 2px solid var(--et-border);
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.85rem;
+        color: #333;
+      }
+
+      tr:hover {
+        background: #fcfcfc;
+      }
+
+      /* STATUS BADGES */
+      .badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .pending {
+        background: #fff9db;
+        color: #f08c00;
+        border: 1px solid #ffe066;
+      }
+      .approved {
+        background: #ebfbee;
+        color: #2b8a3e;
+        border: 1px solid #b2f2bb;
+      }
+      .rejected {
+        background: #fff5f5;
+        color: #e03131;
+        border: 1px solid #ffa8a8;
+      }
+
+      /* SIMILAR BOX */
+      .similar-box {
+        background: #fff5f5;
+        border: 1px solid #ffa8a8;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        color: #c92a2a;
+      }
+
+      .no-similar {
+        color: var(--et-success);
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+
+      /* ACTION LINKS */
+      .action-link {
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 3px;
+        transition: 0.2s;
+      }
+
+      .approve {
+        color: white;
+        background: var(--et-success);
+      }
+      .reject {
+        color: white;
+        background: var(--et-danger);
+      }
+      .action-link:hover {
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
       </div>
-      {% else %}
-      <span style="color: green">No Similar</span>
-      {% endif %}
-    </td>
-    <td>
-      {% if item.proposal.status == "Pending" %}
-      <a
-        href="{% url 'WAdmin:approve_proposal' item.proposal.id %}"
-        style="color: green"
-        >Approve</a
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
       >
-      |
-      <a
-        href="{% url 'WAdmin:reject_proposal' item.proposal.id %}"
-        style="color: red"
-        >Reject</a
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
       >
-      {% else %} Action Done {% endif %}
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-lightbulb"></i> Project Proposals</a
+      >
+      <a href="{% url 'WAdmin:project_group_list' %}" class="nav-item"
+        ><i class="fa-solid fa-people-group"></i> Project Groups</a
+      >
+      <a href="{% url 'WAdmin:document_schedule_list' %}" class="nav-item"
+        ><i class="fa-solid fa-file-arrow-up"></i> Document Schedule</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Project Management / BCA Proposals
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-rectangle-list"></i> Incoming BCA Project
+            Proposals
+          </div>
+
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student Info</th>
+                  <th>Project Title</th>
+                  <th>Tech Stack</th>
+                  <th>Status</th>
+                  <th>Similarity Check</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in proposal_data %}
+                <tr>
+                  <td>
+                    <div style="font-weight: 600">
+                      {{ item.proposal.student.name }}
+                    </div>
+                    <div style="font-size: 0.75rem; color: #666">
+                      Batch: {{ item.proposal.student.academic_batch }}
+                    </div>
+                  </td>
+                  <td>
+                    <div style="font-weight: 600; color: var(--et-dark)">
+                      {{ item.proposal.title }}
+                    </div>
+                    <div style="font-size: 0.75rem; color: #7f8c8d">
+                      Domain: {{ item.proposal.domain }}
+                    </div>
+                  </td>
+                  <td>
+                    <code
+                      style="
+                        background: #f1f4f6;
+                        padding: 2px 5px;
+                        border-radius: 3px;
+                        font-size: 0.8rem;
+                      "
+                      >{{ item.proposal.technology }}</code
+                    >
+                  </td>
+
+                  <td>
+                    {% if item.proposal.status == "Pending" %}
+                    <span class="badge pending">Pending</span>
+                    {% elif item.proposal.status == "Approved" %}
+                    <span class="badge approved">Approved</span>
+                    {% else %}
+                    <span class="badge rejected">Rejected</span>
+                    {% endif %}
+                  </td>
+
+                  <td style="max-width: 200px">
+                    {% if item.similar %}
+                    <div class="similar-box">
+                      <i class="fa-solid fa-triangle-exclamation"></i>
+                      <b>Similar Found</b><br />
+                      {{ item.similar.student.name }} ({{
+                      item.similar.student.academic_batch }})<br />
+                      <span style="font-style: italic"
+                        >"{{ item.similar.title }}"</span
+                      >
+                    </div>
+                    {% else %}
+                    <span class="no-similar"
+                      ><i class="fa-solid fa-circle-check"></i> Unique
+                      Project</span
+                    >
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    {% if item.proposal.status == "Pending" %}
+                    <div style="display: flex; gap: 5px">
+                      <a
+                        class="action-link approve"
+                        href="{% url 'WAdmin:approve_proposal' item.proposal.id %}"
+                        title="Approve"
+                      >
+                        <i class="fa-solid fa-check"></i>
+                      </a>
+                      <a
+                        class="action-link reject"
+                        href="{% url 'WAdmin:reject_proposal' item.proposal.id %}"
+                        title="Reject"
+                      >
+                        <i class="fa-solid fa-xmark"></i>
+                      </a>
+                    </div>
+                    {% else %}
+                    <span
+                      style="
+                        color: #95a5a6;
+                        font-size: 0.8rem;
+                        font-weight: 600;
+                      "
+                      >PROCESSED</span
+                    >
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td
+                    colspan="6"
+                    style="text-align: center; padding: 50px; color: #95a5a6"
+                  >
+                    No proposals submitted yet.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

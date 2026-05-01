@@ -1,35 +1,359 @@
-<h2>{{ month }}/{{ year }} - All Students Attendance</h2>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Report | ETLAB Admin</title>
 
-<form method="GET">
-  <input type="number" name="month" min="1" max="12" required />
-  <input type="number" name="year" required />
-  <button type="submit">View</button>
-</form>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-<br />
+    <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-present: #27ae60;
+        --et-absent: #e74c3c;
+      }
 
-<table border="1" cellpadding="5">
-  <tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Present</th>
-    <th>Absent</th>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
+      }
 
-    {% for day in days %}
-    <th>{{ day }}</th>
-    {% endfor %}
-  </tr>
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+      }
 
-  {% for row in attendance_table %}
-  <tr>
-    <td>{{ row.student.id }}</td>
-    <td>{{ row.student.name }}</td>
-    <td>{{ row.present }}</td>
-    <td>{{ row.absent }}</td>
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
 
-    {% for status in row.daily %}
-    <td>{{ status }}</td>
-    {% endfor %}
-  </tr>
-  {% endfor %}
-</table>
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN LAYOUT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
+      /* FILTER CARD */
+      .filter-card {
+        background: white;
+        padding: 15px 20px;
+        border-radius: 4px;
+        border: 1px solid var(--et-border);
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      }
+
+      .filter-form {
+        display: flex;
+        gap: 20px;
+        align-items: flex-end;
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .filter-group label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #666;
+        text-transform: uppercase;
+      }
+
+      .filter-group input {
+        padding: 8px 12px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        outline: none;
+        font-size: 0.9rem;
+      }
+
+      .btn-view {
+        background: var(--et-accent);
+        color: white;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+
+      .btn-view:hover {
+        background: #2980b9;
+      }
+
+      /* TABLE SYSTEM */
+      .table-card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .table-header-tool {
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--et-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        position: relative;
+      }
+
+      .attendance-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.85rem;
+      }
+
+      .attendance-table th {
+        background: #f1f4f6;
+        color: #2c3e50;
+        font-weight: 700;
+        padding: 12px 10px;
+        border-bottom: 2px solid var(--et-border);
+        border-right: 1px solid #e0e0e0;
+        white-space: nowrap;
+      }
+
+      .attendance-table td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        border-right: 1px solid #eee;
+        text-align: center;
+      }
+
+      /* STICKY COLUMNS */
+      .sticky-id {
+        position: sticky;
+        left: 0;
+        background: #f8f9fa !important;
+        z-index: 2;
+        min-width: 50px;
+      }
+
+      .sticky-name {
+        position: sticky;
+        left: 50px; /* Offset by ID width */
+        background: #f8f9fa !important;
+        z-index: 2;
+        text-align: left !important;
+        border-right: 2px solid var(--et-border) !important;
+        min-width: 180px;
+      }
+
+      /* INDICATORS */
+      .status-p {
+        color: var(--et-present);
+        font-weight: 800;
+      }
+      .status-a {
+        color: var(--et-absent);
+        font-weight: 800;
+      }
+      .summary-col {
+        background: #fdfdfd;
+        font-weight: bold;
+        width: 40px;
+      }
+
+      .row-hover:hover td {
+        background-color: #f1f7fe !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack
+      </div>
+      <a href="{% url 'WAdmin:hompage' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Students</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-file-invoice-dollar"></i> Fees</a
+      >
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Reports / Monthly Attendance
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i>FACULTY
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="filter-card">
+          <form method="GET" class="filter-form">
+            <div class="filter-group">
+              <label>Month</label>
+              <input
+                type="number"
+                name="month"
+                min="1"
+                max="12"
+                value="{{ month }}"
+                required
+              />
+            </div>
+            <div class="filter-group">
+              <label>Year</label>
+              <input type="number" name="year" value="{{ year }}" required />
+            </div>
+            <button type="submit" class="btn-view">
+              <i class="fa-solid fa-magnifying-glass"></i> Generate Report
+            </button>
+          </form>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header-tool">
+            <div style="font-weight: 700; color: var(--et-dark)">
+              <i class="fa-solid fa-calendar-days"></i> Attendance Sheet: {{
+              month }}/{{ year }}
+            </div>
+            <div style="font-size: 0.75rem; color: #7f8c8d">
+              <span style="margin-right: 15px"
+                ><b class="status-p">P</b>: Present</span
+              >
+              <span><b class="status-a">A</b>: Absent</span>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="attendance-table">
+              <thead>
+                <tr>
+                  <th class="sticky-id">ID</th>
+                  <th class="sticky-name">Student Name</th>
+                  <th class="summary-col" title="Total Present">P</th>
+                  <th class="summary-col" title="Total Absent">A</th>
+                  {% for day in days %}
+                  <th>{{ day }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in attendance_table %}
+                <tr class="row-hover">
+                  <td class="sticky-id" style="color: #95a5a6; font-size: 11px">
+                    #{{ row.student.id }}
+                  </td>
+                  <td class="sticky-name"><b>{{ row.student.name }}</b></td>
+                  <td
+                    class="summary-col status-p"
+                    style="background: #e8f5e944"
+                  >
+                    {{ row.present }}
+                  </td>
+                  <td
+                    class="summary-col status-a"
+                    style="background: #ffebee44"
+                  >
+                    {{ row.absent }}
+                  </td>
+
+                  {% for status in row.daily %}
+                  <td>
+                    {% if status == "P" %}
+                    <span class="status-p">P</span>
+                    {% elif status == "A" %}
+                    <span class="status-a">A</span>
+                    {% else %}
+                    <span style="color: #ddd">•</span>
+                    {% endif %}
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,65 +1,255 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Submit Project Proposal</title>
-  </head>
-  <body style="font-family: Arial, sans-serif; background-color: #f4f6f9">
-    <div
-      style="
-        width: 500px;
-        margin: 50px auto;
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Proposal | Student Portal</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-success: #27ae60;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-sidebar);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1c2a38;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
+      }
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #34495e;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #34495e;
+        color: white;
+      }
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
         background: #fff;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      "
-    >
-      <h2 style="text-align: center; margin-bottom: 20px">
-        Submit Project Proposal
-      </h2>
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
 
-      <form method="POST">
-        {% csrf_token %}
+      .content-area {
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        <label><b>Project Title</b></label
-        ><br />
-        {{ form.title }}<br /><br />
+      /* FORM CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
 
-        <label><b>Domain</b></label
-        ><br />
-        {{ form.domain }}<br /><br />
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-        <label><b>Technology</b></label
-        ><br />
-        {{ form.technology }}<br /><br />
+      .card-body {
+        padding: 30px;
+      }
 
-        <label><b>Description</b></label
-        ><br />
-        {{ form.description }}<br /><br />
+      /* DJANGO FORM STYLING */
+      /* These selectors target the widgets rendered by {{ form }} */
+      .card-body input,
+      .card-body select,
+      .card-body textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        transition: border 0.2s;
+        box-sizing: border-box;
+      }
 
-        <button
-          type="submit"
-          style="
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-          "
-        >
-          Submit Proposal
-        </button>
-      </form>
+      .card-body input:focus,
+      .card-body select:focus,
+      .card-body textarea:focus {
+        border-color: var(--et-accent);
+        outline: none;
+        background-color: #fafbfc;
+      }
 
-      <div style="text-align: center; margin-top: 15px">
-        <a
-          href="{% url 'student:dashboard' %}"
-          style="text-decoration: none; color: #007bff"
-        >
-          ← Back to Dashboard
+      .card-body label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #444;
+        display: block;
+      }
+
+      .btn-submit {
+        width: 100%;
+        background: var(--et-dark);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.3s;
+      }
+
+      .btn-submit:hover {
+        background: #152943;
+      }
+
+      .back-link {
+        margin-top: 20px;
+        text-decoration: none;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .back-link:hover {
+        color: var(--et-accent);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-graduation-cap"></i> EduTrack STUDENT
+      </div>
+      <a href="{% url 'student:dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-file-circle-plus"></i> Submit Proposal</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-folder-open"></i> My Projects</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-bullhorn"></i> Notifications</a
+      >
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Project / New Submission
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> STUDENT
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa-solid fa-paper-plane"></i> Submit Project Proposal
+          </div>
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %}
+
+              <label>Project Title</label>
+              {{ form.title }}
+
+              <label>Domain</label>
+              {{ form.domain }}
+
+              <label>Technology Stack</label>
+              {{ form.technology }}
+
+              <label>Brief Description</label>
+              {{ form.description }}
+
+              <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-check"></i> Submit Proposal
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <a href="{% url 'student:dashboard' %}" class="back-link">
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
         </a>
       </div>
     </div>

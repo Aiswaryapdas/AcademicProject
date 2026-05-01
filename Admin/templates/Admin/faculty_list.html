@@ -1,56 +1,261 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Faculty List</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faculty Management | Admin</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
+      :root {
+        --et-dark: #1e3a5f;
+        --et-sidebar: #2c3e50;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+      }
+
       body {
-        font-family: Arial;
-        background: #f4f6f8;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
-      table {
-        width: 80%;
-        margin: 50px auto;
-        border-collapse: collapse;
-        background: white;
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #152943;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffd700;
       }
-      th {
-        background: #007bff;
+
+      .nav-item {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #2c3e50;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #2c3e50;
         color: white;
       }
-      h2 {
+
+      .nav-item.active {
+        border-left: 4px solid var(--et-accent);
+      }
+
+      /* MAIN CONTENT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 240px);
+      }
+
+      .top-header {
+        background: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .content-area {
+        padding: 25px;
+      }
+
+      /* TABLE CARD */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--et-border);
+        font-weight: bold;
+        color: var(--et-dark);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f1f4f6;
+        color: #2c3e50;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.85rem;
+        border-bottom: 2px solid var(--et-border);
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+        color: #333;
+      }
+
+      tr:hover {
+        background: #fcfcfc;
+      }
+
+      .empty-msg {
         text-align: center;
-        margin-top: 30px;
+        padding: 40px;
+        color: #95a5a6;
+      }
+
+      .designation-badge {
+        background: #eef2f7;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        color: var(--et-dark);
+        font-weight: 500;
       }
     </style>
   </head>
+
   <body>
-    <h2>Faculty List</h2>
-    <table>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Designation</th>
-      </tr>
-      {% for faculty in faculties %}
-      <tr>
-        <td>{{ faculty.name }}</td>
-        <td>{{ faculty.email }}</td>
-        <td>{{ faculty.designation }}</td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="3" style="text-align: center">No faculties registered</td>
-      </tr>
-      {% endfor %}
-      <a href="{% url 'WAdmin:admin_dashboard' %}" class="back-btn">
-        <i class="fa-solid fa-arrow-left"></i>Back
-      </a>
-    </table>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-user-shield"></i> EduTrack ADMIN
+      </div>
+      <a href="{% url 'WAdmin:admin_dashboard' %}" class="nav-item"
+        ><i class="fa-solid fa-gauge"></i> Dashboard</a
+      >
+      <a href="{% url 'WAdmin:student_list' %}" class="nav-item"
+        ><i class="fa-solid fa-user-graduate"></i> Student Manager</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-user-tie"></i> Faculty Manager</a
+      >
+      <a href="{% url 'WAdmin:admin_attendance' %}" class="nav-item"
+        ><i class="fa-solid fa-clipboard-user"></i> Attendance</a
+      >
+    </div>
+
+    <div class="main-wrapper">
+      <div class="top-header">
+        <div style="font-size: 0.9rem; font-weight: 600; color: #555">
+          Faculty Directory
+        </div>
+        <div style="font-size: 0.85rem">
+          <i class="fa-solid fa-circle-user"></i> ADMIN
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div style="margin-bottom: 20px">
+          <a
+            href="{% url 'WAdmin:admin_dashboard' %}"
+            style="
+              text-decoration: none;
+              color: var(--et-dark);
+              font-weight: 600;
+              font-size: 0.9rem;
+            "
+          >
+            <i class="fa-solid fa-chevron-left"></i> Dashboard
+          </a>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span
+              ><i class="fa-solid fa-list-ul"></i> Registered Faculty
+              Members</span
+            >
+            <a
+              href="{% url 'WAdmin:faculty_register' %}"
+              style="
+                font-size: 0.8rem;
+                color: var(--et-accent);
+                text-decoration: none;
+              "
+            >
+              <i class="fa-solid fa-plus"></i> Add New Faculty
+            </a>
+          </div>
+
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Faculty Name</th>
+                  <th>Email Address</th>
+                  <th>Designation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for faculty in faculties %}
+                <tr>
+                  <td style="font-weight: 600">{{ faculty.name }}</td>
+                  <td>{{ faculty.email }}</td>
+                  <td>
+                    <span class="designation-badge"
+                      >{{ faculty.designation }}</span
+                    >
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="3" class="empty-msg">
+                    <i
+                      class="fa-solid fa-user-slash"
+                      style="
+                        font-size: 2rem;
+                        display: block;
+                        margin-bottom: 10px;
+                      "
+                    ></i>
+                    No faculties registered in the system.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

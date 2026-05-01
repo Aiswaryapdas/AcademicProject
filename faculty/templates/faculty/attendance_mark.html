@@ -2,126 +2,342 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Mark Attendance | EduTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mark Attendance | ETLAB</title>
+
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
+      :root {
+        --et-dark: #2c3e50;
+        --et-sidebar: #34495e;
+        --et-bg: #f4f7f9;
+        --et-accent: #3498db;
+        --et-border: #dcdde1;
+        --et-present: #1abc9c;
+        --et-absent: #e74c3c;
+      }
+
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f6f8;
-        padding: 30px;
+        margin: 0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background: var(--et-bg);
+        display: flex;
+        min-height: 100vh;
       }
-      h1 {
-        text-align: center;
-        color: #2f4357;
+
+      /* SIDEBAR - ETLAB Dashboard Style */
+      .sidebar {
+        width: 220px;
+        background: var(--et-dark);
+        color: white;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
       }
-      .date-container {
-        text-align: center;
+
+      .sidebar-brand {
+        padding: 15px 20px;
+        background: #1a252f;
+        font-size: 1.5rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #5dade2;
+      }
+
+      .nav-item {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #bdc3c7;
+        text-decoration: none;
+        border-bottom: 1px solid #3e4f5f;
+        font-size: 0.85rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #1a252f;
+        color: white;
+      }
+
+      /* MAIN LAYOUT */
+      .main-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-navbar {
+        background: #333;
+        color: #ccc;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        font-size: 0.8rem;
+        justify-content: space-between;
+      }
+
+      .breadcrumb-bar {
+        background: #eeeeee;
+        padding: 8px 25px;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.75rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .content-area {
+        padding: 20px 25px;
+      }
+
+      .page-title {
+        border-bottom: 1px solid #ccc;
+        margin: 0 0 20px 0;
+        padding-bottom: 10px;
+        color: #444;
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+
+      /* CARD & CONTROLS */
+      .card {
+        background: white;
+        border: 1px solid var(--et-border);
+        border-radius: 2px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .date-picker-wrap {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 4px;
         margin-bottom: 20px;
+        border-left: 4px solid var(--et-accent);
       }
+
       input[type="date"] {
-        padding: 8px;
-        font-size: 16px;
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
       }
+
+      /* TABLE STYLING */
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 20px;
+        margin-top: 10px;
       }
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: center;
-      }
+
       th {
-        background-color: #2f4357;
-        color: white;
+        background: #f8f9fa;
+        color: #333;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid #ddd;
       }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.85rem;
+        color: #555;
+      }
+
+      /* TOGGLE BUTTONS */
       .toggle-btn {
-        padding: 6px 12px;
+        padding: 8px 16px;
         border: none;
-        border-radius: 4px;
+        border-radius: 20px;
         cursor: pointer;
         color: white;
+        font-size: 0.75rem;
         font-weight: bold;
+        min-width: 100px;
+        transition: 0.2s;
+        text-transform: uppercase;
       }
+
       .present {
-        background-color: #1abc9c;
+        background-color: var(--et-present);
+        box-shadow: 0 2px 4px rgba(26, 188, 156, 0.3);
       }
       .absent {
-        background-color: #e74c3c;
+        background-color: var(--et-absent);
+        box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
       }
+
       .save-btn {
         margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #2f4357;
+        padding: 10px 25px;
+        background-color: var(--et-dark);
         color: white;
         border: none;
         border-radius: 4px;
         cursor: pointer;
         float: right;
+        font-weight: bold;
+      }
+
+      .save-btn:hover {
+        background-color: #1a252f;
+      }
+
+      .alert {
+        padding: 10px;
+        background: #fdeaea;
+        color: #c0392b;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        font-size: 0.85rem;
       }
     </style>
   </head>
+
   <body>
-    <h1>Mark Attendance</h1>
-    {% if messages %}
-    <div style="color: red; text-align: center; margin-bottom: 10px">
-      {% for message in messages %} {{ message }} {% endfor %}
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand"><i class="fa-solid fa-cloud"></i>EduTrack</div>
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-house"></i> Dashboard</a
+      >
+      <a href="#" class="nav-item active"
+        ><i class="fa-solid fa-calendar-check"></i> Attendance</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-file-lines"></i> Assignments</a
+      >
+      <a href="#" class="nav-item"
+        ><i class="fa-solid fa-user-gear"></i> User Manual</a
+      >
     </div>
-    {% endif %}
-    <form method="POST">
-      {% csrf_token %}
-      <div class="date-container">
-        <label for="attendance-date"><strong>Select Date:</strong></label>
-        <input
-          type="date"
-          id="attendance-date"
-          name="selected_date"
-          min="{{ today_date }}"
-          value="{{ today_date }}"
-          required
-        />
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+      <div class="top-navbar">
+        <div></div>
+        <div style="display: flex; gap: 15px; align-items: center">
+          <span
+            ><i class="fa-solid fa-user"></i> AISWARYA P DAS
+            <i class="fa-solid fa-caret-down"></i
+          ></span>
+          <span><i class="fa-solid fa-power-off"></i> Logout</span>
+        </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Admission Number</th>
-            <th>Student Name</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for student in students %}
-          <tr>
-            <td>{{ student.admission_number }}</td>
-            <td>{{ student.name }}</td>
-            <td>
-              <button
-                type="button"
-                class="toggle-btn present"
-                onclick="toggleStatus(this)"
-              >
-                Present
-              </button>
-              <input
-                type="hidden"
-                name="status_{{ student.id }}"
-                value="Present"
-              />
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="3">No students assigned</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <div class="breadcrumb-bar">
+        <i class="fa-solid fa-house"></i> Home
+        <i
+          class="fa-solid fa-chevron-right"
+          style="font-size: 0.6rem; color: #aaa; margin: 0 5px"
+        ></i>
+        Attendance
+        <i
+          class="fa-solid fa-chevron-right"
+          style="font-size: 0.6rem; color: #aaa; margin: 0 5px"
+        ></i>
+        Mark Attendance
+      </div>
 
-      <button type="submit" class="save-btn">Save Attendance</button>
-    </form>
-    <li></li>
+      <div class="content-area">
+        <h2 class="page-title">Mark Student Attendance</h2>
+
+        {% if messages %}
+        <div class="alert">
+          {% for message in messages %}
+          <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+          {%endfor%}
+        </div>
+        {% endif %}
+
+        <div class="card">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="date-picker-wrap">
+              <label for="attendance-date"
+                ><strong>Session Date:</strong></label
+              >
+              <input
+                type="date"
+                id="attendance-date"
+                name="selected_date"
+                min="{{ today_date }}"
+                value="{{ today_date }}"
+                required
+              />
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Admn No.</th>
+                  <th>Student Name</th>
+                  <th style="text-align: center">Attendance Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in students %}
+                <tr>
+                  <td><strong>{{ student.admission_number }}</strong></td>
+                  <td>{{ student.name }}</td>
+                  <td style="text-align: center">
+                    <button
+                      type="button"
+                      class="toggle-btn present"
+                      onclick="toggleStatus(this)"
+                    >
+                      Present
+                    </button>
+                    <input
+                      type="hidden"
+                      name="status_{{ student.id }}"
+                      value="Present"
+                    />
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td
+                    colspan="3"
+                    style="text-align: center; padding: 30px; color: #999"
+                  >
+                    <i
+                      class="fa-solid fa-user-slash"
+                      style="
+                        font-size: 2rem;
+                        display: block;
+                        margin-bottom: 10px;
+                      "
+                    ></i>
+                    No students assigned to this batch.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            <button type="submit" class="save-btn">
+              <i class="fa-solid fa-floppy-disk"></i> Submit Attendance
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <script>
       function toggleStatus(btn) {
         const hiddenInput = btn.nextElementSibling;

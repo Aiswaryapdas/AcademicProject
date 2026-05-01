@@ -3,309 +3,410 @@
   <head>
     <meta charset="UTF-8" />
     <title>Faculty Dashboard | EduTrack</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
 
     <style>
-      body {
-        margin: 0;
-        font-family: "Segoe UI", Arial, sans-serif;
-        background-color: #f4f6f8;
+      :root {
+        --sidebar-bg: #444;
+        --topbar-bg: #f8f8f8;
+        --accent-blue: #007bff;
+        --text-dark: #333;
+        --border-color: #ddd;
       }
 
-      /* TOP BAR */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f1f1f1;
+        color: var(--text-dark);
+      }
+
+      /* ================= TOP BAR ================= */
       .top-bar {
-        height: 60px;
-        background: #1e3a5f;
-        color: white;
+        height: 50px;
+        background: var(--topbar-bg);
+        border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 25px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        padding: 0 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
       }
 
       .left-top {
         display: flex;
         align-items: center;
-        gap: 25px;
+        gap: 10px;
       }
 
-      .app-name {
-        font-size: 20px;
-        font-weight: 600;
+      .logo-text {
+        color: #00a0e3;
+        font-size: 24px;
+        font-weight: bold;
+        font-family: "Trebuchet MS", sans-serif;
       }
 
-      .page-title {
-        font-size: 16px;
-        opacity: 0.9;
+      .college-name {
+        font-size: 13px;
+        color: #666;
+        border-left: 1px solid #ccc;
+        padding-left: 10px;
       }
 
-      /* RIGHT SIDE */
       .right-top {
         display: flex;
         align-items: center;
         gap: 15px;
-        position: relative;
+        font-size: 12px;
       }
 
-      .profile-circle {
-        width: 38px;
-        height: 38px;
-        background: #3b82f6;
-        border-radius: 50%;
+      .user-info {
+        background: #e9ecef;
+        padding: 5px 10px;
+        border-radius: 4px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        cursor: pointer;
+        gap: 5px;
       }
 
-      .logout-btn {
-        background: #ef4444;
-        border: none;
-        color: white;
-        padding: 7px 14px;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-
-      /* PROFILE CARD */
-      .profile-card {
-        position: absolute;
-        top: 65px;
-        right: 0;
-        width: 250px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        padding: 15px;
-        display: none;
-      }
-
-      /* LAYOUT */
+      /* ================= LAYOUT ================= */
       .container {
         display: flex;
       }
 
       /* SIDEBAR */
       .sidebar {
-        width: 230px;
-        background: #243447;
-        min-height: calc(100vh - 60px);
-        padding-top: 20px;
+        width: 80px; /* Slim icon-only sidebar like ETLAB */
+        background: var(--sidebar-bg);
+        min-height: calc(100vh - 50px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 10px;
       }
 
       .sidebar a {
-        display: block;
-        padding: 12px 20px;
-        color: #cbd5e1;
+        width: 100%;
+        padding: 15px 0;
+        color: #ccc;
         text-decoration: none;
-        font-size: 14px;
-        transition: 0.3s;
+        text-align: center;
+        font-size: 11px;
+        transition: 0.2s;
+        border-bottom: 1px solid #555;
       }
 
-      .sidebar a:hover {
-        background: #334155;
+      .sidebar a i {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background: #555;
         color: white;
       }
 
       /* CONTENT */
       .content {
         flex: 1;
-        padding: 30px;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* Split for side-by-side view like image */
+        gap: 20px;
+      }
+
+      /* LEFT COLUMN */
+      .main-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
       }
 
       /* CARDS */
       .card {
-        background: #ffffff;
-        border-radius: 10px;
-        padding: 20px 25px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-        margin-bottom: 25px;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 4px;
       }
 
-      .card h2 {
-        margin-bottom: 15px;
-        color: #1e293b;
+      .card-header {
+        text-align: center;
+        margin-bottom: 20px;
       }
 
-      /* TABLE */
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        font-size: 14px;
+      .card-header h2 {
+        margin: 0;
+        font-size: 18px;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
 
-      th,
-      td {
-        padding: 10px;
-        text-align: left;
+      /* GRID ACTION BUTTONS (The Icons in the image) */
+      .action-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
       }
 
-      th {
-        background: #1e3a5f;
-        color: white;
-      }
-
-      td {
-        border-bottom: 1px solid #e5e7eb;
-      }
-
-      /* BUTTON */
-      .give-mark-btn {
-        background: #10b981;
-        border: none;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-
-      .give-mark-btn:hover {
-        background: #059669;
-      }
-
-      /* ACTION CARDS */
       .action-card {
+        border: 1px solid #eee;
+        background: #fff;
+        padding: 15px 5px;
         text-align: center;
         cursor: pointer;
-        transition: 0.3s;
+        transition: background 0.2s;
+        border-radius: 8px;
       }
 
       .action-card:hover {
-        transform: translateY(-5px);
+        background: #f9f9f9;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .action-icon {
+        font-size: 30px;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .action-card p {
+        margin: 0;
+        font-size: 12px;
+        color: #666;
+      }
+
+      /* MISSION/VISION BOXES */
+      .vision-mission {
+        text-align: center;
+        border: 1px solid #eee;
+        padding: 15px;
+        margin-bottom: 10px;
+        background: #fafafa;
+      }
+
+      /* TABLES */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-top: 10px;
+      }
+
+      th {
+        background: #f4f4f4;
+        color: #333;
+        text-align: left;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+      }
+
+      td {
+        padding: 10px;
+        border: 1px solid var(--border-color);
+      }
+
+      /* RIGHT COLUMN (Calendar & Notice Board) */
+      .side-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .notice-box {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+        font-size: 13px;
+      }
+
+      .notice-date {
+        color: #999;
+        font-size: 11px;
+        display: block;
+      }
+
+      .btn-view {
+        background: var(--accent-blue);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+      }
+
+      /* MOBILE RESPONSIVE */
+      @media (max-width: 900px) {
+        .content {
+          grid-template-columns: 1fr;
+        }
+        .action-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
     </style>
   </head>
 
   <body>
-    <!-- TOP BAR -->
     <div class="top-bar">
       <div class="left-top">
-        <div class="app-name">EduTrack</div>
-        <div class="page-title">Faculty Dashboard</div>
+        <div class="logo-text">EduTrack</div>
+        <div class="college-name"></div>
       </div>
 
       <div class="right-top">
-        <div class="profile-circle" onclick="toggleProfile()">
-          {{ faculty.name|slice:":1" }}
+        <div class="user-info">
+          <i class="fa fa-user"></i>
+          {{ faculty.name }}
         </div>
-        <a href="{% url 'faculty:faculty_profile' %}">My Profile</a>
-        <a href="{% url 'faculty:logout' %}">
-          <button class="logout-btn">Logout</button>
-        </a>
-
-        <div class="profile-card" id="profileCard">
-          <h3>{{ faculty.name }}</h3>
-          <p><strong>Email:</strong> {{ faculty.email }}</p>
-          <p><strong>Department:</strong> {{ faculty.department }}</p>
-          <p><strong>Designation:</strong> {{ faculty.designation }}</p>
-        </div>
+        <a href="{% url 'faculty:logout' %}" style="color: #666"
+          ><i class="fa fa-sign-out"></i> Logout</a
+        >
       </div>
     </div>
 
     <div class="container">
-      <!-- SIDEBAR -->
       <div class="sidebar">
-        <a href="#">Dashboard</a>
-        <a href="#">My Profile</a>
+        <a href="#" class="active"><i class="fa fa-th-large"></i>Dashboard</a>
+        <a href="#"><i class="fa fa-user-circle"></i>Profile</a>
+        <a href="#"><i class="fa fa-calendar-check"></i>Attendance</a>
+        <a href="#"><i class="fa fa-file-alt"></i>Results</a>
+        <a href="#"><i class="fa fa-tasks"></i>Assignments</a>
       </div>
 
-      <!-- CONTENT -->
       <div class="content">
-        <!-- GROUP -->
-        <div class="card">
-          <h2>Project Group</h2>
+        <div class="main-column">
+          <div class="card">
+            <div class="vision-mission">
+              <h3 style="color: #888; font-size: 16px">
+                Vision of the College
+              </h3>
+              <p style="font-size: 13px; font-style: italic">
+                To emerge as a Center of Excellence in Engineering, Technology
+                and Management...
+              </p>
+            </div>
+          </div>
 
-          {% if group %}
-          <h3>{{ group.group_name }}</h3>
+          <div class="card">
+            <div class="action-grid">
+              <div
+                class="action-card"
+                onclick="location.href='{% url 'faculty:attendance_mark' %}'"
+              >
+                <span class="action-icon">📋</span>
+                <p>Attendance</p>
+              </div>
 
-          <table>
-            <tr>
-              <th>Student Name</th>
-              <th>Email</th>
-            </tr>
+              <div
+                class="action-card"
+                onclick="location.href='{% url 'faculty:document_schedules' %}'"
+              >
+                <span class="action-icon">📄</span>
+                <p>Documents</p>
+              </div>
 
-            {% for student in students %}
-            <tr>
-              <td>{{ student.name }}</td>
-              <td>{{ student.email }}</td>
-            </tr>
+              <div
+                class="action-card"
+                onclick="location.href='{% url 'faculty:monthwise_attendance' %}'"
+              >
+                <span class="action-icon">📊</span>
+                <p>Analysis</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><h2>Project Group</h2></div>
+            {% if group %}
+            <h3>{{ group.group_name }}</h3>
+            <table>
+              <tr>
+                <th>Student</th>
+                <th>Email</th>
+              </tr>
+              {% for student in students %}
+              <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.email }}</td>
+              </tr>
+              {% endfor %}
+            </table>
+            {% else %}
+            <p style="text-align: center; color: #999">
+              No project group assigned yet.
+            </p>
+            {% endif %}
+          </div>
+
+          <div class="card">
+            <div class="card-header"><h2>Review Schedule</h2></div>
+            {% if reviews %}
+            <table>
+              <tr>
+                <th>Date</th>
+                <th>Topic</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+              {% for review in reviews %}
+              <tr>
+                <td>{{ review.review_date }}</td>
+                <td>{{ review.review_topic }}</td>
+                <td>{{ review.review_status }}</td>
+                <td>
+                  <a
+                    href="{% url 'faculty:add_review_marks' review.id %}"
+                    class="btn-view"
+                    >Add Marks</a
+                  >
+                </td>
+              </tr>
+              {% endfor %}
+            </table>
+            {% else %}
+            <p style="text-align: center; color: #999">
+              No review schedule available.
+            </p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="side-column">
+          <div class="card">
+            <div
+              class="card-header"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <h2 style="margin: 0">Notices</h2>
+              <a href="{% url 'WAdmin:notice_board' %}" class="btn-view"
+                >View All</a
+              >
+            </div>
+
+            {% for item in notice_list|slice:":3" %}
+            <div class="notice-box">
+              <span class="notice-date">05 Feb 2026</span>
+              <strong>{{ item.notice.title }}</strong>
+              {% if item.is_new %}
+              <span style="color: red; font-size: 10px">NEW</span> {% endif %}
+            </div>
             {% empty %}
-            <tr>
-              <td colspan="2">No students assigned</td>
-            </tr>
+            <p style="font-size: 12px; color: #999">No notices available</p>
             {% endfor %}
-          </table>
-
-          {% else %}
-          <p>No project group assigned yet.</p>
-          {% endif %}
-        </div>
-
-        <!-- REVIEW -->
-        <div class="card">
-          <h2>Review Schedule</h2>
-
-          {% if reviews %}
-          <table>
-            <tr>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Topic</th>
-              <th>Status</th>
-              <th>Remarks</th>
-              <th>Action</th>
-            </tr>
-
-            {% for review in reviews %}
-            <tr>
-              <td>{{ review.review_date }}</td>
-              <td>{{ review.review_time }}</td>
-              <td>{{ review.review_topic }}</td>
-              <td>{{ review.review_status }}</td>
-              <td>{{ review.remarks|default:"-" }}</td>
-              <td>
-                <a href="{% url 'faculty:add_review_marks' review.id %}">
-                  Add Marks
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-          </table>
-          {% else %}
-          <p>No review schedule available.</p>
-          {% endif %}
-        </div>
-
-        <!-- ACTION CARDS -->
-        <div
-          class="card action-card"
-          onclick="window.location.href='{% url 'faculty:attendance_mark' %}'"
-        >
-          <div style="font-size: 40px; margin-bottom: 10px">📋</div>
-          <h2>Attendance</h2>
-          <p>Mark or view student attendance</p>
-        </div>
-
-        <div
-          class="card action-card"
-          onclick="window.location.href='{% url 'faculty:document_schedules' %}'"
-        >
-          <div style="font-size: 40px; margin-bottom: 10px">📄</div>
-          <h2>Document Submissions</h2>
-          <p>View uploads and give marks</p>
+          </div>
         </div>
       </div>
     </div>
-    <a href="{% url 'faculty:monthwise_attendance' %}"
-      >View Monthly Attendance</a
-    >
-    <script>
-      function toggleProfile() {
-        const card = document.getElementById("profileCard");
-        card.style.display = card.style.display === "block" ? "none" : "block";
-      }
-    </script>
   </body>
 </html>
